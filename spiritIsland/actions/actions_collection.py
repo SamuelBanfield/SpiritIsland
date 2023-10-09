@@ -4,6 +4,7 @@ from spiritIsland.framework.island import Island
 
 class RavageAction(Action):
     """Ravage action in a single land."""
+
     def __init__(self, controls: dict, island: Island):
         """
         Initialise.
@@ -15,5 +16,4 @@ class RavageAction(Action):
     def execute_action(self):
         """Put some action here."""
         self.check_end_game()
-        print('action done')
-
+        print("action done")

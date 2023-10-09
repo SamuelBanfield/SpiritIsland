@@ -1,0 +1,8 @@
+[flake8]
+max-line-length = 120
+max-complexity = 18
+select = D
+ignore = D400, D212, D205, D203, D210, D401
+exclude = .cache, tests/
+docstring-convention = all
+ignore-decorators = overrides

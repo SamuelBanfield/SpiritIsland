@@ -1,9 +1,10 @@
-from spiritIsland.framework.island import Island
 from spiritIsland.framework.exceptions import EndGameException
+from spiritIsland.framework.island import Island
 
 
 class Action:
     """Base class for all actions."""
+
     def __init__(self, controls: dict, island: Island):
         """
         Initialise.
@@ -22,11 +23,18 @@ class Action:
                 self.island.end = True
         elif self.island.terror_level == 2:
             # Check for any towns/cities in the island object
-            if not self.island.invader_count["city"] and not self.island.invader_count["town"]:
+            if (
+                not self.island.invader_count["city"]
+                and not self.island.invader_count["town"]
+            ):
                 self.island.end = True
         else:
             # Check for any explorers/towns/cities in the island object
-            if not self.island.invader_count["city"] and not self.island.invader_count["town"] and not self.island.invader_count["explorer"]:
+            if (
+                not self.island.invader_count["city"]
+                and not self.island.invader_count["town"]
+                and not self.island.invader_count["explorer"]
+            ):
                 self.island.end = True
 
         if self.island.end:
@@ -35,4 +43,4 @@ class Action:
     def test_action(self):
         """Dummy action for debugging."""
         self.check_end_game()
-        print('test action done')
+        print("test action done")
