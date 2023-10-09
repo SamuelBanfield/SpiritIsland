@@ -1,10 +1,11 @@
-from spiritIsland.phases.phases_base import Phase
 from spiritIsland.actions.actions_collection import *
 from spiritIsland.framework.island import Island
+from spiritIsland.phases.phases_base import Phase
 
 
 class Ravage(Phase):
     """Invader ravage phase."""
+
     def __init__(self, controls: dict, island: Island):
         super().__init__(controls, island)
 
@@ -18,17 +19,20 @@ class Ravage(Phase):
 
 class Build(Phase):
     """Invader build phase."""
+
     def __init__(self, controls: dict, island: Island):
         super().__init__(controls, island)
 
 
 class Explore(Phase):
     """Invader explore phase."""
+
     def __init__(self, controls: dict, island: Island):
         super().__init__(controls, island)
 
 
 class Escalation(Phase):
     """Invader escalation phase."""
+
     def __init__(self, controls: dict, island: Island):
         super().__init__(controls, island)

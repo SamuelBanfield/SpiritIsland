@@ -1,5 +1,6 @@
 class Island:
     """Class for storing the status of the Island."""
+
     def __init__(self, controls: dict):
         """Initialise.
         :param controls: path to debug_controls file
