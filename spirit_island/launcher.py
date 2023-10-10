@@ -1,9 +1,9 @@
 import json
 from pathlib import Path
 
-from spiritIsland.framework.exceptions import EndGameException
-from spiritIsland.framework.island import Island
-from spiritIsland.phases.invader_phases import *
+from spirit_island.framework.exceptions import EndGameException
+from spirit_island.framework.island import Island
+from spirit_island.phases.invader_phases import *
 
 
 def read_json(filepath: str) -> dict:

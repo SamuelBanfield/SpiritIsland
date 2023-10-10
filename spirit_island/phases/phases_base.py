@@ -1,4 +1,4 @@
-from spiritIsland.framework.island import Island
+from spirit_island.framework.island import Island
 
 
 class Phase:

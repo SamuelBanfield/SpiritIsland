@@ -1,4 +1,4 @@
-from spiritIsland import launcher
+from spirit_island import launcher
 
 if __name__ == "__main__":
     """ To run from console """

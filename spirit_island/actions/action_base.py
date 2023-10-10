@@ -1,5 +1,5 @@
-from spiritIsland.framework.exceptions import EndGameException
-from spiritIsland.framework.island import Island
+from spirit_island.framework.exceptions import EndGameException
+from spirit_island.framework.island import Island
 
 
 class Action:

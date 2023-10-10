@@ -1,5 +1,5 @@
-from spiritIsland.actions.action_base import Action
-from spiritIsland.framework.island import Island
+from spirit_island.actions.action_base import Action
+from spirit_island.framework.island import Island
 
 
 class RavageAction(Action):
