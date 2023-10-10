@@ -10,12 +10,20 @@ class Ravage(Phase):
         super().__init__(controls, island)
 
     def execute_phase(self):
-        self.do_ravage_action()
-
-    def do_ravage_action(self):
-        ravage_action = RavageAction(controls=self._controls, island=self.island)
+        if not self.island.invader_track["ravage"]:
+            return
         for land in self.island.lands:
-            ravage_action.execute_action(land)
+            if land.terrain in self.island.invader_track["ravage"].terrains:
+                self.do_ravage_action(land)
+            elif self.island.invader_track["ravage"].terrains == ["coast"]:
+                if land.number in ["1", "2", "3"]:
+                    self.do_ravage_action(land)
+
+        print("Ravage phase complete")
+
+    def do_ravage_action(self, ravaging_land):
+        ravage_action = RavageAction(controls=self._controls, island=self.island)
+        ravage_action.execute_action(ravaging_land)
 
 
 class Build(Phase):
@@ -25,12 +33,20 @@ class Build(Phase):
         super().__init__(controls, island)
 
     def execute_phase(self):
-        self.do_build_action()
-
-    def do_build_action(self):
-        build_action = BuildAction(controls=self._controls, island=self.island)
+        if not self.island.invader_track["build"]:
+            return
         for land in self.island.lands:
-            build_action.execute_action(land)
+            if land.terrain in self.island.invader_track["build"].terrains:
+                self.do_build_action(land)
+            elif self.island.invader_track["build"].terrains == ["coast"]:
+                if land.number in ["1", "2", "3"]:
+                    self.do_build_action(land)
+
+        print("Build phase complete")
+
+    def do_build_action(self, building_land):
+        build_action = BuildAction(controls=self._controls, island=self.island)
+        build_action.execute_action(building_land)
 
 
 class Explore(Phase):
@@ -40,12 +56,21 @@ class Explore(Phase):
         super().__init__(controls, island)
 
     def execute_phase(self):
-        self.do_explore_action()
-
-    def do_explore_action(self):
-        explore_action = ExploreAction(controls=self._controls, island=self.island)
+        new_card = self.island.invader_deck.pop(0)
+        print(new_card.terrains)
+        self.island.invader_track["explore"] = new_card
         for land in self.island.lands:
-            explore_action.execute_action(land)
+            if land.terrain in self.island.invader_track["explore"].terrains:
+                self.do_explore_action(land)
+            elif self.island.invader_track["explore"].terrains == ["coast"]:
+                if land.number in ["1", "2", "3"]:
+                    self.do_explore_action(land)
+
+        print("Explore phase complete")
+
+    def do_explore_action(self, exploring_land):
+        explore_action = ExploreAction(controls=self._controls, island=self.island)
+        explore_action.execute_action(exploring_land)
 
 
 class Escalation(Phase):

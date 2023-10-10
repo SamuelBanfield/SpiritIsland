@@ -1,8 +1,8 @@
 import json
 
-from spirit_island.framework.land import Land
 from spirit_island.actions.action_base import Action
 from spirit_island.framework.island import Island
+from spirit_island.framework.land import Land
 
 
 class RavageAction(Action):
@@ -31,19 +31,19 @@ class RavageAction(Action):
             return
 
         # Calculate the damage to the land and the dahan health
-        damage_total = 3*city_count + 2*town_count + explorer_count - land.defend
-        dahan_health = 2*dahan_count
+        damage_total = 3 * city_count + 2 * town_count + explorer_count - land.defend
+        dahan_health = 2 * dahan_count
 
         # Damage the dahan
         if damage_total > dahan_health and dahan_count:
             land.dahan_count = 0
         elif dahan_count:
             dahan_health -= damage_total
-            dahan_count = int((dahan_health+dahan_health%2)/2)
+            dahan_count = int((dahan_health + dahan_health % 2) / 2)
             land.dahan_count = dahan_count
 
         # Calculate the damage to the invaders and the invader health
-        dahan_damage = 2*dahan_count
+        dahan_damage = 2 * dahan_count
         invader_health = 3 * city_count + 2 * town_count + explorer_count
 
         # Damage the invaders
@@ -54,11 +54,8 @@ class RavageAction(Action):
             city_destroy += city_count
             town_destroy += town_count
             explorer_destroy += explorer_count
-        else: #hard-coded method
+        else:  # hard-coded method
             dahan_damage_remaining = dahan_damage
-            city_destroy = 0
-            town_destroy = 0
-            explorer_destroy = 0
 
             while dahan_damage_remaining > 0:
                 if dahan_damage_remaining >= 3 and city_count > 0:
@@ -134,14 +131,14 @@ class ExploreAction(Action):
         # Check if it has source of exploration
         source = False
 
-        if land.invader_count["city"] + land.invader_count["town"] > 0:
+        if (land.invader_count["city"] + land.invader_count["town"]) > 0:
             source = True
         elif land.number in [1, 2, 3]:
             source = True
         else:
             for adj_land_no in lands_adj:
                 adj_land = lands_list[adj_land_no]
-                if adj_land.invader_count["city"] + adj_land.invader_count["town"] > 0:
+                if (adj_land.invader_count["city"] + adj_land.invader_count["town"]) > 0:
                     source = True
 
         if source:

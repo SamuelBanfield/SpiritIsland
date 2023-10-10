@@ -4,6 +4,7 @@ from pathlib import Path
 from spirit_island.framework.exceptions import EndGameException
 from spirit_island.framework.island import Island
 from spirit_island.phases.invader_phases import *
+from spirit_island.phases.transition_phases import *
 
 
 def read_json(filepath: str) -> dict:
@@ -29,6 +30,9 @@ class Runner:
         self.victory = False
         self.phase_objects = []
         self.ravage = None
+        self.build = None
+        self.explore = None
+        self.cards_advance = None
         self.island = None
 
         print("Runner initialised")
@@ -44,12 +48,22 @@ class Runner:
             "build_phase",
             "explore_phase",
             "escalation_phase",
+            "cards_advance_phase"
             "slow_phase",
             "time_passes_phase",
         ]
         # Make instances of each phase and store in runner
         self.ravage = Ravage(controls=self.controls, island=self.island)
         self.phase_objects.append(self.ravage)
+
+        self.build = Build(controls=self.controls, island=self.island)
+        self.phase_objects.append(self.build)
+
+        self.explore = Explore(controls=self.controls, island=self.island)
+        self.phase_objects.append(self.explore)
+
+        self.cards_advance = CardsAdvance(controls=self.controls, island=self.island)
+        self.phase_objects.append(self.cards_advance)
         return
 
     def create_island(self):
@@ -82,7 +96,8 @@ def main():
     runner.create_island()
     runner.create_phases()
     # Begin the game
-    runner.perform_phases()
+    for _ in range(4):
+        runner.perform_phases()
     # End the game
     runner.perform_end_game()
 

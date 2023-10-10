@@ -23,10 +23,7 @@ class Action:
                 self.island.end = True
         elif self.island.terror_level == 2:
             # Check for any towns/cities in the island object
-            if (
-                not self.island.get_city_count()
-                and not self.island.get_town_count()
-            ):
+            if not self.island.get_city_count() and not self.island.get_town_count():
                 self.island.end = True
         else:
             # Check for any explorers/towns/cities in the island object

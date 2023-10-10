@@ -1,6 +1,7 @@
 import json
 
 from .land import Land
+from spirit_island.decks.invader_deck_builder import InvaderDeckBuilder
 
 
 class Island:
@@ -21,6 +22,10 @@ class Island:
         self.fear_generated = 0
         self.terror_level = 1
 
+        self.invader_track = {"explore": None, "build": None, "ravage": None, "discard": []}
+        self.invader_deck = []
+        self.get_invader_deck()
+
         self.end = False
 
     def get_lands(self):
@@ -32,15 +37,22 @@ class Island:
             new_land = Land()
             new_land.number = land_number
 
-            for piece in board_dict[land_number]:
-                if piece in ["city", "town", "explorer"]:
-                    new_land.invader_count[piece] = board_dict[land_number][piece]
-                elif piece == "blight":
-                    new_land.blight_count = board_dict[land_number][piece]
-                elif piece == "dahan":
-                    new_land.dahan_count = board_dict[land_number][piece]
+            for attribute in board_dict[land_number]:
+                if attribute in ["city", "town", "explorer"]:
+                    new_land.invader_count[attribute] = board_dict[land_number][attribute]
+                elif attribute == "blight":
+                    new_land.blight_count = board_dict[land_number][attribute]
+                elif attribute == "dahan":
+                    new_land.dahan_count = board_dict[land_number][attribute]
+                elif attribute == "terrain":
+                    new_land.terrain = board_dict[land_number][attribute]
 
             self.lands.append(new_land)
+
+    def get_invader_deck(self):
+        """Retrieve a generated invader deck from the invader deck builder."""
+        builder = InvaderDeckBuilder()
+        self.invader_deck = builder.build_deck()
 
     def get_city_count(self):
         """Return the total invader count on the island."""
@@ -73,10 +85,10 @@ class Island:
         """Generate an amount of fear and check for thresholds."""
         fear_remaining = fear_quantity
         while fear_remaining > 0:
-            if self.fear_generated + fear_remaining < 4*self.n_players:
+            if self.fear_generated + fear_remaining < 4 * self.n_players:
                 self.fear_generated += fear_remaining
             else:
-                fear_threshold = 4*self.n_players - self.fear_generated
+                fear_threshold = 4 * self.n_players - self.fear_generated
                 fear_remaining -= fear_threshold
                 self.fear_generated = 0
                 self.fear_cards += 1
