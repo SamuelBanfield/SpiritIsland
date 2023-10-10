@@ -13,6 +13,7 @@ class Island:
         self._controls = controls
 
         self.lands = []
+        self.get_lands()
 
         self.fear_cards = 0
         self.fear_generated = 0
@@ -23,7 +24,7 @@ class Island:
     def get_lands(self):
         """Fills in the lands with land objects.
         """
-        with open("../resources/board_d.json") as board_file:
+        with open("resources/board_d.json") as board_file:
             board_dict = json.load(board_file)
 
         for land_number in board_dict:
