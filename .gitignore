@@ -4,3 +4,4 @@
 .idea/.name
 *.pyc
 .vscode
+.DS_Store
