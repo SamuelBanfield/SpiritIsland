@@ -1,5 +1,6 @@
 import json
 
+from spirit_island.framework.land import Land
 from spirit_island.actions.action_base import Action
 from spirit_island.framework.island import Island
 
@@ -15,9 +16,8 @@ class RavageAction(Action):
         """
         super().__init__(controls, island)
 
-    def execute_action(self, land_number: int):
+    def execute_action(self, land: Land):
         """Performs the ravage action in the land number specified."""
-        land = self.island.lands[land_number]
 
         # Retrieve the piece count on the land
         city_count = land.invader_count["city"]
@@ -92,9 +92,8 @@ class BuildAction(Action):
         """
         super().__init__(controls, island)
 
-    def execute_action(self, land_number: int):
+    def execute_action(self, land: Land):
         """Performs the build action in the land number specified."""
-        land = self.island.lands[land_number]
 
         # Retrieve the piece count on the land
         city_count = land.invader_count["city"]
@@ -125,20 +124,19 @@ class ExploreAction(Action):
         """
         super().__init__(controls, island)
 
-    def execute_action(self, land_number: int):
+    def execute_action(self, land: Land):
         """Performs the explore action in the land number specified."""
-        land = self.island.lands[land_number]
         lands_list = self.island.lands
         with open("resources/board_adjacencies.json") as adj_file:
             adj_dict = json.load(adj_file)
-            lands_adj = adj_dict[str(land_number)]
+            lands_adj = adj_dict[str(land.number)]
 
         # Check if it has source of exploration
         source = False
 
         if land.invader_count["city"] + land.invader_count["town"] > 0:
             source = True
-        elif land_number in [1, 2, 3]:
+        elif land.number in [1, 2, 3]:
             source = True
         else:
             for adj_land_no in lands_adj:
