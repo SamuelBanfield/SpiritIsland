@@ -11,3 +11,6 @@ class Land:
         self.presence_count = {"My": 0}
         self.dahan_count = 0
         self.blight_count = 0
+
+        self.fear_generated = 0
+        self.defend = 0
