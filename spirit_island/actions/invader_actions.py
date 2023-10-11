@@ -1,4 +1,5 @@
 import json
+import os
 
 from spirit_island.actions.action_base import Action
 from spirit_island.framework.island import Island
@@ -34,9 +35,13 @@ class RavageAction(Action):
         damage_total = 3 * city_count + 2 * town_count + explorer_count - land.defend
         dahan_health = 2 * dahan_count
 
+        # Blight the land
+        land.blight_count += 1
+
         # Damage the dahan
-        if damage_total > dahan_health and dahan_count:
+        if damage_total >= dahan_health and dahan_count:
             land.dahan_count = 0
+            dahan_count = 0
         elif dahan_count:
             dahan_health -= damage_total
             dahan_count = int((dahan_health + dahan_health % 2) / 2)
@@ -64,9 +69,11 @@ class RavageAction(Action):
                 elif dahan_damage_remaining >= 2 and town_count > 0:
                     town_destroy += 1
                     dahan_damage_remaining -= 2
-                else:
+                elif explorer_count > 0:
                     explorer_destroy += 1
                     dahan_damage_remaining -= 1
+                else:
+                    break
 
         land.invader_count["city"] -= city_destroy
         land.invader_count["town"] -= town_destroy
@@ -75,7 +82,7 @@ class RavageAction(Action):
         self.island.generate_fear(2 * city_destroy + town_destroy)
 
         self.check_end_game()
-        print("ravage action done")
+        print("Ravage Action Done")
 
 
 class BuildAction(Action):
@@ -107,7 +114,7 @@ class BuildAction(Action):
         else:
             land.invader_count["town"] += 1
 
-        print("build action done")
+        print("Build Action Done")
 
 
 class ExploreAction(Action):
@@ -124,7 +131,8 @@ class ExploreAction(Action):
     def execute_action(self, land: Land):
         """Performs the explore action in the land number specified."""
         lands_list = self.island.lands
-        with open("resources/board_adjacencies.json") as adj_file:
+        rel_path = os.path.relpath(__file__ + "/../../resources/board_adjacencies.json")
+        with open(rel_path) as adj_file:
             adj_dict = json.load(adj_file)
             lands_adj = adj_dict[str(land.number)]
 
@@ -145,4 +153,4 @@ class ExploreAction(Action):
         if source:
             land.invader_count["explorer"] += 1
 
-        print("explore action done")
+        print("Explore Action Done")

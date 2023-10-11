@@ -14,3 +14,6 @@ class Land:
 
         self.fear_generated = 0
         self.defend = 0
+
+    def __eq__(self, other):
+        return self.board == other.board and self.number == other.number

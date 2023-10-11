@@ -19,7 +19,7 @@ class Ravage(Phase):
                 if land.number in ["1", "2", "3"]:
                     self.do_ravage_action(land)
 
-        print("Ravage phase complete")
+        print("Ravage Phase Complete")
 
     def do_ravage_action(self, ravaging_land):
         ravage_action = RavageAction(controls=self._controls, island=self.island)
@@ -42,7 +42,7 @@ class Build(Phase):
                 if land.number in ["1", "2", "3"]:
                     self.do_build_action(land)
 
-        print("Build phase complete")
+        print("Build Phase Complete")
 
     def do_build_action(self, building_land):
         build_action = BuildAction(controls=self._controls, island=self.island)
@@ -57,7 +57,6 @@ class Explore(Phase):
 
     def execute_phase(self):
         new_card = self.island.invader_deck.pop(0)
-        print(new_card.terrains)
         self.island.invader_track["explore"] = new_card
         for land in self.island.lands:
             if land.terrain in self.island.invader_track["explore"].terrains:
@@ -66,7 +65,7 @@ class Explore(Phase):
                 if land.number in ["1", "2", "3"]:
                     self.do_explore_action(land)
 
-        print("Explore phase complete")
+        print("Explore Phase Complete")
 
     def do_explore_action(self, exploring_land):
         explore_action = ExploreAction(controls=self._controls, island=self.island)

@@ -1,4 +1,5 @@
 import json
+import os
 
 from .land import Land
 from spirit_island.decks.invader_deck_builder import InvaderDeckBuilder
@@ -30,7 +31,8 @@ class Island:
 
     def get_lands(self):
         """Fills in the lands with land objects."""
-        with open("resources/board_d.json") as board_file:
+        rel_path = os.path.relpath(__file__ + "/../../resources/board_d.json")
+        with open(rel_path) as board_file:
             board_dict = json.load(board_file)
 
         for land_number in board_dict:
