@@ -4,8 +4,9 @@ import os
 from spirit_island.framework.island import Island
 
 pygame.init()
-rel_path = os.path.relpath(__file__ + "/../../resources/board_d.png")
 
+# Hard code board for now
+rel_path = os.path.relpath(__file__ + "/../../resources/board_d.png")
 BOARD_IMAGE = pygame.image.load(rel_path)
 
 class UI:
@@ -20,18 +21,31 @@ class UI:
         for option in options:
             self.options[option] = options[option]
 
+        # Board image
+        self.board_rect = BOARD_IMAGE.get_rect()
+        self.board_surf = pygame.surface.Surface((self.board_rect.width, self.board_rect.height))
+        self.board_surf.blit(BOARD_IMAGE, self.board_rect)
+
+        # Next phase button
+        next_phase_button = pygame.surface.Surface((200, 50))
+        font = pygame.font.Font(pygame.font.get_default_font(), 24)
+        self.font_surface = font.render("Next phase", True, (0, 0, 0), (255, 255, 255))
+        self.font_rect = self.font_surface.get_rect()
+
     def handle_event(self, event: pygame.event.Event):
         if event.type == pygame.QUIT:
             pygame.quit()
         if event.type == pygame.MOUSEMOTION:
-            pygame.mouse.get_pos()
+            mouse_pos = pygame.mouse.get_pos()
+        if event.type == pygame.MOUSEBUTTONUP:
+            mouse_pos = pygame.mouse.get_pos()
+            if self.font_rect.collidepoint(mouse_pos):
+                print("Next phase")
 
     def render(self, dest: pygame.Surface):
-        board_rect = BOARD_IMAGE.get_rect()
-        board_surf = pygame.surface.Surface((board_rect.width, board_rect.height))
-        board_surf.blit(BOARD_IMAGE, board_rect)
-        scale_factor = max(dest.get_width() / board_rect.width, dest.get_height() / board_rect.height)
-        dest.blit(pygame.transform.scale_by(board_surf, scale_factor), board_rect)
+        scale_factor = max(dest.get_width() / self.board_rect.width, dest.get_height() / self.board_rect.height)
+        dest.blit(pygame.transform.scale_by(self.board_surf, scale_factor), self.board_rect)
+        dest.blit(self.font_surface, self.font_rect)
 
     def run(self):
         display = pygame.display.set_mode((self.options["WIDTH"], self.options["HEIGHT"]))
