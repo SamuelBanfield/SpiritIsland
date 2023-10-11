@@ -1,4 +1,4 @@
-from spirit_island.actions.actions_collection import *
+from spirit_island.actions.invader_actions import *
 from spirit_island.framework.island import Island
 from spirit_island.phases.phases_base import Phase
 

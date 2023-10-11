@@ -140,6 +140,7 @@ class ExploreAction(Action):
                 adj_land = lands_list[adj_land_no]
                 if (adj_land.invader_count["city"] + adj_land.invader_count["town"]) > 0:
                     source = True
+                    break
 
         if source:
             land.invader_count["explorer"] += 1
