@@ -185,7 +185,6 @@ class TestLands(BoardViewer):
         inside_points = []
         for i in range(200):
             for j in range(200):
-                # if is_point_inside_polygon([[500, 499], [500, 600], [600, 600], [600, 500]], (10 * i, 10 * j)):
                 if is_point_inside_polygon(self.lands[f"{land}"], (10 * i, 10 * j)):
                     inside_points.append((10 * i, 10 * j))
         return inside_points

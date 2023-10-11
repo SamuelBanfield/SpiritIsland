@@ -1,4 +1,6 @@
 def is_point_inside_polygon(polygon, point):
+    # Everything is an integer, so this is a sneaky way of avoiding being in line with a vertex
+    point = [int(point[0]) + 0.5, int(point[1]) + 0.5]
     intersections = 0
     
     # Iterate through each edge of the polygon
@@ -15,16 +17,9 @@ def is_point_inside_polygon(polygon, point):
             
             # Calculate the x-coordinate where the edge intersects the horizontal line through the point
             x_intersection = (point[1] - y1) * (x2 - x1) / (y2 - y1) + x1
-            # Check if the intersection point is to the right of the point
             if x_intersection >= point[0]:
-                # Increment the intersection count
                 intersections += 1
     
     # If the number of intersections is odd, the point is inside the polygon
     return intersections % 2 == 1
-
-print("!!")
-if __name__ == "__main__":
-    print("Hello")
-    print(is_point_inside_polygon([[500, 499], [500, 600], [600, 600], [600, 500]], (0, 500)))
-    
+   
