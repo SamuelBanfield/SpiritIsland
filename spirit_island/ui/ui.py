@@ -27,8 +27,11 @@ class UI:
             pygame.mouse.get_pos()
 
     def render(self, dest: pygame.Surface):
-        dest.fill((0, 0, 0))
-        dest.blit(BOARD_IMAGE, BOARD_IMAGE.get_rect())
+        board_rect = BOARD_IMAGE.get_rect()
+        board_surf = pygame.surface.Surface((board_rect.width, board_rect.height))
+        board_surf.blit(BOARD_IMAGE, board_rect)
+        scale_factor = max(dest.get_width() / board_rect.width, dest.get_height() / board_rect.height)
+        dest.blit(pygame.transform.scale_by(board_surf, scale_factor), board_rect)
 
     def run(self):
         display = pygame.display.set_mode((self.options["WIDTH"], self.options["HEIGHT"]))
