@@ -1,5 +1,6 @@
 import unittest
 import copy
+import os
 
 from spirit_island import launcher
 
@@ -8,7 +9,7 @@ class TestInvaderPhase(unittest.TestCase):
 
     def setUp(self):
 
-        controls_path = "../debug_controls.json"
+        controls_path = os.path.relpath(__file__ + "/../../debug_controls.json")
         self.runner = launcher.Runner(controls_path)
 
         self.runner.create_island()

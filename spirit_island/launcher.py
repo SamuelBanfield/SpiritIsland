@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 
 from spirit_island.framework.exceptions import EndGameException
@@ -88,7 +89,7 @@ class Runner:
 def main():
     """Main function - run Spirit Island"""
     # Path to debug controls
-    controls_path = "../debug_controls.json"
+    controls_path = os.path.relpath(__file__ + "/../../debug_controls.json")
 
     # Create the runner
     runner = Runner(controls_path)
