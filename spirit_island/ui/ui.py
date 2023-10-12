@@ -3,6 +3,7 @@ import os
 
 from spirit_island.framework.island import Island
 from spirit_island.launcher import Runner
+from spirit_island.ui.island_ui import IslandUI
 
 pygame.init()
 
@@ -23,7 +24,7 @@ class UI:
         self._runner = Runner()
         self._runner.create_island()
         self._runner.create_phases()
-        self._runner.island
+        self._island_ui = IslandUI(self._runner.island)
 
         # Board image
         self.board_rect = BOARD_IMAGE.get_rect()
@@ -47,6 +48,7 @@ class UI:
                 self._runner.perform_phase()
 
     def render(self, dest: pygame.Surface):
+        self._island_ui.draw(self.board_surf)
         scale_factor = max(dest.get_width() / self.board_rect.width, dest.get_height() / self.board_rect.height)
         dest.blit(pygame.transform.scale_by(self.board_surf, scale_factor), self.board_rect)
         dest.blit(self.font_surface, self.font_rect)
