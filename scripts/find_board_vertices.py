@@ -170,17 +170,6 @@ class TestLands(BoardViewer):
             for point in self.get_inside_coords(land):
                 pygame.draw.circle(self.inside_points_image, colour, point, 5)
 
-    def keys_pressed(self):
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_w]:
-            self.offset[1] += 10
-        if keys[pygame.K_s]:
-            self.offset[1] -= 10
-        if keys[pygame.K_a]:
-            self.offset[0] += 10
-        if keys[pygame.K_d]:
-            self.offset[0] -= 10
-
     def get_inside_coords(self, land):
         inside_points = []
         for i in range(200):
@@ -195,6 +184,32 @@ class TestLands(BoardViewer):
         rect.topleft = self.offset
         display.blit(self.inside_points_image, rect)
 
+class PickLandLocations(BoardViewer):
+
+    def __init__(self):
+        super().__init__()
+        self.selected_locations = []
+        self.location_width = 50
+
+    def mouse_button_up(self):
+        self.selected_locations.append([pygame.mouse.get_pos()[0] - self.offset[0], pygame.mouse.get_pos()[1] - self.offset[1]])
+
+    def key_up(self, key):
+        if key == pygame.K_z:
+            self.selected_locations = self.selected_locations[:-1]
+        if key == pygame.K_p:
+            with open(f"./board_d_land_locations.csv", "w") as f:
+                for vertex in self.selected_locations:
+                    f.write(f"{vertex[0]},{vertex[1]}\n")
+            
+    def render(self, display):
+        display.fill((0, 0, 0))
+        rect = BOARD_IMAGE.get_rect()
+        rect.topleft = self.offset
+        display.blit(BOARD_IMAGE, rect)
+        for location in self.selected_locations:
+            pygame.draw.rect(display, (255, 0, 0), pygame.rect.Rect(location[0] + self.offset[0], location[1] + self.offset[1], self.location_width, self.location_width))
+
 def write_to_json():
     with open("./board_d.json", "w") as board_json:
         board = {}
@@ -204,9 +219,32 @@ def write_to_json():
             board[i] = [(int(line.split(",")[0]), int(line.split(",")[1])) for line in contents.split("\n") if line]
         board_json.write(json.dumps(board))
 
+def write_land_locations_json():
+    lands = launcher.read_json("./spirit_island/resources/board_d_coords.json")
+    with open("./board_d_land_locations.csv", "r") as f:
+        locations = f.read().split("\n")[:-1]
+    location_by_land = {}
+    for raw_location in locations:
+        location = [int(raw_location.split(",")[0]), int(raw_location.split(",")[1])]
+        land_found = False
+        for i in range(9):
+            if is_point_inside_polygon(lands[str(i)], location):
+                if land_found:
+                    print("Problem")
+                land_found = True
+                if str(i) in location_by_land:
+                    location_by_land[str(i)].append(location)
+                else:
+                    location_by_land[str(i)] = [location]
+        if not land_found:
+            print(f"{location} not in any land")
+    with open("./board_d_land_locations.json", "w") as dest:
+        dest.write(json.dumps(location_by_land))
 
 if __name__ == "__main__":
     # FindVertices().run() # Click all the vertices, pan with wasd and click p to save (z to remove a vertex, you can ignore the red lines)
     # CreateLands().run() # Click round the vertices of a land and click p to save and move on to th next land
-    TestLands().run() # Check visually that all the lands look right
+    # TestLands().run() # Check visually that all the lands look right
+    # PickLandLocations().run() # Choose places within lands to draw things
+    write_land_locations_json()
     # write_to_json()
