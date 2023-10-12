@@ -7,7 +7,7 @@ class Ravage(Phase):
     """Invader ravage phase."""
 
     def __init__(self, controls: dict, island: Island):
-        super().__init__(controls, island)
+        super().__init__(controls, island, "Ravage")
 
     def execute_phase(self):
         if not self.island.invader_track["ravage"]:
@@ -30,7 +30,7 @@ class Build(Phase):
     """Invader build phase."""
 
     def __init__(self, controls: dict, island: Island):
-        super().__init__(controls, island)
+        super().__init__(controls, island, "Build")
 
     def execute_phase(self):
         if not self.island.invader_track["build"]:
@@ -53,7 +53,7 @@ class Explore(Phase):
     """Invader explore phase."""
 
     def __init__(self, controls: dict, island: Island):
-        super().__init__(controls, island)
+        super().__init__(controls, island, "Explore")
 
     def execute_phase(self):
         new_card = self.island.invader_deck.pop(0)
@@ -76,4 +76,4 @@ class Escalation(Phase):
     """Invader escalation phase."""
 
     def __init__(self, controls: dict, island: Island):
-        super().__init__(controls, island)
+        super().__init__(controls, island, "Escalation")

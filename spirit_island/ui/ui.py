@@ -2,6 +2,7 @@ import pygame
 import os
 
 from spirit_island.framework.island import Island
+from spirit_island.launcher import Runner
 
 pygame.init()
 
@@ -12,7 +13,6 @@ BOARD_IMAGE = pygame.image.load(rel_path)
 class UI:
 
     def __init__(self, island: Island, options = {}):
-        self.__island = island
         self.options = {
             "FPS": 60,
             "WIDTH": 1200,
@@ -20,6 +20,10 @@ class UI:
         }
         for option in options:
             self.options[option] = options[option]
+        self._runner = Runner()
+        self._runner.create_island()
+        self._runner.create_phases()
+        self._runner.island
 
         # Board image
         self.board_rect = BOARD_IMAGE.get_rect()
@@ -40,12 +44,19 @@ class UI:
         if event.type == pygame.MOUSEBUTTONUP:
             mouse_pos = pygame.mouse.get_pos()
             if self.font_rect.collidepoint(mouse_pos):
-                print("Next phase")
+                self._runner.perform_phase()
 
     def render(self, dest: pygame.Surface):
         scale_factor = max(dest.get_width() / self.board_rect.width, dest.get_height() / self.board_rect.height)
         dest.blit(pygame.transform.scale_by(self.board_surf, scale_factor), self.board_rect)
         dest.blit(self.font_surface, self.font_rect)
+
+        # Current phase, very hacky and temporary
+        font = pygame.font.Font(pygame.font.get_default_font(), 24)
+        self.current_phase_image = font.render(self._runner.get_current_phase(), True, (0, 0, 0), (255, 255, 255))
+        self.current_phase_rect = self.current_phase_image.get_rect()
+        self.current_phase_rect.top = 50
+        dest.blit(self.current_phase_image, self.current_phase_rect)
 
     def run(self):
         display = pygame.display.set_mode((self.options["WIDTH"], self.options["HEIGHT"]))

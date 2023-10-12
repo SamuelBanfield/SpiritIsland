@@ -1,6 +1,7 @@
 import json
 import os
 from pathlib import Path
+from typing import List
 
 from spirit_island.framework.exceptions import EndGameException
 from spirit_island.framework.island import Island
@@ -22,14 +23,15 @@ def read_json(filepath: str) -> dict:
 class Runner:
     """Class for running the game"""
 
-    def __init__(self, controls_path: str):
+    def __init__(self, controls_path: str=""):
         """
         Initialise.
         :param controls_path: path to debug_controls file
         """
-        self.controls = read_json(controls_path)
+        self.controls = read_json(controls_path) if controls_path else {}
         self.victory = False
-        self.phase_objects = []
+        self.phase_objects: List[Phase] = []
+        self.current_phase_index: int = 0
         self.ravage = None
         self.build = None
         self.explore = None
@@ -78,6 +80,18 @@ class Runner:
             self.victory = ege.victory
             print("Game has ended")
             return
+
+    def perform_phase(self):
+        try:
+            self.phase_objects[self.current_phase_index]
+        except EndGameException as ege:
+            self.victory = ege.victory
+            print("Game has ended")
+            return
+        self.current_phase_index = (self.current_phase_index + 1) % len(self.phase_objects)
+
+    def get_current_phase(self):
+        return self.phase_objects[self.current_phase_index].get_name()
 
     def perform_end_game(self):
         if self.victory:
