@@ -1,11 +1,22 @@
 import os
 import pygame
+import random
 
 from typing import List
 
 from spirit_island.framework.island import Island
 from spirit_island.framework.land import Land
 from spirit_island.launcher import read_json
+
+image_folder = os.path.relpath(__file__ + "/../../resources/images")
+
+blight_image = pygame.image.load(image_folder + "/blight.png")
+explorer_image = pygame.image.load(image_folder + "/explorer.png")
+town_image = pygame.image.load(image_folder + "/town.png")
+city_image = pygame.image.load(image_folder + "/city.png")
+dahan_image = pygame.image.load(image_folder + "/dahan.png")
+
+images = [blight_image, explorer_image, town_image, city_image, dahan_image]
 
 class IslandUI:
 
@@ -28,5 +39,16 @@ class LandUI:
         self._locations = locations
 
     def draw(self, dest: pygame.surface.Surface):
-        for location in self._locations:
-            pygame.draw.rect(dest, (255, 0, 0), (location[0], location[1], 40, 40))
+        self._land.blight_count
+        to_draw = [dahan_image] * self._land.dahan_count \
+            + [explorer_image] * self._land.invader_count["explorer"] \
+            + [town_image] * self._land.invader_count["town"] \
+            + [city_image] * self._land.invader_count["city"] \
+            + [blight_image] * self._land.blight_count
+        
+        if len(to_draw) > len(self._locations):
+            print("ERROR: Not enough room to draw everything")
+    
+        for i in range(len(to_draw)):
+            location = self._locations[i]
+            dest.blit(pygame.transform.scale(to_draw[i], (50, 50)), (location[0], location[1], 50, 50))

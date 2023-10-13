@@ -83,7 +83,7 @@ class Runner:
 
     def perform_phase(self):
         try:
-            self.phase_objects[self.current_phase_index]
+            self.phase_objects[self.current_phase_index].execute_phase()
         except EndGameException as ege:
             self.victory = ege.victory
             print("Game has ended")

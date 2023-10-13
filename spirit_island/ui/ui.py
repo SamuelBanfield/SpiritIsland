@@ -48,6 +48,7 @@ class UI:
                 self._runner.perform_phase()
 
     def render(self, dest: pygame.Surface):
+        self.board_surf.blit(BOARD_IMAGE, self.board_rect)
         self._island_ui.draw(self.board_surf)
         scale_factor = max(dest.get_width() / self.board_rect.width, dest.get_height() / self.board_rect.height)
         dest.blit(pygame.transform.scale_by(self.board_surf, scale_factor), self.board_rect)
