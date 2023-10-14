@@ -1,5 +1,8 @@
 from spirit_island.framework.exceptions import EndGameException
 from spirit_island.framework.island import Island
+from spirit_island.framework.logger import Logger
+
+logger = Logger()
 
 
 class Action:
@@ -13,6 +16,7 @@ class Action:
         """
         self._controls = controls
         self.island = island
+        logger.info("action done")
 
     def check_end_game(self):
         if self.island.terror_level == 4:

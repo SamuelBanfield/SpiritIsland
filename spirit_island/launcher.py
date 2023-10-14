@@ -5,8 +5,11 @@ from typing import List
 
 from spirit_island.framework.exceptions import EndGameException
 from spirit_island.framework.island import Island
+from spirit_island.framework.logger import Logger
 from spirit_island.phases.invader_phases import *
 from spirit_island.phases.transition_phases import *
+
+logger = Logger()
 
 
 def read_json(filepath: str) -> dict:
@@ -23,7 +26,7 @@ def read_json(filepath: str) -> dict:
 class Runner:
     """Class for running the game"""
 
-    def __init__(self, controls_path: str=""):
+    def __init__(self, controls_path: str = ""):
         """
         Initialise.
         :param controls_path: path to debug_controls file
@@ -38,7 +41,7 @@ class Runner:
         self.cards_advance = None
         self.island = None
 
-        print("Runner initialised")
+        logger.info("Runner initialised")
 
     def create_phases(self):
         phase_list = [
@@ -51,8 +54,7 @@ class Runner:
             "build_phase",
             "explore_phase",
             "escalation_phase",
-            "cards_advance_phase"
-            "slow_phase",
+            "cards_advance_phase" "slow_phase",
             "time_passes_phase",
         ]
         # Make instances of each phase and store in runner
@@ -88,7 +90,9 @@ class Runner:
             self.victory = ege.victory
             print("Game has ended")
             return
-        self.current_phase_index = (self.current_phase_index + 1) % len(self.phase_objects)
+        self.current_phase_index = (self.current_phase_index + 1) % len(
+            self.phase_objects
+        )
 
     def get_current_phase(self):
         return self.phase_objects[self.current_phase_index].get_name()
