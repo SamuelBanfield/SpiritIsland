@@ -4,6 +4,7 @@ import os
 from spirit_island.framework.island import Island
 from spirit_island.launcher import Runner
 from spirit_island.ui.island_ui import IslandUI
+from spirit_island.ui.component.button import TextButton
 
 pygame.init()
 
@@ -32,10 +33,9 @@ class UI:
         self.board_surf.blit(BOARD_IMAGE, self.board_rect)
 
         # Next phase button
-        next_phase_button = pygame.surface.Surface((200, 50))
-        font = pygame.font.Font(pygame.font.get_default_font(), 24)
-        self.font_surface = font.render("Next phase", True, (0, 0, 0), (255, 255, 255))
-        self.font_rect = self.font_surface.get_rect()
+        next_phase_button = TextButton("Next phase", self._runner.perform_phase)
+        self._current_phase_image = TextButton("", offset=[0, 50])
+        self._components = [next_phase_button, self._current_phase_image]
 
     def handle_event(self, event: pygame.event.Event):
         if event.type == pygame.QUIT:
@@ -44,22 +44,18 @@ class UI:
             mouse_pos = pygame.mouse.get_pos()
         if event.type == pygame.MOUSEBUTTONUP:
             mouse_pos = pygame.mouse.get_pos()
-            if self.font_rect.collidepoint(mouse_pos):
-                self._runner.perform_phase()
+            for child in self._components:
+                if child.is_location_on_component(mouse_pos):
+                    child.handle_click(mouse_pos)
 
     def render(self, dest: pygame.Surface):
         self.board_surf.blit(BOARD_IMAGE, self.board_rect)
         self._island_ui.draw(self.board_surf)
         scale_factor = max(dest.get_width() / self.board_rect.width, dest.get_height() / self.board_rect.height)
         dest.blit(pygame.transform.scale_by(self.board_surf, scale_factor), self.board_rect)
-        dest.blit(self.font_surface, self.font_rect)
-
-        # Current phase, very hacky and temporary
-        font = pygame.font.Font(pygame.font.get_default_font(), 24)
-        self.current_phase_image = font.render(self._runner.get_current_phase(), True, (0, 0, 0), (255, 255, 255))
-        self.current_phase_rect = self.current_phase_image.get_rect()
-        self.current_phase_rect.top = 50
-        dest.blit(self.current_phase_image, self.current_phase_rect)
+        self._current_phase_image.set_text(self._runner.get_current_phase())
+        for child in self._components:
+            child.render(dest, child.is_location_on_component(pygame.mouse.get_pos()))
 
     def run(self):
         display = pygame.display.set_mode((self.options["WIDTH"], self.options["HEIGHT"]))
