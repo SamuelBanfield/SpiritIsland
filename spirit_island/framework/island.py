@@ -1,8 +1,9 @@
 import json
 import os
 
-from .land import Land
 from spirit_island.decks.invader_deck_builder import InvaderDeckBuilder
+
+from .land import Land
 
 
 class Island:
@@ -23,7 +24,12 @@ class Island:
         self.fear_generated = 0
         self.terror_level = 1
 
-        self.invader_track = {"explore": None, "build": None, "ravage": None, "discard": []}
+        self.invader_track = {
+            "explore": None,
+            "build": None,
+            "ravage": None,
+            "discard": [],
+        }
         self.invader_deck = []
         self.get_invader_deck()
 
@@ -41,7 +47,9 @@ class Island:
 
             for attribute in board_dict[land_number]:
                 if attribute in ["city", "town", "explorer"]:
-                    new_land.invader_count[attribute] = board_dict[land_number][attribute]
+                    new_land.invader_count[attribute] = board_dict[land_number][
+                        attribute
+                    ]
                 elif attribute == "blight":
                     new_land.blight_count = board_dict[land_number][attribute]
                 elif attribute == "dahan":

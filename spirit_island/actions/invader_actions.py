@@ -146,7 +146,9 @@ class ExploreAction(Action):
         else:
             for adj_land_no in lands_adj:
                 adj_land = lands_list[adj_land_no]
-                if (adj_land.invader_count["city"] + adj_land.invader_count["town"]) > 0:
+                if (
+                    adj_land.invader_count["city"] + adj_land.invader_count["town"]
+                ) > 0:
                     source = True
                     break
 

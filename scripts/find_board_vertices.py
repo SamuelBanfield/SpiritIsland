@@ -1,4 +1,8 @@
-import pygame, json, sys, random
+import json
+import random
+import sys
+
+import pygame
 from pygame.time import Clock
 
 sys.path.extend("../")
@@ -13,11 +17,12 @@ WIDTH = 800
 HEIGHT = 600
 BOARD_IMAGE = pygame.image.load("./spirit_island/resources/board_d.png")
 
+
 def add(v1, v2):
     return [v1[0] + v2[0], v1[1] + v2[1]]
 
-class BoardViewer():
 
+class BoardViewer:
     def __init__(self):
         self.clock = Clock()
         self.offset = [0, 0]
@@ -52,7 +57,7 @@ class BoardViewer():
     def render(self):
         # No-op for override
         pass
-    
+
     def mouse_button_up(self):
         # No-op for override
         pass
@@ -61,8 +66,8 @@ class BoardViewer():
         # No-op for override
         pass
 
-class FindVertices(BoardViewer):
 
+class FindVertices(BoardViewer):
     def __init__(self):
         super().__init__()
         self.vertices = []
@@ -72,19 +77,21 @@ class FindVertices(BoardViewer):
         rect = BOARD_IMAGE.get_rect()
         rect.topleft = self.offset
         display.blit(BOARD_IMAGE, rect)
-        
+
         for i in range(len(self.vertices) - 1):
             pygame.draw.line(
-                display, 
+                display,
                 (255, 0, 0),
                 add(self.vertices[i], self.offset),
-                add(self.vertices[i + 1], self.offset), 3)
-    
+                add(self.vertices[i + 1], self.offset),
+                3,
+            )
+
     def mouse_button_up(self):
         mouse_pos = pygame.mouse.get_pos()
-        self.vertices.append([
-            mouse_pos[0] - self.offset[0],
-            mouse_pos[1] - self.offset[1]])
+        self.vertices.append(
+            [mouse_pos[0] - self.offset[0], mouse_pos[1] - self.offset[1]]
+        )
 
     def key_up(self, key):
         if key == pygame.K_z:
@@ -99,21 +106,26 @@ class FindVertices(BoardViewer):
         rect = BOARD_IMAGE.get_rect()
         rect.topleft = self.offset
         display.blit(BOARD_IMAGE, rect)
-        
+
         for i in range(len(self.vertices) - 1):
             pygame.draw.line(
-                display, 
+                display,
                 (255, 0, 0),
                 add(self.vertices[i], self.offset),
-                add(self.vertices[i + 1], self.offset), 3)
+                add(self.vertices[i + 1], self.offset),
+                3,
+            )
+
 
 class CreateLands(BoardViewer):
-
     def __init__(self):
         super().__init__()
         with open("./coords_d_all.txt") as f:
             contents = f.read()
-        self.vertices = [(int(line.split(",")[0]), int(line.split(",")[1])) for line in contents.split("\n")]
+        self.vertices = [
+            (int(line.split(",")[0]), int(line.split(",")[1]))
+            for line in contents.split("\n")
+        ]
         self.selected_vertices = []
         self.land_number = 0
 
@@ -121,14 +133,21 @@ class CreateLands(BoardViewer):
         closest_vertex = None
         min_distance = 100000
         for vertex in self.vertices:
-            distance =  abs(target[0] - vertex[0]) + abs(target[1] - vertex[1])
+            distance = abs(target[0] - vertex[0]) + abs(target[1] - vertex[1])
             if distance < min_distance:
                 min_distance = distance
                 closest_vertex = vertex
         return closest_vertex
-        
+
     def mouse_button_up(self):
-        self.selected_vertices.append(self.get_nearest_vertex((pygame.mouse.get_pos()[0] - self.offset[0], pygame.mouse.get_pos()[1] - self.offset[1])))
+        self.selected_vertices.append(
+            self.get_nearest_vertex(
+                (
+                    pygame.mouse.get_pos()[0] - self.offset[0],
+                    pygame.mouse.get_pos()[1] - self.offset[1],
+                )
+            )
+        )
 
     def key_up(self, key):
         if key == pygame.K_p:
@@ -143,13 +162,13 @@ class CreateLands(BoardViewer):
         rect = BOARD_IMAGE.get_rect()
         rect.topleft = self.offset
         display.blit(BOARD_IMAGE, rect)
-        
+
         for vertex in self.vertices:
             pygame.draw.circle(
                 display,
                 (0, 255, 0) if vertex in self.selected_vertices else (255, 0, 0),
                 add(vertex, self.offset),
-                3
+                3,
             )
 
         for vertex in range(len(self.selected_vertices)):
@@ -157,8 +176,13 @@ class CreateLands(BoardViewer):
                 display,
                 (0, 255, 0),
                 add(self.selected_vertices[vertex], self.offset),
-                add(self.selected_vertices[(vertex + 1) % len(self.selected_vertices)], self.offset),
-                2)
+                add(
+                    self.selected_vertices[(vertex + 1) % len(self.selected_vertices)],
+                    self.offset,
+                ),
+                2,
+            )
+
 
 class TestLands(BoardViewer):
     def __init__(self):
@@ -184,15 +208,20 @@ class TestLands(BoardViewer):
         rect.topleft = self.offset
         display.blit(self.inside_points_image, rect)
 
-class PickLandLocations(BoardViewer):
 
+class PickLandLocations(BoardViewer):
     def __init__(self):
         super().__init__()
         self.selected_locations = []
         self.location_width = 50
 
     def mouse_button_up(self):
-        self.selected_locations.append([pygame.mouse.get_pos()[0] - self.offset[0], pygame.mouse.get_pos()[1] - self.offset[1]])
+        self.selected_locations.append(
+            [
+                pygame.mouse.get_pos()[0] - self.offset[0],
+                pygame.mouse.get_pos()[1] - self.offset[1],
+            ]
+        )
 
     def key_up(self, key):
         if key == pygame.K_z:
@@ -201,14 +230,24 @@ class PickLandLocations(BoardViewer):
             with open(f"./board_d_land_locations.csv", "w") as f:
                 for vertex in self.selected_locations:
                     f.write(f"{vertex[0]},{vertex[1]}\n")
-            
+
     def render(self, display):
         display.fill((0, 0, 0))
         rect = BOARD_IMAGE.get_rect()
         rect.topleft = self.offset
         display.blit(BOARD_IMAGE, rect)
         for location in self.selected_locations:
-            pygame.draw.rect(display, (255, 0, 0), pygame.rect.Rect(location[0] + self.offset[0], location[1] + self.offset[1], self.location_width, self.location_width))
+            pygame.draw.rect(
+                display,
+                (255, 0, 0),
+                pygame.rect.Rect(
+                    location[0] + self.offset[0],
+                    location[1] + self.offset[1],
+                    self.location_width,
+                    self.location_width,
+                ),
+            )
+
 
 def write_to_json():
     with open("./board_d.json", "w") as board_json:
@@ -216,8 +255,13 @@ def write_to_json():
         for i in range(9):
             with open(f"./board_d_land_{i}.csv", "r") as f:
                 contents = f.read()
-            board[i] = [(int(line.split(",")[0]), int(line.split(",")[1])) for line in contents.split("\n") if line]
+            board[i] = [
+                (int(line.split(",")[0]), int(line.split(",")[1]))
+                for line in contents.split("\n")
+                if line
+            ]
         board_json.write(json.dumps(board))
+
 
 def write_land_locations_json():
     lands = launcher.read_json("./spirit_island/resources/board_d_coords.json")
@@ -240,6 +284,7 @@ def write_land_locations_json():
             print(f"{location} not in any land")
     with open("./board_d_land_locations.json", "w") as dest:
         dest.write(json.dumps(location_by_land))
+
 
 if __name__ == "__main__":
     # FindVertices().run() # Click all the vertices, pan with wasd and click p to save (z to remove a vertex, you can ignore the red lines)

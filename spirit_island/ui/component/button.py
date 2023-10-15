@@ -1,13 +1,16 @@
-import pygame
 from typing import Callable
 
-from spirit_island.ui.util import BLACK, WHITE, GREY
+import pygame
 
-_FONTS = {} # Cache fonts, although I'm not sure how expensive they actually are
+from spirit_island.ui.util import BLACK, GREY, WHITE
+
+_FONTS = {}  # Cache fonts, although I'm not sure how expensive they actually are
+
 
 class TextButton:
-
-    def __init__(self, text: str, callback: Callable=None, offset=[0, 0], font_size: int=24):
+    def __init__(
+        self, text: str, callback: Callable = None, offset=[0, 0], font_size: int = 24
+    ):
         super().__init__()
         self._callback = callback
         if font_size in _FONTS:
@@ -27,7 +30,9 @@ class TextButton:
         self._font_rect.topleft = self._offset
 
     def render(self, dest: pygame.surface.Surface, hovered: bool):
-        dest.blit(self._font_surface_hover if hovered else self._font_surface, self._font_rect)
+        dest.blit(
+            self._font_surface_hover if hovered else self._font_surface, self._font_rect
+        )
 
     def handle_click(self, click_location):
         if self._callback:
