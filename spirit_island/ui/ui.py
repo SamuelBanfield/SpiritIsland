@@ -22,7 +22,7 @@ class UI:
         self._runner.create_phases()
         header_height = self.options["HEIGHT"] // 4
         self._island_ui = BoardComponent(self._runner.island, (0, header_height))
-        self.header = Header(self.options["WIDTH"], header_height)
+        self.header = Header(self._runner.island, self.options["WIDTH"], header_height)
 
         # Next phase button
         next_phase_button = TextButton("Next phase", self._runner.perform_phase, offset=[0, self.options["WIDTH"] // 4])
