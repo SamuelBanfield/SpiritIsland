@@ -5,13 +5,11 @@ import pygame
 from spirit_island.framework.island import Island
 from spirit_island.launcher import Runner
 from spirit_island.ui.component.button import TextButton
-from spirit_island.ui.island_ui import IslandUI
+from spirit_island.ui.component.header import Header
+from spirit_island.ui.island_ui import BoardComponent
+from spirit_island.ui.util import SPIRIT_BOARD_BACKGROUND
 
 pygame.init()
-
-# Hard code board for now
-rel_path = os.path.relpath(__file__ + "/../../resources/board_d.png")
-BOARD_IMAGE = pygame.image.load(rel_path)
 
 
 class UI:
@@ -22,19 +20,14 @@ class UI:
         self._runner = Runner()
         self._runner.create_island()
         self._runner.create_phases()
-        self._island_ui = IslandUI(self._runner.island)
-
-        # Board image
-        self.board_rect = BOARD_IMAGE.get_rect()
-        self.board_surf = pygame.surface.Surface(
-            (self.board_rect.width, self.board_rect.height)
-        )
-        self.board_surf.blit(BOARD_IMAGE, self.board_rect)
+        header_height = self.options["HEIGHT"] // 4
+        self._island_ui = BoardComponent(self._runner.island, (0, header_height))
+        self.header = Header(self.options["WIDTH"], header_height)
 
         # Next phase button
-        next_phase_button = TextButton("Next phase", self._runner.perform_phase)
-        self._current_phase_image = TextButton("", offset=[0, 50])
-        self._components = [next_phase_button, self._current_phase_image]
+        next_phase_button = TextButton("Next phase", self._runner.perform_phase, offset=[0, self.options["WIDTH"] // 4])
+        self._current_phase_image = TextButton("", offset=[0, header_height])
+        self._components = [self._island_ui, next_phase_button, self._current_phase_image, self.header]
 
     def handle_event(self, event: pygame.event.Event):
         if event.type == pygame.QUIT:
@@ -48,15 +41,7 @@ class UI:
                     child.handle_click(mouse_pos)
 
     def render(self, dest: pygame.Surface):
-        self.board_surf.blit(BOARD_IMAGE, self.board_rect)
-        self._island_ui.draw(self.board_surf)
-        scale_factor = max(
-            dest.get_width() / self.board_rect.width,
-            dest.get_height() / self.board_rect.height,
-        )
-        dest.blit(
-            pygame.transform.scale_by(self.board_surf, scale_factor), self.board_rect
-        )
+        dest.fill(SPIRIT_BOARD_BACKGROUND)
         self._current_phase_image.set_text(self._runner.get_current_phase())
         for child in self._components:
             child.render(dest, child.is_location_on_component(pygame.mouse.get_pos()))
