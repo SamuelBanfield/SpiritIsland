@@ -5,8 +5,7 @@ import pygame
 
 from spirit_island.ui.util import BLACK, GREY, WHITE
 from spirit_island.ui.component.component import UIComponent
-
-_FONTS = {}  # Cache fonts, although I'm not sure how expensive they actually are
+from spirit_island.ui.util import FONT_SUPPLIER
 
 
 class TextButton(UIComponent):
@@ -15,12 +14,7 @@ class TextButton(UIComponent):
     ):
         super().__init__()
         self._callback = callback
-        if font_size in _FONTS:
-            self._font = _FONTS[font_size]
-        else:
-            font = pygame.font.Font(pygame.font.get_default_font(), font_size)
-            _FONTS[font_size] = font
-            self._font = font
+        self._font = FONT_SUPPLIER.get_font_size(font_size)
         self._offset = offset
         self.set_text(text)
 
