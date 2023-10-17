@@ -54,7 +54,7 @@ class BoardViewer:
             pygame.display.flip()
             self.clock.tick(FPS)
 
-    def render(self):
+    def render(self, display):
         # No-op for override
         pass
 
