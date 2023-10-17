@@ -10,10 +10,10 @@ class InvaderDeckBuilder:
         self.stage_1 = ["mountain", "sand", "jungle", "wetland"]
         self.stage_2 = ["mountain", "sand", "jungle", "wetland", "coast"]
         self.stage_3 = [
-            ["mountain", "sand"],
+            ["sand", "mountain"],
             ["mountain", "jungle"],
             ["mountain", "wetland"],
-            ["sand", "jungle"],
+            ["jungle", "sand"],
             ["sand", "wetland"],
             ["jungle", "wetland"],
         ]
@@ -58,7 +58,7 @@ class InvaderDeckBuilder:
         pool = [
             ["mountain", "jungle"],
             ["mountain", "wetland"],
-            ["sand", "jungle"],
+            ["jungle", "sand"],
             ["sand", "wetland"],
             ["jungle", "wetland"],
         ]
