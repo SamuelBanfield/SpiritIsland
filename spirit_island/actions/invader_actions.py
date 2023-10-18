@@ -20,66 +20,69 @@ class RavageAction(Action):
     def execute_action(self, land: Land):
         """Performs the ravage action in the land number specified."""
 
-        # Retrieve the piece count on the land
-        city_count = land.invader_count["city"]
-        town_count = land.invader_count["town"]
-        explorer_count = land.invader_count["explorer"]
-        dahan_count = land.dahan_count
-
         # Skip if no invaders present
-        invader_total = city_count + town_count + explorer_count
-        if not invader_total:
+        invader_all = land.cities + land.towns + land.explorers
+        if not len(invader_all):
             return
 
         # Calculate the damage to the land and the dahan health
-        damage_total = 3 * city_count + 2 * town_count + explorer_count - land.defend
-        dahan_health = 2 * dahan_count
+        damage_total = 0
+        for invader in invader_all:
+            damage_total += invader.damage
 
         # Blight the land
-        land.blight_count += 1
+        if damage_total >= 2:
+            self.island.add_piece("blight", land)
 
         # Damage the dahan
-        if damage_total >= dahan_health and dahan_count:
-            land.dahan_count = 0
-            dahan_count = 0
-        elif dahan_count:
-            dahan_health -= damage_total
-            dahan_count = int((dahan_health + dahan_health % 2) / 2)
-            land.dahan_count = dahan_count
+        if damage_total >= 2*len(land.dahan) and len(land.dahan):
+            land.dahan.clear()
+        elif not damage_total:
+            pass
+        elif len(land.dahan):
+            remaining_damage = damage_total  # Clears dahan from top to bottom, not most lethal
+            while remaining_damage > 0:
+                for dahan in land.dahan:
+                    for h in range(dahan.health):
+                        dahan.health -= 1
+                        remaining_damage -= 1
+                    land.dahan.pop(0)
 
         # Calculate the damage to the invaders and the invader health
-        dahan_damage = 2 * dahan_count
-        invader_health = 3 * city_count + 2 * town_count + explorer_count
+        dahan_damage = 0
+        for dahan in land.dahan:
+            dahan_damage += dahan.damage
 
         # Damage the invaders
-        city_destroy = 0
-        town_destroy = 0
-        explorer_destroy = 0
-        if dahan_damage > invader_health:
-            city_destroy += city_count
-            town_destroy += town_count
-            explorer_destroy += explorer_count
+        if dahan_damage > 3*len(land.cities) + 2*len(land.towns) + len(land.explorers):
+            for city in land.cities:
+                self.island.generate_fear(city.base_fear)
+            land.cities.clear()
+            for town in land.towns:
+                self.island.generate_fear(town.base_fear)
+            land.towns.clear()
+            for explorer in land.explorers:
+                self.island.generate_fear(explorer.base_fear)
+            land.explorers.clear()
         else:  # hard-coded method
             dahan_damage_remaining = dahan_damage
 
             while dahan_damage_remaining > 0:
-                if dahan_damage_remaining >= 3 and city_count > 0:
-                    city_destroy += 1
+                if dahan_damage_remaining >= 3 and len(land.cities):
+                    self.island.generate_fear(land.cities[0].base_fear)
+                    land.cities.pop(0)
                     dahan_damage_remaining -= 3
-                elif dahan_damage_remaining >= 2 and town_count > 0:
-                    town_destroy += 1
+                elif dahan_damage_remaining >= 2 and len(land.towns):
+                    self.island.generate_fear(land.towns[0].base_fear)
+                    land.towns.pop(0)
                     dahan_damage_remaining -= 2
-                elif explorer_count > 0:
-                    explorer_destroy += 1
+                elif len(land.explorers):
+                    self.island.generate_fear(land.explorers[0].base_fear)
+                    land.explorers.pop(0)
                     dahan_damage_remaining -= 1
                 else:
+                    print("dahan counterattack damage miscalculation!")
                     break
-
-        land.invader_count["city"] -= city_destroy
-        land.invader_count["town"] -= town_destroy
-        land.invader_count["explorer"] -= explorer_destroy
-
-        self.island.generate_fear(2 * city_destroy + town_destroy)
 
         self.check_end_game()
         print("Ravage Action Done")
@@ -99,20 +102,15 @@ class BuildAction(Action):
     def execute_action(self, land: Land):
         """Performs the build action in the land number specified."""
 
-        # Retrieve the piece count on the land
-        city_count = land.invader_count["city"]
-        town_count = land.invader_count["town"]
-        explorer_count = land.invader_count["explorer"]
-
         # Skip if no invaders present
-        invader_total = city_count + town_count + explorer_count
-        if not invader_total:
+        invader_all = land.cities + land.towns + land.explorers
+        if not len(invader_all):
             return
 
-        if town_count > city_count:
-            land.invader_count["city"] += 1
+        if len(land.towns) > len(land.cities):
+            self.island.add_piece("city", land)
         else:
-            land.invader_count["town"] += 1
+            self.island.add_piece("town", land)
 
         print("Build Action Done")
 
@@ -139,7 +137,7 @@ class ExploreAction(Action):
         # Check if it has source of exploration
         source = False
 
-        if (land.invader_count["city"] + land.invader_count["town"]) > 0:
+        if (len(land.cities) + len(land.towns)) > 0:
             source = True
         elif land.number in [1, 2, 3]:
             source = True
@@ -147,12 +145,12 @@ class ExploreAction(Action):
             for adj_land_no in lands_adj:
                 adj_land = lands_list[adj_land_no]
                 if (
-                    adj_land.invader_count["city"] + adj_land.invader_count["town"]
+                    len(adj_land.cities) + len(adj_land.towns)
                 ) > 0:
                     source = True
                     break
 
         if source:
-            land.invader_count["explorer"] += 1
+            self.island.add_piece("explorer", land)
 
         print("Explore Action Done")

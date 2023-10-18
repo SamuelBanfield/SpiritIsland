@@ -4,6 +4,7 @@ import os
 from spirit_island.decks.invader_deck_builder import InvaderDeckBuilder
 
 from .land import Land
+from .pieces import *
 
 
 class Island:
@@ -18,7 +19,8 @@ class Island:
         self.n_players = 1
 
         self.lands = []
-        self.get_lands()
+
+        self.id_count = 1
 
         self.fear_cards = 0
         self.fear_generated = 0
@@ -31,9 +33,39 @@ class Island:
             "discard": [],
         }
         self.invader_deck = []
-        self.get_invader_deck()
 
         self.end = False
+
+        self.get_lands()
+        self.get_invader_deck()
+
+    def add_piece(self, piece_type: str, land: Land):
+        """Adds a given piece type to the given land"""
+
+        piece_dict = {
+            "obj": {
+                "city": City,
+                "town": Town,
+                "explorer": Explorer,
+                "blight": Blight,
+                "dahan": Dahan,
+                "presence": Presence
+                },
+            "list": {
+                "city": land.cities,
+                "town": land.towns,
+                "explorer": land.explorers,
+                "blight": land.blight,
+                "dahan": land.dahan,
+                "presence": land.presence
+            }
+        }
+
+        new_piece = piece_dict["obj"][piece_type]()
+        new_piece.id = self.id_count
+        self.id_count += 1
+
+        piece_dict["list"][piece_type].append(new_piece)
 
     def get_lands(self):
         """Fills in the lands with land objects."""
@@ -45,17 +77,12 @@ class Island:
             new_land = Land()
             new_land.number = land_number
 
-            for attribute in board_dict[land_number]:
-                if attribute in ["city", "town", "explorer"]:
-                    new_land.invader_count[attribute] = board_dict[land_number][
-                        attribute
-                    ]
-                elif attribute == "blight":
-                    new_land.blight_count = board_dict[land_number][attribute]
-                elif attribute == "dahan":
-                    new_land.dahan_count = board_dict[land_number][attribute]
-                elif attribute == "terrain":
-                    new_land.terrain = board_dict[land_number][attribute]
+            for i, (key, value) in enumerate(board_dict[land_number].items()):
+                if key in ["city", "town", "explorer", "blight", "dahan"]:
+                    for _ in range(value):
+                        self.add_piece(key, new_land)
+                elif key == "terrain":
+                    new_land.terrain = value
 
             self.lands.append(new_land)
 
@@ -65,29 +92,29 @@ class Island:
         self.invader_deck = builder.build_deck()
 
     def get_city_count(self):
-        """Return the total invader count on the island."""
+        """Return the total city count on the island."""
         city_count = 0
 
         for land in self.lands:
-            city_count += land.invader_count["city"]
+            city_count += len(land.cities)
 
         return city_count
 
     def get_town_count(self):
-        """Return the total invader count on the island."""
+        """Return the total town count on the island."""
         town_count = 0
 
         for land in self.lands:
-            town_count += land.invader_count["town"]
+            town_count += len(land.towns)
 
         return town_count
 
     def get_explorer_count(self):
-        """Return the total invader count on the island."""
+        """Return the total explorer count on the island."""
         explorer_count = 0
 
         for land in self.lands:
-            explorer_count += land.invader_count["explorer"]
+            explorer_count += len(land.explorers)
 
         return explorer_count
 

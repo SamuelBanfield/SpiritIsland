@@ -11,3 +11,6 @@ class Phase:
 
     def get_name(self):
         return self._name
+
+    def execute_phase(self):
+        pass

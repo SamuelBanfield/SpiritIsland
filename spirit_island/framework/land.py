@@ -7,10 +7,12 @@ class Land:
         self.number = ""
         self.terrain = ""
 
-        self.invader_count = {"city": 0, "town": 0, "explorer": 0}
-        self.presence_count = {"My": 0}
-        self.dahan_count = 0
-        self.blight_count = 0
+        self.cities = []
+        self.towns = []
+        self.explorers = []
+        self.presence = []
+        self.dahan = []
+        self.blight = []
 
         self.fear_generated = 0
         self.defend = 0
