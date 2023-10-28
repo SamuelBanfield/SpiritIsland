@@ -1,16 +1,20 @@
 import unittest
+from pathlib import Path
 
 from spirit_island import launcher
 
 
 class TestAdjacencies(unittest.TestCase):
     def test_board_d(self):
-        board_d = launcher.read_json("./spirit_island/resources/board_d_coords.json")
+        dir_path = Path(__file__).resolve().parent.parent
+        board_d = launcher.read_json(
+            dir_path / "spirit_island/resources/board_d_coords.json"
+        )
         polygons = {}
         for key in board_d.keys():
             polygons[key] = [tuple(coord) for coord in board_d[key]["polygon"]]
         expected_adjacencies = launcher.read_json(
-            "./spirit_island/resources/board_adjacencies.json"
+            dir_path / "spirit_island/resources/board_adjacencies.json"
         )
         actual_adjacencies = {}
         for land in range(1, 9):

@@ -1,4 +1,6 @@
 import logging
+import os
+from pathlib import Path
 
 
 class Logger:
@@ -14,13 +16,14 @@ class Logger:
     logger.error("This is an error message.")
     """
 
-    def __init__(self, main_log_file="spirit_island/logs/log_all.log"):
+    def __init__(self):
+        log_file_path = Path(__file__).resolve().parent.parent / "logs/log_all.log"
         # Create logger
         self.logger = logging.getLogger()
         self.logger.setLevel(logging.INFO)
 
         # Create file handler and set the logging level to INFO
-        file_handler = logging.FileHandler(main_log_file, mode="w")
+        file_handler = logging.FileHandler(log_file_path, mode="w")
         file_handler.setLevel(logging.INFO)
 
         # Create console handler and set the logging level to WARNING

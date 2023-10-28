@@ -7,7 +7,7 @@ class CardsAdvance(Phase):
     """Invader cards advance along the track phase."""
 
     def __init__(self, controls: dict, island: Island):
-        super().__init__(controls, island)
+        super().__init__(controls, island, name="Cards Advance")
 
     def execute_phase(self):
         track = self.island.invader_track

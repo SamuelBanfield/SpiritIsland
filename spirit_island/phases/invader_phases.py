@@ -8,7 +8,7 @@ class Ravage(Phase):
     """Invader ravage phase."""
 
     def __init__(self, controls: dict, island: Island):
-        super().__init__(controls, island, "Ravage")
+        super().__init__(controls, island, name="Ravage")
 
     def execute_phase(self):
         print(f"Ravage Phase: turn {self.island.turn_counter}")
@@ -32,7 +32,7 @@ class Build(Phase):
     """Invader build phase."""
 
     def __init__(self, controls: dict, island: Island):
-        super().__init__(controls, island, "Build")
+        super().__init__(controls, island, name="Build")
 
     def execute_phase(self):
         print(f"Build Phase: turn {self.island.turn_counter}")
@@ -56,7 +56,7 @@ class Explore(Phase):
     """Invader explore phase."""
 
     def __init__(self, controls: dict, island: Island):
-        super().__init__(controls, island, "Explore")
+        super().__init__(controls, island, name="Explore")
 
     def execute_phase(self):
         print(f"Explore Phase: turn {self.island.turn_counter}")
@@ -85,4 +85,4 @@ class Escalation(Phase):
     """Invader escalation phase."""
 
     def __init__(self, controls: dict, island: Island):
-        super().__init__(controls, island, "Escalation")
+        super().__init__(controls, island, name="Escalation")

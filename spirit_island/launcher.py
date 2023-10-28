@@ -1,16 +1,15 @@
 import json
 import os
 from pathlib import Path
-from typing import List
+from typing import List, Union
 
-from spirit_island.framework.exceptions import EndGameException
 from spirit_island.framework.island import Island
 from spirit_island.framework.logger import logger
 from spirit_island.phases.invader_phases import *
 from spirit_island.phases.transition_phases import *
 
 
-def read_json(filepath: str) -> dict:
+def read_json(filepath: Union[str, Path]) -> dict:
     """
     Reads a json file into a dict
     :param filepath: path to json file
@@ -73,8 +72,8 @@ class Runner:
     def create_island(self):
         self.island = Island(controls=self.controls)
 
-    def perform_phases(self):
-        # Currently does nothing when launching through UI
+    def perform_phases_no_ui(self):
+        """Loop through phases. Does not run through UI."""
         try:
             for phase in self.phase_objects:
                 phase.execute_phase()
@@ -109,7 +108,7 @@ class Runner:
 
 
 def main():
-    """Main function - run Spirit Island"""
+    """Main function - run Spirit Island without the UI"""
     # Path to debug controls
     controls_path = os.path.relpath(__file__ + "/../../debug_controls.json")
 
@@ -120,7 +119,7 @@ def main():
     runner.create_phases()
     # Begin the game
     for _ in range(4):
-        runner.perform_phases()
+        runner.perform_phases_no_ui()
     # End the game
     runner.perform_end_game()
 

@@ -28,24 +28,22 @@ class TestInvaderPhase(unittest.TestCase):
         for land0 in lands0:
             for land1 in lands1:
                 if land0 == land1:
-                    print("Check carried out in land: ", land0.number)
+                    print("Check carried out in land: ", land0.id)
                     print(
                         "Explorers before: ",
-                        land0.invader_count["explorer"],
+                        land0.get_explorer_count(),
                         " | Explorers after: ",
-                        land1.invader_count["explorer"],
+                        land1.get_explorer_count(),
                     )
                     if (
                         land0.terrain in terrains
                     ):  # Need to add check for invader source
                         assert (
-                            land0.invader_count["explorer"] + 1
-                            == land1.invader_count["explorer"]
+                            land0.get_explorer_count() + 1 == land1.get_explorer_count()
                         ), "Explorer not added in exploring terrain"
                     else:
                         assert (
-                            land0.invader_count["explorer"]
-                            == land1.invader_count["explorer"]
+                            land0.get_explorer_count() == land1.get_explorer_count()
                         ), "Explorer added in non-exploring terrain"
 
     def test_cards_advance(self):
@@ -91,36 +89,31 @@ class TestInvaderPhase(unittest.TestCase):
         for land0 in lands0:
             for land1 in lands1:
                 if land0 == land1:
-                    print("Check carried out in land: ", land0.number)
+                    print("Check carried out in land: ", land0.id)
                     print(
                         "Explorers/Towns/Cities before: ",
-                        land0.invader_count["explorer"],
-                        land0.invader_count["town"],
-                        land0.invader_count["city"],
+                        land0.get_explorer_count(),
+                        land0.get_town_count(),
+                        land0.get_city_count(),
                         " | Explorers/Towns/Cities after: ",
-                        land1.invader_count["explorer"],
-                        land1.invader_count["town"],
-                        land1.invader_count["city"],
+                        land1.get_explorer_count(),
+                        land1.get_town_count(),
+                        land1.get_city_count(),
                     )
                     if land0.terrain in terrains:
-                        if land0.invader_count["town"] > land0.invader_count["city"]:
+                        if land0.get_town_count() > land0.get_city_count():
                             assert (
-                                land0.invader_count["city"] + 1
-                                == land1.invader_count["city"]
+                                land0.get_city_count() + 1 == land1.get_city_count()
                             ), "City not built in building terrain"
                         else:
                             assert (
-                                land0.invader_count["town"] + 1
-                                == land1.invader_count["town"]
+                                land0.get_town_count() + 1 == land1.get_town_count()
                             ), "Town not built in building terrain"
                     else:
                         assert (
-                            land0.invader_count["explorer"]
-                            == land1.invader_count["explorer"]
-                            and land0.invader_count["town"]
-                            == land1.invader_count["town"]
-                            and land0.invader_count["city"]
-                            == land1.invader_count["city"]
+                            land0.get_explorer_count() == land1.get_explorer_count()
+                            and land0.get_town_count() == land1.get_town_count()
+                            and land0.get_city_count() == land1.get_city_count()
                         ), "Built in non-building terrain"
 
     def test_ravage(self):  # Ravage will not cascade blight yet
@@ -147,46 +140,43 @@ class TestInvaderPhase(unittest.TestCase):
                     print("Check carried out in land: ", land0.number)
                     print(
                         "Explorers/Towns/Cities/Dahan before: ",
-                        land0.invader_count["explorer"],
-                        land0.invader_count["town"],
-                        land0.invader_count["city"],
-                        land0.dahan_count,
+                        land0.get_explorer_count(),
+                        land0.get_town_count(),
+                        land0.get_city_count(),
+                        land0.get_dahan_count(),
                         " | Explorers/Towns/Cities/Dahan after: ",
-                        land1.invader_count["explorer"],
-                        land1.invader_count["town"],
-                        land1.invader_count["city"],
-                        land1.dahan_count,
+                        land1.get_explorer_count(),
+                        land1.get_town_count(),
+                        land1.get_city_count(),
+                        land1.get_dahan_count(),
                     )
                     if land0.terrain in terrains:
                         invader_damage = (
-                            land0.invader_count["explorer"]
-                            + 2 * land0.invader_count["town"]
-                            + 3 * land0.invader_count["city"]
+                            land0.get_explorer_count()
+                            + 2 * land0.get_town_count()
+                            + 3 * land0.get_city_count()
                         )
-                        dahan_health = 2 * land0.dahan_count
+                        dahan_health = 2 * land0.get_dahan_count()
                         if invader_damage >= 2:
                             assert (
-                                land0.blight_count + 1 == land1.blight_count
+                                land0.get_blight_count() + 1 == land1.get_blight_count()
                             ), "Blight not added to blighted land"
                         assert (
-                            dahan_health - invader_damage <= 2 * land1.dahan_count
+                            dahan_health - invader_damage <= 2 * land1.get_dahan_count()
                         ), "Not enough dahan killed during ravage"
                         invader_health = invader_damage
-                        dahan_damage = 2 * land1.dahan_count
+                        dahan_damage = 2 * land1.get_dahan_count()
                         assert (
                             invader_health - dahan_damage
-                            <= land1.invader_count["explorer"]
-                            + 2 * land1.invader_count["town"]
-                            + 3 * land1.invader_count["city"]
+                            <= land1.get_explorer_count()
+                            + 2 * land1.get_town_count()
+                            + 3 * land1.get_city_count()
                         ), "Dahan counterattack damage miscalculation"
                     else:
                         assert (
-                            land0.invader_count["explorer"]
-                            == land1.invader_count["explorer"]
-                            and land0.invader_count["town"]
-                            == land1.invader_count["town"]
-                            and land0.invader_count["city"]
-                            == land1.invader_count["city"]
-                            and land0.dahan_count == land1.dahan_count
-                            and land0.blight_count == land1.blight_count
+                            land0.get_explorer_count() == land1.get_explorer_count()
+                            and land0.get_town_count() == land1.get_town_count()
+                            and land0.get_city_count() == land1.get_city_count()
+                            and land0.get_dahan_count() == land1.get_dahan_count()
+                            and land0.get_blight_count() == land1.get_blight_count()
                         ), "Ravaged in non-ravaging terrain"
