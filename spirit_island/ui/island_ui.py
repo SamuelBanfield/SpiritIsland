@@ -1,13 +1,14 @@
+import copy
 import os
 import random
 from typing import List
-from overrides import override
-import copy
 
 import pygame
+from overrides import override
 
 from spirit_island.framework.island import Island
 from spirit_island.framework.land import Land
+from spirit_island.framework.logger import logger
 from spirit_island.framework.pieces import *
 from spirit_island.launcher import read_json
 from spirit_island.ui.component.component import UIComponent
@@ -33,7 +34,9 @@ class BoardComponent(UIComponent):
     def __init__(self, island: Island, offset):
         super().__init__()
         self._island = island
-        self._offset = offset # Where on the destination rect the top left of the board should be
+        self._offset = (
+            offset  # Where on the destination rect the top left of the board should be
+        )
         board_info_path = os.path.relpath(
             __file__ + "/../../resources/board_d_coords.json"
         )
@@ -59,15 +62,20 @@ class BoardComponent(UIComponent):
         for land in self._lands:
             land.render(self._board_surf, False)
 
-        scale_factor = max(
-            dest.get_width() / self._board_rect.width,
-            dest.get_height() / self._board_rect.height,
-        ) / 1.5
-        
+        scale_factor = (
+            max(
+                dest.get_width() / self._board_rect.width,
+                dest.get_height() / self._board_rect.height,
+            )
+            / 1.5
+        )
+
         scaled_image = pygame.transform.scale_by(self._board_surf, scale_factor)
         dest.blit(
             scaled_image,
-            pygame.rect.Rect(self._offset, (scaled_image.get_width(), scaled_image.get_height()))
+            pygame.rect.Rect(
+                self._offset, (scaled_image.get_width(), scaled_image.get_height())
+            ),
         )
 
 
@@ -82,25 +90,51 @@ class LandUI:
         self.available_locations = copy.copy(self._locations)
         self.piece_ids = []
         self.piece_uis = []
+        self.ui_waiting_list = []
 
     def create_piece_uis(self):
         """Create the UI of the pieces that have been added to the land"""
 
-        pieces = self._land.cities + self._land.towns + self._land.explorers + self._land.blight + self._land.dahan
-
-        if len(pieces) > len(self._locations):
-            print("ERROR: Not enough room to fit everything")
-            return
+        pieces = (
+            self._land.cities
+            + self._land.towns
+            + self._land.explorers
+            + self._land.blight
+            + self._land.dahan
+        )
 
         for next_piece in pieces:
             if next_piece.id not in self.piece_ids:
-                self.piece_uis.append(PieceUI(next_piece, self.available_locations.pop(-1)))
-                self.piece_ids.append(next_piece.id)
+                if len(self.available_locations) == 0:
+                    logger.warning(
+                        f"Could not add {next_piece.type} to land {self._land.board}{self._land.number}: no available UI locations."
+                    )
+                    self.piece_ids.append(next_piece.id)
+                    self.ui_waiting_list.append(next_piece)
+                else:
+                    self.piece_uis.append(
+                        PieceUI(next_piece, self.available_locations.pop(-1))
+                    )
+                    self.piece_ids.append(next_piece.id)
+            else:
+                if (
+                    next_piece in self.ui_waiting_list
+                    and len(self.available_locations) > 0
+                ):
+                    self.piece_uis.append(
+                        PieceUI(next_piece, self.available_locations.pop(-1))
+                    )
 
     def remove_piece_uis(self):
         """Find and remove the UI of the pieces that are no longer in the land"""
 
-        pieces = self._land.cities + self._land.towns + self._land.explorers + self._land.blight + self._land.dahan
+        pieces = (
+            self._land.cities
+            + self._land.towns
+            + self._land.explorers
+            + self._land.blight
+            + self._land.dahan
+        )
 
         for piece_id in self.piece_ids:
             id_present = False
@@ -133,9 +167,7 @@ class LandUI:
 
 
 class PieceUI:
-    def __init__(
-        self, piece: Piece, location: list[int]
-    ):
+    def __init__(self, piece: Piece, location: list[int]):
         self._piece = piece
         self.piece_location = location
 

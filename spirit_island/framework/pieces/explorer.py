@@ -6,6 +6,7 @@ class Explorer(InvaderPiece):
 
     def __init__(self):
         super().__init__()
+        self.type = "explorer"
 
         self.base_health = 1
         self.base_damage = 1

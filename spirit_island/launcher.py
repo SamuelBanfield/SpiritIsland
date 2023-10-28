@@ -5,11 +5,9 @@ from typing import List
 
 from spirit_island.framework.exceptions import EndGameException
 from spirit_island.framework.island import Island
-from spirit_island.framework.logger import Logger
+from spirit_island.framework.logger import logger
 from spirit_island.phases.invader_phases import *
 from spirit_island.phases.transition_phases import *
-
-logger = Logger()
 
 
 def read_json(filepath: str) -> dict:
@@ -33,6 +31,7 @@ class Runner:
         """
         self.controls = read_json(controls_path) if controls_path else {}
         self.victory = False
+        self.end_game_message = None
         self.phase_objects: List[Phase] = []
         self.current_phase_index: int = 0
         self.ravage = None
@@ -75,11 +74,13 @@ class Runner:
         self.island = Island(controls=self.controls)
 
     def perform_phases(self):
+        # Currently does nothing when launching through UI
         try:
             for phase in self.phase_objects:
                 phase.execute_phase()
         except EndGameException as ege:
             self.victory = ege.victory
+            self.end_game_message = ege.message
             print("Game has ended")
             return
 
@@ -88,7 +89,9 @@ class Runner:
             self.phase_objects[self.current_phase_index].execute_phase()
         except EndGameException as ege:
             self.victory = ege.victory
+            self.end_game_message = ege.message
             print("Game has ended")
+            print(self.end_game_message)
             return
         self.current_phase_index = (self.current_phase_index + 1) % len(
             self.phase_objects
@@ -102,6 +105,7 @@ class Runner:
             print("You won")
         else:
             print("You lost")
+            print(f"{self.end_game_message}")
 
 
 def main():

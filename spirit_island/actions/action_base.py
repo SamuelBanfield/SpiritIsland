@@ -1,8 +1,6 @@
 from spirit_island.framework.exceptions import EndGameException
 from spirit_island.framework.island import Island
-from spirit_island.framework.logger import Logger
-
-logger = Logger()
+from spirit_island.framework.logger import logger
 
 
 class Action:
@@ -16,7 +14,6 @@ class Action:
         """
         self._controls = controls
         self.island = island
-        logger.info("action done")
 
     def check_end_game(self):
         if self.island.terror_level == 4:
@@ -39,7 +36,10 @@ class Action:
                 self.island.end = True
 
         if self.island.end:
-            raise EndGameException(victory=True)
+            raise EndGameException(
+                victory=True,
+                message=f"Fear Victory at Terror level {self.island.terror_level}",
+            )
 
     def test_action(self):
         """Dummy action for debugging."""

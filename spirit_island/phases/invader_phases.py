@@ -1,4 +1,5 @@
 from spirit_island.actions.invader_actions import *
+from spirit_island.framework.exceptions import EndGameException
 from spirit_island.framework.island import Island
 from spirit_island.phases.phases_base import Phase
 
@@ -56,7 +57,12 @@ class Explore(Phase):
         super().__init__(controls, island, "Explore")
 
     def execute_phase(self):
-        new_card = self.island.invader_deck.pop(0)
+        try:
+            new_card = self.island.invader_deck.pop(0)
+        except IndexError:
+            raise EndGameException(
+                victory=False, message="You ran out of invader cards!"
+            )
         self.island.invader_track["explore"] = new_card
         for land in self.island.lands:
             if land.terrain in self.island.invader_track["explore"].terrains:
