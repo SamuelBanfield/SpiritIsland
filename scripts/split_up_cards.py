@@ -10,10 +10,14 @@ pygame.init()
 FPS = 60
 WIDTH = 1000
 HEIGHT = 800
-CARDS_IMAGE = pygame.image.load("./spirit_island/resources/images/invader_cards_scaled.png")
+CARDS_IMAGE = pygame.image.load(
+    "./spirit_island/resources/images/invader_cards_scaled.png"
+)
+
 
 def add(v1, v2):
     return [v1[0] + v2[0], v1[1] + v2[1]]
+
 
 class CardViewer:
     def __init__(self):
@@ -71,6 +75,7 @@ class CardViewer:
             self.offset[0] += 261
         elif key == pygame.K_d:
             self.offset[0] -= 261
+
 
 if __name__ == "__main__":
     CardViewer().run()

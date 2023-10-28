@@ -23,4 +23,3 @@ class InvaderPiece(Piece):
     def reset_damage(self):
         """Reset the damage of the piece back to its default"""
         self.damage = self.base_damage
-

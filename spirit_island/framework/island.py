@@ -49,16 +49,16 @@ class Island:
                 "explorer": Explorer,
                 "blight": Blight,
                 "dahan": Dahan,
-                "presence": Presence
-                },
+                "presence": Presence,
+            },
             "list": {
                 "city": land.cities,
                 "town": land.towns,
                 "explorer": land.explorers,
                 "blight": land.blight,
                 "dahan": land.dahan,
-                "presence": land.presence
-            }
+                "presence": land.presence,
+            },
         }
 
         new_piece = piece_dict["obj"][piece_type]()

@@ -1,5 +1,6 @@
 import pygame
 
+
 class UIComponent:
     def __init__(self):
         pass

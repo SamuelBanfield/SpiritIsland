@@ -8,6 +8,7 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 SPIRIT_BOARD_BACKGROUND = (221, 203, 121)
 
+
 class _FontSupplier:
     """Caching supplier of fonts"""
 
@@ -21,5 +22,6 @@ class _FontSupplier:
         font = pygame.font.Font(pygame.font.get_default_font(), font_size)
         self._fonts[font_size] = font
         return font
+
 
 FONT_SUPPLIER = _FontSupplier()

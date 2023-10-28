@@ -25,9 +25,18 @@ class UI:
         self.header = Header(self._runner.island, self.options["WIDTH"], header_height)
 
         # Next phase button
-        next_phase_button = TextButton("Next phase", self._runner.perform_phase, offset=[0, self.options["WIDTH"] // 4])
+        next_phase_button = TextButton(
+            "Next phase",
+            self._runner.perform_phase,
+            offset=[0, self.options["WIDTH"] // 4],
+        )
         self._current_phase_image = TextButton("", offset=[0, header_height])
-        self._components = [self._island_ui, next_phase_button, self._current_phase_image, self.header]
+        self._components = [
+            self._island_ui,
+            next_phase_button,
+            self._current_phase_image,
+            self.header,
+        ]
 
     def handle_event(self, event: pygame.event.Event):
         if event.type == pygame.QUIT:

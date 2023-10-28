@@ -1,15 +1,16 @@
-import pygame
 import os
 
-from spirit_island.framework.island import Island
-from spirit_island.ui.util import SPIRIT_BOARD_BACKGROUND
+import pygame
+
 from spirit_island.decks.invader_card import InvaderCard
-from spirit_island.ui.util import FONT_SUPPLIER, BLACK
+from spirit_island.framework.island import Island
+from spirit_island.ui.util import BLACK, FONT_SUPPLIER, SPIRIT_BOARD_BACKGROUND
 
 image_folder = os.path.relpath(__file__ + "/../../../resources/images/invader_cards")
 
 jungle_1_image = pygame.image.load(image_folder + "/jungle_1.png")
-INVADER_CARD_ASPECT_RATIO = 0.6590909090909091 # Card width / card height
+INVADER_CARD_ASPECT_RATIO = 0.6590909090909091  # Card width / card height
+
 
 class _InvaderCardImageSupplier:
     """Caching supplier of invader card images"""
@@ -44,8 +45,10 @@ class Header:
 
         font = FONT_SUPPLIER.get_font_size(16)
 
-        margin = 10 # The width of the margin above the cards, between the cards and between text and cards
-        text_height = font.render("Placeholder", True, BLACK).get_height() # Estimate for how tall the text will be
+        margin = 10  # The width of the margin above the cards, between the cards and between text and cards
+        text_height = font.render(
+            "Placeholder", True, BLACK
+        ).get_height()  # Estimate for how tall the text will be
         card_height = self._height - (3 * margin + text_height)
         card_width = card_height * INVADER_CARD_ASPECT_RATIO
 
@@ -55,7 +58,10 @@ class Header:
             stage_name_image = font.render(capitalised_stage_name, True, BLACK)
             stage_name_rect = stage_name_image.get_rect()
             # Center the stage name with the card below it
-            stage_name_rect.center = (margin * (index + 1) + card_width * (index + 0.5), margin + text_height / 2)
+            stage_name_rect.center = (
+                margin * (index + 1) + card_width * (index + 0.5),
+                margin + text_height / 2,
+            )
             self._surface.blit(stage_name_image, stage_name_rect)
 
             # If the card is present, also blit its image
@@ -63,14 +69,16 @@ class Header:
                 card = self._image_supplier.get_image(self._island.invader_track[stage])
                 rect = pygame.rect.Rect(
                     (margin + index * (card_width + margin), margin * 2 + text_height),
-                    (card_width, card_height)
+                    (card_width, card_height),
                 )
-                self._surface.blit(pygame.transform.scale(card, (card_width, card_height)), rect)
-        
+                self._surface.blit(
+                    pygame.transform.scale(card, (card_width, card_height)), rect
+                )
+
         dest.blit(self._surface, self._rect)
 
     def handle_click(self, click_location):
-        return 
+        return
 
     def is_location_on_component(self, location) -> bool:
         return self._rect.collidepoint(location)

@@ -35,12 +35,14 @@ class RavageAction(Action):
             self.island.add_piece("blight", land)
 
         # Damage the dahan
-        if damage_total >= 2*len(land.dahan) and len(land.dahan):
+        if damage_total >= 2 * len(land.dahan) and len(land.dahan):
             land.dahan.clear()
         elif not damage_total:
             pass
         elif len(land.dahan):
-            remaining_damage = damage_total  # Clears dahan from top to bottom, not most lethal
+            remaining_damage = (
+                damage_total  # Clears dahan from top to bottom, not most lethal
+            )
             while remaining_damage > 0:
                 for dahan in land.dahan:
                     for h in range(dahan.health):
@@ -54,7 +56,9 @@ class RavageAction(Action):
             dahan_damage += dahan.damage
 
         # Damage the invaders
-        if dahan_damage > 3*len(land.cities) + 2*len(land.towns) + len(land.explorers):
+        if dahan_damage > 3 * len(land.cities) + 2 * len(land.towns) + len(
+            land.explorers
+        ):
             for city in land.cities:
                 self.island.generate_fear(city.base_fear)
             land.cities.clear()
@@ -144,9 +148,7 @@ class ExploreAction(Action):
         else:
             for adj_land_no in lands_adj:
                 adj_land = lands_list[adj_land_no]
-                if (
-                    len(adj_land.cities) + len(adj_land.towns)
-                ) > 0:
+                if (len(adj_land.cities) + len(adj_land.towns)) > 0:
                     source = True
                     break
 

@@ -1,11 +1,10 @@
-from overrides import override
 from typing import Callable
 
 import pygame
+from overrides import override
 
-from spirit_island.ui.util import BLACK, GREY, WHITE
 from spirit_island.ui.component.component import UIComponent
-from spirit_island.ui.util import FONT_SUPPLIER
+from spirit_island.ui.util import BLACK, FONT_SUPPLIER, GREY, WHITE
 
 
 class TextButton(UIComponent):
