@@ -5,6 +5,7 @@ class Land:
         """Initialise."""
         self.board = "D"
         self.number = ""
+        self.id = ""
         self.terrain = ""
 
         self.cities = []

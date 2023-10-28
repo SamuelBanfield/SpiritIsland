@@ -11,6 +11,7 @@ class Ravage(Phase):
         super().__init__(controls, island, "Ravage")
 
     def execute_phase(self):
+        print(f"Ravage Phase: turn {self.island.turn_counter}")
         if not self.island.invader_track["ravage"]:
             return
         for land in self.island.lands:
@@ -34,6 +35,7 @@ class Build(Phase):
         super().__init__(controls, island, "Build")
 
     def execute_phase(self):
+        print(f"Build Phase: turn {self.island.turn_counter}")
         if not self.island.invader_track["build"]:
             return
         for land in self.island.lands:
@@ -57,6 +59,7 @@ class Explore(Phase):
         super().__init__(controls, island, "Explore")
 
     def execute_phase(self):
+        print(f"Explore Phase: turn {self.island.turn_counter}")
         try:
             new_card = self.island.invader_deck.pop(0)
         except IndexError:

@@ -6,6 +6,7 @@ from typing import List
 import pygame
 from overrides import override
 
+from spirit_island.framework.exceptions import UIException
 from spirit_island.framework.island import Island
 from spirit_island.framework.land import Land
 from spirit_island.framework.logger import logger
@@ -107,7 +108,7 @@ class LandUI:
             if next_piece.id not in self.piece_ids:
                 if len(self.available_locations) == 0:
                     logger.warning(
-                        f"Could not add {next_piece.type} to land {self._land.board}{self._land.number}: no available UI locations."
+                        f"Could not add {next_piece.type} to land {self._land.id}: no available UI locations."
                     )
                     self.piece_ids.append(next_piece.id)
                     self.ui_waiting_list.append(next_piece)
@@ -189,7 +190,10 @@ class PieceUI:
         elif isinstance(self._piece, Blight):
             self.image = blight_image
         else:
-            print("Piece is not of the correct instance and so could not receive image")
+            logger.error(f"Piece of type {self._piece.type} does not have an image.")
+            raise UIException(
+                f"Piece of type {self._piece.type} does not have an image."
+            )
 
     def render(self, dest: pygame.surface.Surface, hovered: bool):
         dest.blit(

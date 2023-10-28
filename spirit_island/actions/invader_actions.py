@@ -88,8 +88,8 @@ class RavageAction(Action):
                     print("dahan counterattack damage miscalculation!")
                     break
 
+        print(f"Ravage - Action Done in land {land.id}")
         self.check_end_game()
-        print("Ravage Action Done")
 
 
 class BuildAction(Action):
@@ -116,7 +116,8 @@ class BuildAction(Action):
         else:
             self.island.add_piece("town", land)
 
-        print("Build Action Done")
+        print(f"Build - Action Done in land {land.id}")
+        self.check_end_game()
 
 
 class ExploreAction(Action):
@@ -155,4 +156,5 @@ class ExploreAction(Action):
         if source:
             self.island.add_piece("explorer", land)
 
-        print("Explore Action Done")
+        print(f"Explore - Action Done in land {land.id}")
+        self.check_end_game()

@@ -15,6 +15,7 @@ class Island:
         :param controls: path to debug_controls file
         """
         self._controls = controls
+        self.turn_counter = 1
 
         self.n_players = 1
 
@@ -76,6 +77,7 @@ class Island:
         for land_number in board_dict:
             new_land = Land()
             new_land.number = land_number
+            new_land.id = new_land.board + new_land.number
 
             for i, (key, value) in enumerate(board_dict[land_number].items()):
                 if key in ["city", "town", "explorer", "blight", "dahan"]:
