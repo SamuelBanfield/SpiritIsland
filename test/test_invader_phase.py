@@ -3,8 +3,8 @@ import os
 import unittest
 
 from spirit_island import launcher
-from spirit_island.framework.island import Island
 from spirit_island.actions.invader_actions import RavageAction
+from spirit_island.framework.island import Island
 
 
 class TestInvaderPhase(unittest.TestCase):
@@ -185,14 +185,56 @@ class TestInvaderPhase(unittest.TestCase):
 
 
 class TestInvaderActions(unittest.TestCase):
-
-    def test_ravage(self):
+    # Tests assume damage is auto-allocated
+    def test_ravage_clear_dahan(self):
         island = Island(controls={"board": "single_land_board.json"})
         ravage = RavageAction({}, island)
         land = island.lands[0]
-        ravage.execute_action(land)
-        assert len(land.dahan) == 1, f"Unexpected number of dahan: {len(land.dahan)}"
-        assert len(land.cities) == 1
-        assert len(land.towns) == 0
-        assert len(land.explorers) == 1
+        land.dahan.pop(0)
 
+        ravage.execute_action(land)
+
+        assert len(land.dahan) == 0, f"Unexpected number of dahan: {len(land.dahan)}"
+        assert len(land.cities) == 1, f"Unexpected number of cities: {len(land.cities)}"
+        assert len(land.towns) == 1, f"Unexpected number of towns: {len(land.towns)}"
+        assert (
+            len(land.explorers) == 2
+        ), f"Unexpected number of explorers: {len(land.explorers)}"
+
+    def test_ravage_dahan_survive(self):
+        island = Island(controls={"board": "single_land_board.json"})
+        ravage = RavageAction({}, island)
+        land = island.lands[0]
+
+        ravage.execute_action(land)
+
+        assert len(land.dahan) == 1, f"Unexpected number of dahan: {len(land.dahan)}"
+        assert len(land.cities) == 1, f"Unexpected number of cities: {len(land.cities)}"
+        assert len(land.towns) == 0, f"Unexpected number of towns: {len(land.towns)}"
+        assert (
+            len(land.explorers) == 2
+        ), f"Unexpected number of explorers: {len(land.explorers)}"
+        assert (
+            land.dahan[0].health == 1
+        ), f"Unexpected health of the surviving dahan: {land.dahan[0].health}"
+
+    def test_ravage_lethality(self):
+        island = Island(controls={"board": "single_land_board.json"})
+        ravage = RavageAction({}, island)
+        land = island.lands[0]
+        land.dahan[3].health = 1
+        land.towns.pop(0)
+        # Invaders do 5 damage but should still kill 3 dahan
+        # The 1 surviving dahan should kill the 2 explorers
+
+        ravage.execute_action(land)
+
+        assert len(land.dahan) == 1, f"Unexpected number of dahan: {len(land.dahan)}"
+        assert len(land.cities) == 1, f"Unexpected number of cities: {len(land.cities)}"
+        assert len(land.towns) == 0, f"Unexpected number of towns: {len(land.towns)}"
+        assert (
+            len(land.explorers) == 0
+        ), f"Unexpected number of explorers: {len(land.explorers)}"
+        assert (
+            land.dahan[0].health == 2
+        ), f"Unexpected health of surviving dahan: {land.dahan[0].health}"

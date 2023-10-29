@@ -26,34 +26,40 @@ class RavageAction(Action):
             return
 
         # Calculate the damage to the land and the dahan health
-        damage_total = 0
-        for invader in invader_all:
-            damage_total += invader.damage
+        damage_total = sum(invader.damage for invader in invader_all)
 
         # Blight the land
         if damage_total >= 2:
             self.island.add_piece("blight", land)
 
         # Damage the dahan
-        if damage_total >= 2 * len(land.dahan) and len(land.dahan):
+        if damage_total >= sum(dahan.health for dahan in land.dahan) and len(
+            land.dahan
+        ):
             land.dahan.clear()
         elif not damage_total:
             pass
         elif len(land.dahan):
-            remaining_damage = (
-                damage_total  # Clears dahan from top to bottom, not most lethal
+            remaining_damage = damage_total
+            # Damage dahan in the most lethal way by ordering them by health
+            dahan_health_dict = {dahan.id: dahan for dahan in land.dahan}
+            sorted_dict = dict(
+                sorted(dahan_health_dict.items(), key=lambda item: item[1].health)
             )
-            while remaining_damage > 0:
-                for dahan in land.dahan:
-                    for h in range(dahan.health):
-                        dahan.health -= 1
-                        remaining_damage -= 1
-                    land.dahan.pop(0)
+            for dahan in sorted_dict.values():
+                if remaining_damage >= dahan.health:
+                    remaining_damage -= dahan.health
+                    dahan.health = 0
+                else:
+                    dahan.health -= remaining_damage
+                    remaining_damage = 0
 
-        # Calculate the damage to the invaders and the invader health
-        dahan_damage = 0
-        for dahan in land.dahan:
-            dahan_damage += dahan.damage
+            # Replace dahan list with a new list of surviving dahan
+            surviving_dahan = [dahan for dahan in land.dahan if dahan.health > 0]
+            land.dahan = surviving_dahan
+
+        # Calculate the damage to the invaders from dahan counterattack
+        dahan_damage = sum(dahan.damage for dahan in land.dahan)
 
         # Damage the invaders
         if dahan_damage > 3 * len(land.cities) + 2 * len(land.towns) + len(
