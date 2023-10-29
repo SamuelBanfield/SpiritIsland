@@ -19,7 +19,7 @@ class Island:
         self.n_players = 1
         self.blight_pool = 1 + self.n_players * 2
 
-        self.lands = []
+        self.lands: List[Land] = []
 
         self.id_count = 1
 
@@ -72,7 +72,8 @@ class Island:
 
     def get_lands(self):
         """Fills in the lands with land objects."""
-        rel_path = os.path.relpath(__file__ + "/../../resources/board_d.json")
+        board = self._controls["board"] if "board" in self._controls else "board_d.json"
+        rel_path = os.path.relpath(__file__ + f"/../../resources/{board}")
         with open(rel_path) as board_file:
             board_dict = json.load(board_file)
 

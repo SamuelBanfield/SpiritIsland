@@ -3,6 +3,8 @@ import os
 import unittest
 
 from spirit_island import launcher
+from spirit_island.framework.island import Island
+from spirit_island.actions.invader_actions import RavageAction
 
 
 class TestInvaderPhase(unittest.TestCase):
@@ -180,3 +182,17 @@ class TestInvaderPhase(unittest.TestCase):
                             and land0.get_dahan_count() == land1.get_dahan_count()
                             and land0.get_blight_count() == land1.get_blight_count()
                         ), "Ravaged in non-ravaging terrain"
+
+
+class TestInvaderActions(unittest.TestCase):
+
+    def test_ravage(self):
+        island = Island(controls={"board": "single_land_board.json"})
+        ravage = RavageAction({}, island)
+        land = island.lands[0]
+        ravage.execute_action(land)
+        assert len(land.dahan) == 1, f"Unexpected number of dahan: {len(land.dahan)}"
+        assert len(land.cities) == 1
+        assert len(land.towns) == 0
+        assert len(land.explorers) == 1
+
