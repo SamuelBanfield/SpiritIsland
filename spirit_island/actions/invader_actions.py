@@ -60,28 +60,28 @@ class RavageAction(Action):
             land.explorers
         ):
             for city in land.cities:
-                self.island.generate_fear(city.base_fear)
+                self.island.add_fear(city.base_fear)
             land.cities.clear()
             for town in land.towns:
-                self.island.generate_fear(town.base_fear)
+                self.island.add_fear(town.base_fear)
             land.towns.clear()
             for explorer in land.explorers:
-                self.island.generate_fear(explorer.base_fear)
+                self.island.add_fear(explorer.base_fear)
             land.explorers.clear()
         else:  # hard-coded method
             dahan_damage_remaining = dahan_damage
 
             while dahan_damage_remaining > 0:
                 if dahan_damage_remaining >= 3 and len(land.cities):
-                    self.island.generate_fear(land.cities[0].base_fear)
+                    self.island.add_fear(land.cities[0].base_fear)
                     land.cities.pop(0)
                     dahan_damage_remaining -= 3
                 elif dahan_damage_remaining >= 2 and len(land.towns):
-                    self.island.generate_fear(land.towns[0].base_fear)
+                    self.island.add_fear(land.towns[0].base_fear)
                     land.towns.pop(0)
                     dahan_damage_remaining -= 2
                 elif len(land.explorers):
-                    self.island.generate_fear(land.explorers[0].base_fear)
+                    self.island.add_fear(land.explorers[0].base_fear)
                     land.explorers.pop(0)
                     dahan_damage_remaining -= 1
                 else:

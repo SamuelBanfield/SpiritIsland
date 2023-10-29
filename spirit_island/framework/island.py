@@ -23,8 +23,9 @@ class Island:
 
         self.id_count = 1
 
-        self.fear_cards = 0
-        self.fear_generated = 0
+        self.fear_cards_pending = 0
+        self.fear_cards_to_next_level = 3
+        self.fear_earned = 0
         self.fear_capacity = self.n_players * 4
         self.terror_level = 1
 
@@ -112,21 +113,28 @@ class Island:
 
         return island_explorer_count
 
-    def generate_fear(self, fear_quantity):
-        """Generate an amount of fear and check for thresholds."""
-        fear_remaining = fear_quantity
-        while fear_remaining > 0:
-            if self.fear_generated + fear_remaining < self.fear_capacity:
-                self.fear_generated += fear_remaining
-                fear_remaining = 0
-            else:
-                fear_threshold = self.fear_capacity - self.fear_generated
-                fear_remaining -= fear_threshold
-                self.fear_generated = 0
-                self.fear_cards += 1
+    def add_fear(self, fear_added):
+        """Add fear to fear pool and earn the necessary fear cards."""
+        self.fear_earned += fear_added
+        while self.fear_earned >= self.fear_capacity:
+            self.earn_fear_card()
+            self.fear_earned -= self.fear_capacity
 
-                self.update_terror_level()
+    def earn_fear_card(self):
+        """Add one to pending fear cards. Then check terror level."""
+        self.fear_cards_pending += 1
+        self.fear_cards_to_next_level -= 1
+
+        self.update_terror_level()
 
     def update_terror_level(self):
         """Updates the terror level after a fear card had been earned"""
-        return
+        if self.fear_cards_to_next_level == 0:
+            self.terror_level += 1
+            self.fear_cards_to_next_level = 3
+
+
+"""
+class TerrorHandler:
+    def __init__(self):
+"""
