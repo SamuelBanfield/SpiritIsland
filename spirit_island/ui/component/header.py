@@ -7,6 +7,7 @@ from spirit_island.ui.util import FONT_SUPPLIER, BLACK, SPIRIT_BOARD_BACKGROUND
 from spirit_island.ui.component.component import UIComponent
 from spirit_island.ui.component.invader_track import InvaderTrack
 from spirit_island.framework.island import Island
+from spirit_island.ui.component.fear_component import FearComponent
 
 
 class Header(UIComponent):
@@ -18,7 +19,8 @@ class Header(UIComponent):
         self._height = height
         self._rect: pygame.rect.Rect = self._surface.get_rect()
         invader_track = InvaderTrack(island, width, height, (0, 0))
-        self._components = [invader_track]
+        fear_component = FearComponent(island, height, height, (invader_track.get_width(), 0)) # Make it a square
+        self._components = [invader_track, fear_component]
 
     def render(self, dest: pygame.surface.Surface, hovered: bool):
         """Render the current invader cards"""
