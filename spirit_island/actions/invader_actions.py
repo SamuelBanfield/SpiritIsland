@@ -33,66 +33,66 @@ class RavageAction(Action):
             self.island.add_piece("blight", land)
 
         # Damage the dahan
-        if damage_total >= sum(dahan.health for dahan in land.dahan) and len(
-            land.dahan
-        ):
-            land.dahan.clear()
-        elif not damage_total:
-            pass
-        elif len(land.dahan):
-            remaining_damage = damage_total
-            # Damage dahan in the most lethal way by ordering them by health
-            dahan_health_dict = {dahan.id: dahan for dahan in land.dahan}
-            sorted_dict = dict(
-                sorted(dahan_health_dict.items(), key=lambda item: item[1].health)
-            )
-            for dahan in sorted_dict.values():
-                if remaining_damage >= dahan.health:
-                    remaining_damage -= dahan.health
-                    dahan.health = 0
-                else:
-                    dahan.health -= remaining_damage
-                    remaining_damage = 0
-
-            # Replace dahan list with a new list of surviving dahan
-            surviving_dahan = [dahan for dahan in land.dahan if dahan.health > 0]
-            land.dahan = surviving_dahan
+        if len(land.dahan) + damage_total:
+            if damage_total >= sum(dahan.health for dahan in land.dahan):
+                land.dahan.clear()
+            else:
+                remaining_damage = damage_total
+                # Damage dahan in the most lethal way by ordering them by health
+                dahan_health_dict = {dahan.id: dahan for dahan in land.dahan}
+                sorted_dict = dict(
+                    sorted(dahan_health_dict.items(), key=lambda item: item[1].health)
+                )
+                for dahan in sorted_dict.values():
+                    if remaining_damage >= dahan.health:
+                        remaining_damage -= dahan.health
+                        dahan.health = 0
+                    else:
+                        dahan.health -= remaining_damage
+                        remaining_damage = 0
+                # Replace dahan list with a new list of surviving dahan
+                surviving_dahan = [dahan for dahan in land.dahan if dahan.health > 0]
+                land.dahan = surviving_dahan
 
         # Calculate the damage to the invaders from dahan counterattack
         dahan_damage = sum(dahan.damage for dahan in land.dahan)
 
         # Damage the invaders
-        if dahan_damage > 3 * len(land.cities) + 2 * len(land.towns) + len(
-            land.explorers
-        ):
-            for city in land.cities:
-                self.island.add_fear(city.base_fear)
-            land.cities.clear()
-            for town in land.towns:
-                self.island.add_fear(town.base_fear)
-            land.towns.clear()
-            for explorer in land.explorers:
-                self.island.add_fear(explorer.base_fear)
-            land.explorers.clear()
-        else:  # hard-coded method
-            dahan_damage_remaining = dahan_damage
+        if self._controls["auto_allocate_damage"]:
+            if dahan_damage > 3 * len(land.cities) + 2 * len(land.towns) + len(
+                land.explorers
+            ):
+                for city in land.cities:
+                    self.island.add_fear(city.base_fear)
+                land.cities.clear()
+                for town in land.towns:
+                    self.island.add_fear(town.base_fear)
+                land.towns.clear()
+                for explorer in land.explorers:
+                    self.island.add_fear(explorer.base_fear)
+                land.explorers.clear()
+            else:  # hard-coded method
+                dahan_damage_remaining = dahan_damage
 
-            while dahan_damage_remaining > 0:
-                if dahan_damage_remaining >= 3 and len(land.cities):
-                    self.island.add_fear(land.cities[0].base_fear)
-                    land.cities.pop(0)
-                    dahan_damage_remaining -= 3
-                elif dahan_damage_remaining >= 2 and len(land.towns):
-                    self.island.add_fear(land.towns[0].base_fear)
-                    land.towns.pop(0)
-                    dahan_damage_remaining -= 2
-                elif len(land.explorers):
-                    self.island.add_fear(land.explorers[0].base_fear)
-                    land.explorers.pop(0)
-                    dahan_damage_remaining -= 1
-                else:
-                    print("dahan counterattack damage miscalculation!")
-                    break
+                while dahan_damage_remaining > 0:
+                    if dahan_damage_remaining >= 3 and len(land.cities):
+                        self.island.add_fear(land.cities[0].base_fear)
+                        land.cities.pop(0)
+                        dahan_damage_remaining -= 3
+                    elif dahan_damage_remaining >= 2 and len(land.towns):
+                        self.island.add_fear(land.towns[0].base_fear)
+                        land.towns.pop(0)
+                        dahan_damage_remaining -= 2
+                    elif len(land.explorers):
+                        self.island.add_fear(land.explorers[0].base_fear)
+                        land.explorers.pop(0)
+                        dahan_damage_remaining -= 1
+                    else:
+                        print("dahan counterattack damage miscalculation!")
+                        break
+        else:
+            # Choose dahan damage in the UI
+            pass
 
         print(f"Ravage - Action Done in land {land.id}")
         self.check_end_game()

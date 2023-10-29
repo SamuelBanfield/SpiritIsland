@@ -23,7 +23,7 @@ def read_json(filepath: Union[str, Path]) -> dict:
 class Runner:
     """Class for running the game"""
 
-    def __init__(self, controls_path: str = ""):
+    def __init__(self, controls_path: str):
         """
         Initialise.
         :param controls_path: path to debug_controls file

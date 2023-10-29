@@ -5,4 +5,4 @@ from spirit_island.ui.ui import UI
 if __name__ == "__main__":
     """To run from console"""
     # launcher.main()
-    UI(Island(controls={})).run()
+    UI().run()

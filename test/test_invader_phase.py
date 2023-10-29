@@ -185,10 +185,13 @@ class TestInvaderPhase(unittest.TestCase):
 
 
 class TestInvaderActions(unittest.TestCase):
-    # Tests assume damage is auto-allocated
     def test_ravage_clear_dahan(self):
-        island = Island(controls={"board": "single_land_board.json"})
-        ravage = RavageAction({}, island)
+        test_controls = {
+            "board": "single_land_board.json",
+            "auto_allocate_damage": True,
+        }
+        island = Island(test_controls)
+        ravage = RavageAction(test_controls, island)
         land = island.lands[0]
         land.dahan.pop(0)
 
@@ -202,8 +205,12 @@ class TestInvaderActions(unittest.TestCase):
         ), f"Unexpected number of explorers: {len(land.explorers)}"
 
     def test_ravage_dahan_survive(self):
-        island = Island(controls={"board": "single_land_board.json"})
-        ravage = RavageAction({}, island)
+        test_controls = {
+            "board": "single_land_board.json",
+            "auto_allocate_damage": True,
+        }
+        island = Island(test_controls)
+        ravage = RavageAction(test_controls, island)
         land = island.lands[0]
 
         ravage.execute_action(land)
@@ -219,8 +226,12 @@ class TestInvaderActions(unittest.TestCase):
         ), f"Unexpected health of the surviving dahan: {land.dahan[0].health}"
 
     def test_ravage_lethality(self):
-        island = Island(controls={"board": "single_land_board.json"})
-        ravage = RavageAction({}, island)
+        test_controls = {
+            "board": "single_land_board.json",
+            "auto_allocate_damage": True,
+        }
+        island = Island(test_controls)
+        ravage = RavageAction(test_controls, island)
         land = island.lands[0]
         land.dahan[3].health = 1
         land.towns.pop(0)

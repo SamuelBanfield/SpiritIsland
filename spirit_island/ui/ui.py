@@ -2,7 +2,6 @@ import os
 
 import pygame
 
-from spirit_island.framework.island import Island
 from spirit_island.launcher import Runner
 from spirit_island.ui.component.button import TextButton
 from spirit_island.ui.component.header import Header
@@ -13,11 +12,13 @@ pygame.init()
 
 
 class UI:
-    def __init__(self, island: Island, options={}):
+    def __init__(self, options={}):
+        # Path to debug controls
+        controls_path = os.path.abspath(__file__ + "../../../../debug_controls.json")
         self.options = {"FPS": 60, "WIDTH": 1200, "HEIGHT": 800}
         for option in options:
             self.options[option] = options[option]
-        self._runner = Runner()
+        self._runner = Runner(controls_path)
         self._runner.create_island()
         self._runner.create_phases()
         header_height = self.options["HEIGHT"] // 5
