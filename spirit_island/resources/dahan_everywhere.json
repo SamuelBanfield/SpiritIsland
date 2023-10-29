@@ -1,0 +1,41 @@
+{
+  "0": {
+    "dahan": 6,
+    "terrain": "ocean"
+  },
+  "1": {
+    "dahan": 6,
+    "terrain": "wetland"
+  },
+  "2": {
+    "city": 1,
+    "dahan": 6,
+    "terrain": "jungle"
+  },
+  "3": {
+    "dahan": 6,
+    "terrain": "wetland"
+  },
+  "4": {
+    "dahan": 6,
+    "terrain": "sand"
+  },
+  "5": {
+    "blight": 1,
+    "dahan": 6,
+    "terrain": "mountain"
+  },
+  "6": {
+    "dahan": 6,
+    "terrain": "jungle"
+  },
+  "7": {
+    "dahan": 6,
+    "town": 1,
+    "terrain": "sand"
+  },
+  "8": {
+    "dahan": 6,
+    "terrain": "mountain"
+  }
+}
