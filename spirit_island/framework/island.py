@@ -107,7 +107,7 @@ class Island:
 
         return island_town_count
 
-    def get_explorer_count(self):
+    def get_explorer_count_island(self):
         """Return the total explorer count on the island."""
         island_explorer_count = sum(len(land.explorers) for land in self.lands)
 
