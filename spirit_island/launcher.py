@@ -52,7 +52,8 @@ class Runner:
             "build_phase",
             "explore_phase",
             "escalation_phase",
-            "cards_advance_phase" "slow_phase",
+            "cards_advance_phase",
+            "slow_phase",
             "time_passes_phase",
         ]
         # Make instances of each phase and store in runner

@@ -2,9 +2,8 @@ import json
 import os
 
 from spirit_island.decks.invader_deck_builder import InvaderDeckBuilder
-
-from .land import Land
-from .pieces import *
+from spirit_island.framework.land import Land
+from spirit_island.framework.pieces import *
 
 
 class Island:
@@ -18,6 +17,7 @@ class Island:
         self.turn_counter = 1
 
         self.n_players = 1
+        self.blight_pool = 1 + self.n_players * 2
 
         self.lands = []
 
@@ -25,6 +25,7 @@ class Island:
 
         self.fear_cards = 0
         self.fear_generated = 0
+        self.fear_capacity = self.n_players * 4
         self.terror_level = 1
 
         self.invader_track = {
@@ -93,41 +94,33 @@ class Island:
         builder = InvaderDeckBuilder()
         self.invader_deck = builder.build_deck()
 
-    def get_city_count(self):
+    def get_city_count_island(self):
         """Return the total city count on the island."""
-        city_count = 0
+        island_city_count = sum(len(land.cities) for land in self.lands)
 
-        for land in self.lands:
-            city_count += len(land.cities)
+        return island_city_count
 
-        return city_count
-
-    def get_town_count(self):
+    def get_town_count_island(self):
         """Return the total town count on the island."""
-        town_count = 0
+        island_town_count = sum(len(land.towns) for land in self.lands)
 
-        for land in self.lands:
-            town_count += len(land.towns)
-
-        return town_count
+        return island_town_count
 
     def get_explorer_count(self):
         """Return the total explorer count on the island."""
-        explorer_count = 0
+        island_explorer_count = sum(len(land.explorers) for land in self.lands)
 
-        for land in self.lands:
-            explorer_count += len(land.explorers)
-
-        return explorer_count
+        return island_explorer_count
 
     def generate_fear(self, fear_quantity):
         """Generate an amount of fear and check for thresholds."""
         fear_remaining = fear_quantity
         while fear_remaining > 0:
-            if self.fear_generated + fear_remaining < 4 * self.n_players:
+            if self.fear_generated + fear_remaining < self.fear_capacity:
                 self.fear_generated += fear_remaining
+                fear_remaining = 0
             else:
-                fear_threshold = 4 * self.n_players - self.fear_generated
+                fear_threshold = self.fear_capacity - self.fear_generated
                 fear_remaining -= fear_threshold
                 self.fear_generated = 0
                 self.fear_cards += 1
