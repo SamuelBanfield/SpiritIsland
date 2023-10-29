@@ -9,7 +9,6 @@ from spirit_island.ui.component.component import UIComponent
 
 image_folder = os.path.relpath(__file__ + "/../../../resources/images/invader_cards")
 
-jungle_1_image = pygame.image.load(image_folder + "/jungle_1.png")
 INVADER_CARD_ASPECT_RATIO = 0.6590909090909091 # Card width / card height
 
 class _InvaderCardImageSupplier:
@@ -53,7 +52,6 @@ class InvaderTrack(UIComponent):
         """Render the current invader cards"""
         self._surface.fill(SPIRIT_BOARD_BACKGROUND)
 
-
         for index, stage in enumerate(["ravage", "build", "explore"]):
             # Create and blit the stage name above the card
             capitalised_stage_name = stage[0].upper() + stage[1:]
@@ -63,7 +61,7 @@ class InvaderTrack(UIComponent):
             stage_name_rect.center = (
                 self._margin * (index + 1) + self._card_width * (index + 0.5),
                 self._margin + self._text_height / 2
-                )
+            )
             self._surface.blit(stage_name_image, stage_name_rect)
 
             # If the card is present, also blit its image

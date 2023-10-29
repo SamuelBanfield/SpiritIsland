@@ -20,7 +20,7 @@ class UI:
         self._runner = Runner()
         self._runner.create_island()
         self._runner.create_phases()
-        header_height = self.options["HEIGHT"] // 6
+        header_height = self.options["HEIGHT"] // 5
         self._island_ui = BoardComponent(self._runner.island, (0, header_height))
         self.header = Header(self._runner.island, self.options["WIDTH"], header_height)
 

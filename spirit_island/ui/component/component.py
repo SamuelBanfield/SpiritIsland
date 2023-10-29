@@ -6,6 +6,8 @@ class UIComponent:
         pass
 
     def render(self, dest: pygame.surface.Surface, hovered: bool):
+        # Hovered should be adjusted not to be a boolean, since we
+        # would like to pass it down to child components
         pass
 
     def handle_click(self, click_location):
