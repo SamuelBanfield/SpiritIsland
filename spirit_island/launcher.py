@@ -11,8 +11,8 @@ from spirit_island.phases.transition_phases import *
 
 def read_json(filepath: Union[str, Path]) -> dict:
     """
-    Reads a json file into a dict
-    :param filepath: path to json file
+    Reads a json file into a dict.
+    :param: filepath: path to json file
     :return: dictionary of json file contents
     """
     with open(Path(filepath), "r") as file:
