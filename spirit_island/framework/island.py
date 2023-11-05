@@ -1,9 +1,11 @@
 import json
 import os
+from typing import List
 
 from spirit_island.decks.invader_deck_builder import InvaderDeckBuilder
 from spirit_island.framework.land import Land
 from spirit_island.framework.pieces import *
+from spirit_island.framework.terror_hander import TerrorHandler
 
 
 class Island:
@@ -36,11 +38,13 @@ class Island:
             "discard": [],
         }
         self.invader_deck = []
+        self.terror_handler = None
 
         self.end = False
 
         self.get_lands()
         self.get_invader_deck()
+        self.create_terror_handler()
 
     def add_piece(self, piece_type: str, land: Land):
         """Adds a given piece type to the given land"""
@@ -96,6 +100,11 @@ class Island:
         builder = InvaderDeckBuilder()
         self.invader_deck = builder.build_deck()
 
+    def create_terror_handler(self):
+        """Create an instance of the TerrorHandler."""
+        terror_handler_args = {"n_players": self.n_players}
+        self.terror_handler = TerrorHandler(terror_handler_args)
+
     def get_city_count_island(self):
         """Return the total city count on the island."""
         island_city_count = sum(len(land.cities) for land in self.lands)
@@ -113,29 +122,3 @@ class Island:
         island_explorer_count = sum(len(land.explorers) for land in self.lands)
 
         return island_explorer_count
-
-    def add_fear(self, fear_added):
-        """Add fear to fear pool and earn the necessary fear cards."""
-        self.fear_earned += fear_added
-        while self.fear_earned >= self.fear_capacity:
-            self.earn_fear_card()
-            self.fear_earned -= self.fear_capacity
-
-    def earn_fear_card(self):
-        """Add one to pending fear cards. Then check terror level."""
-        self.fear_cards_pending += 1
-        self.fear_cards_to_next_level -= 1
-
-        self.update_terror_level()
-
-    def update_terror_level(self):
-        """Updates the terror level after a fear card had been earned"""
-        if self.fear_cards_to_next_level == 0:
-            self.terror_level += 1
-            self.fear_cards_to_next_level = 3
-
-
-"""
-class TerrorHandler:
-    def __init__(self):
-"""

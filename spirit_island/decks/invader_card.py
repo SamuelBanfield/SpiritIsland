@@ -1,4 +1,4 @@
-from .card import Card
+from .card_base import Card
 
 
 class InvaderCard(Card):

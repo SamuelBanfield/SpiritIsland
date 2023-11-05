@@ -17,13 +17,13 @@ class TestTerror(unittest.TestCase):
     def test_fear_generation_no_card(self):
         """Test the island's generate_fear method."""
         test_island = copy.deepcopy(self.runner.island)
-        test_island.fear_capacity = 4
-        test_island.fear_earned = 1
+        test_island.terror_handler.fear_capacity = 4
+        test_island.terror_handler.fear_earned = 1
 
-        test_island.add_fear(2)
+        test_island.terror_handler.add_fear(2)
 
-        actual_fear_generated = test_island.fear_earned
-        actual_fear_cards = test_island.fear_cards_pending
+        actual_fear_generated = test_island.terror_handler.fear_earned
+        actual_fear_cards = test_island.terror_handler.fear_cards_pending
 
         expected_fear_generated = 3
         expected_fear_cards = 0
@@ -39,16 +39,16 @@ class TestTerror(unittest.TestCase):
     def test_fear_generation_earn_card(self):
         """Test the island's generate_fear method with a fear card."""
         test_island = copy.deepcopy(self.runner.island)
-        test_island.terror_level = 1
-        test_island.fear_cards_to_next_level = 3
-        test_island.fear_capacity = 4
-        test_island.fear_earned = 3
+        test_island.terror_handler.terror_level = 1
+        test_island.terror_handler.fear_cards_to_next_level = 3
+        test_island.terror_handler.fear_capacity = 4
+        test_island.terror_handler.fear_earned = 3
 
-        test_island.add_fear(2)
+        test_island.terror_handler.add_fear(2)
 
-        actual_fear_generated = test_island.fear_earned
-        actual_fear_cards = test_island.fear_cards_pending
-        actual_terror_level = test_island.terror_level
+        actual_fear_generated = test_island.terror_handler.fear_earned
+        actual_fear_cards = test_island.terror_handler.fear_cards_pending
+        actual_terror_level = test_island.terror_handler.terror_level
 
         expected_fear_generated = 1
         expected_fear_cards = 1
@@ -69,16 +69,16 @@ class TestTerror(unittest.TestCase):
     def test_fear_generation_next_terror_level(self):
         """Test the island's generate_fear method with a fear card + terror level increase."""
         test_island = copy.deepcopy(self.runner.island)
-        test_island.terror_level = 1
-        test_island.fear_cards_to_next_level = 1
-        test_island.fear_capacity = 4
-        test_island.fear_earned = 3
+        test_island.terror_handler.terror_level = 1
+        test_island.terror_handler.fear_cards_to_next_level = 1
+        test_island.terror_handler.fear_capacity = 4
+        test_island.terror_handler.fear_earned = 3
 
-        test_island.add_fear(2)
+        test_island.terror_handler.add_fear(2)
 
-        actual_fear_generated = test_island.fear_earned
-        actual_fear_cards = test_island.fear_cards_pending
-        actual_terror_level = test_island.terror_level
+        actual_fear_generated = test_island.terror_handler.fear_earned
+        actual_fear_cards = test_island.terror_handler.fear_cards_pending
+        actual_terror_level = test_island.terror_handler.terror_level
 
         expected_fear_generated = 1
         expected_fear_cards = 1
