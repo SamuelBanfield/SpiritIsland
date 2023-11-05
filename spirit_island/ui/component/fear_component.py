@@ -26,11 +26,13 @@ class FearComponent(UIComponent):
     def render(self, dest: pygame.surface.Surface, hovered: bool):
         self._surface.fill(SPIRIT_BOARD_BACKGROUND)
 
+        # Draw the current terror level
         current_terror_level_image = terror_level_images[self._island.terror_level]
         terror_level_rect = current_terror_level_image.get_rect()
         terror_level_rect.center = (self._width // 2, self._height // 3)
         self._surface.blit(current_terror_level_image, terror_level_rect)
 
+        # Draw the fear pool (e.g. "1/4")
         fear_pool_text = FONT_SUPPLIER.get_font_size(24).render(
             f"{self._island.fear_earned}/{self._island.fear_capacity}", True, BLACK
         )

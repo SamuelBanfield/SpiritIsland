@@ -18,7 +18,7 @@ class Header(UIComponent):
         self._width = width
         self._height = height
         self._rect: pygame.rect.Rect = self._surface.get_rect()
-        invader_track = InvaderTrack(island, width, height, (0, 0))
+        invader_track = InvaderTrack(island, height, (0, 0))
         fear_component = FearComponent(island, height, height, (invader_track.get_width(), 0)) # Make it a square
         self._components = [invader_track, fear_component]
 

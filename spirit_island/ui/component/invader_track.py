@@ -28,15 +28,12 @@ class _InvaderCardImageSupplier:
 
 
 class InvaderTrack(UIComponent):
-    """The header at the top of the board containing information about invader cards, fear cards etc"""
+    """Information about invader cards"""
 
-    def __init__(self, island: Island, width: int, height: int, topleft):
-        self._surface: pygame.surface.Surface = pygame.surface.Surface((width, height))
-        self._width = width
+    def __init__(self, island: Island, height: int, topleft):
+        """Fixed aspect ratio, so only height can be specified, then call get_width"""
         self._height = height
         self._island: Island = island
-        self._rect: pygame.rect.Rect = self._surface.get_rect()
-        self._rect.topleft = topleft
         self._image_supplier: _InvaderCardImageSupplier = _InvaderCardImageSupplier()
         
         self._font = FONT_SUPPLIER.get_font_size(16)
@@ -44,6 +41,10 @@ class InvaderTrack(UIComponent):
         self._text_height = self._font.render("Placeholder", True, BLACK).get_height() # Estimate for how tall the text will be
         self._card_height = self._height - (3 * self._margin + self._text_height)
         self._card_width = self._card_height * INVADER_CARD_ASPECT_RATIO
+        self._surface: pygame.surface.Surface = pygame.surface.Surface((self.get_width(), height))
+        self._rect: pygame.rect.Rect = self._surface.get_rect()
+        self._rect.topleft = topleft
+
 
     def get_width(self):
         return self._card_width * 3 + self._margin * 4
