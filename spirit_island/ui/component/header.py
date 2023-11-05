@@ -3,11 +3,11 @@ import os
 import pygame
 
 from spirit_island.decks.invader_card import InvaderCard
-from spirit_island.ui.util import FONT_SUPPLIER, BLACK, SPIRIT_BOARD_BACKGROUND
-from spirit_island.ui.component.component import UIComponent
-from spirit_island.ui.component.invader_track import InvaderTrack
 from spirit_island.framework.island import Island
+from spirit_island.ui.component.component import UIComponent
 from spirit_island.ui.component.fear_component import FearComponent
+from spirit_island.ui.component.invader_track import InvaderTrack
+from spirit_island.ui.util import BLACK, FONT_SUPPLIER, SPIRIT_BOARD_BACKGROUND
 
 
 class Header(UIComponent):
@@ -19,7 +19,9 @@ class Header(UIComponent):
         self._height = height
         self._rect: pygame.rect.Rect = self._surface.get_rect()
         invader_track = InvaderTrack(island, height, (0, 0))
-        fear_component = FearComponent(island, height, height, (invader_track.get_width(), 0)) # Make it a square
+        fear_component = FearComponent(
+            island, height, height, (invader_track.get_width(), 0)
+        )  # Make it a square
         self._components = [invader_track, fear_component]
 
     def render(self, dest: pygame.surface.Surface, hovered: bool):

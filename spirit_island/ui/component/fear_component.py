@@ -10,7 +10,10 @@ from spirit_island.ui.util import BLACK, FONT_SUPPLIER, SPIRIT_BOARD_BACKGROUND
 image_folder = os.path.relpath(__file__ + "/../../../resources/images/")
 
 fear_token_image = pygame.image.load(image_folder + "/fear_token.png")
-terror_level_images = {terror_level: pygame.image.load(image_folder + f"/terror_level_{terror_level}.png") for terror_level in range(1, 4)}
+terror_level_images = {
+    terror_level: pygame.image.load(image_folder + f"/terror_level_{terror_level}.png")
+    for terror_level in range(1, 4)
+}
 
 
 class FearComponent(UIComponent):

@@ -105,19 +105,19 @@ class Island:
         terror_handler_args = {"n_players": self.n_players}
         self.terror_handler = TerrorHandler(terror_handler_args)
 
-    def get_city_count_island(self):
+    def get_city_count_island(self) -> int:
         """Return the total city count on the island."""
         island_city_count = sum(len(land.cities) for land in self.lands)
 
         return island_city_count
 
-    def get_town_count_island(self):
+    def get_town_count_island(self) -> int:
         """Return the total town count on the island."""
         island_town_count = sum(len(land.towns) for land in self.lands)
 
         return island_town_count
 
-    def get_explorer_count_island(self):
+    def get_explorer_count_island(self) -> int:
         """Return the total explorer count on the island."""
         island_explorer_count = sum(len(land.explorers) for land in self.lands)
 

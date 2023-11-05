@@ -15,7 +15,7 @@ class Land:
         self.dahan = []
         self.blight = []
 
-        self.fear_generated = 0
+        self.fear_generated_in_land = 0
         self.defend = 0
 
     def __eq__(self, other):

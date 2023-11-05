@@ -13,8 +13,8 @@ from spirit_island.framework.logger import logger
 from spirit_island.framework.pieces import *
 from spirit_island.launcher import read_json
 from spirit_island.ui.component.component import UIComponent
-from spirit_island.ui.util import SPIRIT_BOARD_BACKGROUND, BLACK
 from spirit_island.ui.inside_land import is_point_inside_polygon
+from spirit_island.ui.util import BLACK, SPIRIT_BOARD_BACKGROUND
 
 image_folder = os.path.relpath(__file__ + "/../../resources/images")
 
@@ -70,12 +70,13 @@ class BoardComponent(UIComponent):
         )
         for land in self._lands:
             mouse_pos = pygame.mouse.get_pos()
-            hovered = land.is_location_on_component((
-                (mouse_pos[0] - self._offset[0]) // scale_factor,
-                (mouse_pos[1] - self._offset[1]) // scale_factor
-            ))
+            hovered = land.is_location_on_component(
+                (
+                    (mouse_pos[0] - self._offset[0]) // scale_factor,
+                    (mouse_pos[1] - self._offset[1]) // scale_factor,
+                )
+            )
             land.render(self._board_surf, hovered)
-
 
         scaled_image = pygame.transform.scale_by(self._board_surf, scale_factor)
         dest.blit(
@@ -152,7 +153,7 @@ class LandUI:
             if not id_present:
                 location = self.piece_uis[self.piece_uis.index(piece_id)].piece_location
                 self.piece_ids.remove(piece_id)
-                self.piece_uis.remove(piece_id) # Looks wrong
+                self.piece_uis.remove(piece_id)  # Looks wrong
                 self.available_locations.append(location)
 
     @override

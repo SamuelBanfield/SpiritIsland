@@ -47,6 +47,7 @@ class Runner:
             "card_plays_phase",
             "fast_phase",
             "event_phase",
+            "blighted_island_phase",
             "fear_card_phase",
             "ravage_phase",
             "build_phase",
