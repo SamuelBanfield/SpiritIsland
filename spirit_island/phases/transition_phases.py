@@ -21,5 +21,23 @@ class CardsAdvance(Phase):
 
         print("Invader cards advanced")
 
-        # Advance turn counter, will go in time passes phase eventually
+
+class TimePassesPhase(Phase):
+    """All effects that last until the end of turn are reset."""
+
+    def __init__(self, controls: dict, island: Island):
+        super().__init__(controls, island, name="Time Passes")
+
+    def execute_phase(self):
+        for land in self.island.lands:
+            # Reset land properties
+            land.reset_properties()
+            # Reset health and damage of pieces
+            for piece in land.dahan + land.cities + land.towns + land.explorers:
+                piece.reset_health()
+                piece.reset_damage()
+
+        print(f"End of turn {self.island.turn_counter}")
+
+        # Advance turn counter
         self.island.turn_counter += 1

@@ -39,6 +39,7 @@ class Runner:
         self.explore = None
         self.cards_advance = None
         self.fear_card_phase = None
+        self.time_passes_phase = None
         self.island = None
 
         logger.info("Runner initialised")
@@ -74,6 +75,11 @@ class Runner:
 
         self.cards_advance = CardsAdvance(controls=self.controls, island=self.island)
         self.phase_objects.append(self.cards_advance)
+
+        self.time_passes_phase = TimePassesPhase(
+            controls=self.controls, island=self.island
+        )
+        self.phase_objects.append(self.time_passes_phase)
         return
 
     def create_island(self):
