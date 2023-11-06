@@ -86,6 +86,10 @@ class Island:
             new_land.number = land_number
             new_land.id = new_land.board + new_land.number
 
+            # Hardcode coastal lands
+            if new_land.number in ["1", "2", "3"]:
+                new_land.is_coastal = True
+
             for i, (key, value) in enumerate(board_dict[land_number].items()):
                 if key in ["city", "town", "explorer", "blight", "dahan"]:
                     for _ in range(value):

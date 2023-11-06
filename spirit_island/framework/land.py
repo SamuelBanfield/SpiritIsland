@@ -18,6 +18,8 @@ class Land:
         self.fear_generated_in_land = 0
         self.defend = 0
 
+        self.is_coastal = False
+
     def __eq__(self, other):
         return self.board == other.board and self.number == other.number
 
