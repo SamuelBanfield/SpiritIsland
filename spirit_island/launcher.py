@@ -5,6 +5,7 @@ from typing import List, Union
 
 from spirit_island.framework.island import Island
 from spirit_island.framework.logger import logger
+from spirit_island.phases.fear_card_phase import FearPhase
 from spirit_island.phases.invader_phases import *
 from spirit_island.phases.transition_phases import *
 
@@ -37,6 +38,7 @@ class Runner:
         self.build = None
         self.explore = None
         self.cards_advance = None
+        self.fear_card_phase = None
         self.island = None
 
         logger.info("Runner initialised")
@@ -58,6 +60,9 @@ class Runner:
             "time_passes_phase",
         ]
         # Make instances of each phase and store in runner
+        self.fear_card_phase = FearPhase(controls=self.controls, island=self.island)
+        self.phase_objects.append(self.fear_card_phase)
+
         self.ravage = Ravage(controls=self.controls, island=self.island)
         self.phase_objects.append(self.ravage)
 
