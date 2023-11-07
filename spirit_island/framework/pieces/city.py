@@ -6,7 +6,7 @@ class City(InvaderPiece):
 
     def __init__(self):
         super().__init__()
-        self.type = "blight"
+        self.type = "city"
 
         self.base_health = 3
         self.base_damage = 3

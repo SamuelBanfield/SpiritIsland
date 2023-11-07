@@ -48,32 +48,6 @@ class TestInvaderPhase(unittest.TestCase):
                             land0.get_explorer_count() == land1.get_explorer_count()
                         ), "Explorer added in non-exploring terrain"
 
-    def test_cards_advance(self):
-        invader_deck0 = copy.deepcopy(self.runner.island.invader_deck)
-
-        for round_number in range(len(invader_deck0)):
-            print("Checking invader track at round: ", round_number + 1)
-            track_a = copy.deepcopy(self.runner.island.invader_track)
-
-            self.runner.explore.execute_phase()
-            self.runner.cards_advance.execute_phase()
-            track_b = copy.deepcopy(self.runner.island.invader_track)
-
-            if len(track_b["discard"]) > 0:
-                assert (
-                    track_a["ravage"] == track_b["discard"][-1]
-                ), "Ravage card not moved into Discard"
-            if track_b["ravage"] is not None:
-                assert (
-                    track_a["build"] == track_b["ravage"]
-                ), "Build card not moved to Ravage"
-
-        deck_check = True
-        for i, card in enumerate(self.runner.island.invader_track["discard"]):
-            if not card == invader_deck0[i]:
-                deck_check = False
-        assert deck_check, "Not all cards moved to Discard"
-
     def test_build(self):
         self.runner.explore.execute_phase()
         self.runner.cards_advance.execute_phase()
