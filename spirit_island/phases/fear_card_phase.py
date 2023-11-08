@@ -18,9 +18,12 @@ class FearPhase(Phase):
         while self.island.terror_handler.fear_cards_pending > 0:
             pending_cards = self.island.terror_handler.fear_cards_pending
             print(f"Pending fear cards: {pending_cards}")
+            self.island.terror_handler.fear_cards_pending -= 1
+            # Now perform a fear card
             current_fear_card = self.fear_deck_handler.select_random_fear_card()
             print(f"Fear card is {current_fear_card.name}")
             self.perform_fear_card(current_fear_card, self.island)
+            self.move_fear_card_to_discard(current_fear_card)
 
         print("Fear Card Phase Complete")
 
@@ -33,3 +36,6 @@ class FearPhase(Phase):
             fear_card.level2_effect(island)
         else:
             fear_card.level3_effect(island)
+
+    def move_fear_card_to_discard(self, fear_card: FearCardBase):
+        self.fear_deck_handler.fear_card_discard_pile.append(fear_card)

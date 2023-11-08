@@ -8,6 +8,7 @@ class FearDeckHandler:
 
     def __init__(self):
         self.fear_deck = {}
+        self.fear_card_discard_pile = []
         self.construct_fear_deck()
 
     def construct_fear_deck(self):

@@ -5,7 +5,6 @@ class TerrorHandler:
         # Terror level stuff
         self.terror_level = 1
         # Fear card stuff
-        self.fear_card_discard_pile = []
         self.fear_cards_pending = 0
         self.fear_cards_to_next_level = 3
         # Fear pool stuff

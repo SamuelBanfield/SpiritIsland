@@ -29,6 +29,11 @@ class FearCardBase(Card):
         pass
 
 
+class FearCardTest(FearCardBase):
+    def __init__(self):
+        super().__init__()
+
+
 class OverseasTrade(FearCardBase):
     def __init__(self):
         super().__init__()
