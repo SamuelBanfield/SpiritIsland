@@ -112,14 +112,19 @@ class BuildAction(Action):
     def execute_action(self, land: Land):
         """Performs the build action in the land number specified."""
 
+        # Skip if the land is forbidden from building this turn
+        if not land.can_build:
+            print(f"Skipped build in {land.id}")
+            return
+
         # Skip if no invaders present
         invader_all = land.cities + land.towns + land.explorers
         if not len(invader_all):
             return
 
-        if len(land.towns) > len(land.cities):
+        if len(land.towns) > len(land.cities) and land.can_build_city:
             self.island.add_piece("city", land)
-        else:
+        elif len(land.towns) <= len(land.cities):
             self.island.add_piece("town", land)
 
         print(f"Build - Action Done in land {land.id}")

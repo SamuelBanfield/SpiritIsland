@@ -46,20 +46,22 @@ class OverseasTrade(FearCardBase):
         )
 
     def level1_effect(self, island):
-        """Placeholder for terror level 1 effect"""
+        """Overseas Trade terror level 1"""
         print(f"Terror level 1 effect: {self.level1_text}")
         for land in island.lands:
             if land.is_coastal:
                 land.defend += 3
 
     def level2_effect(self, island):
-        """Placeholder for terror level 2 effect"""
+        """Overseas Trade terror level 2"""
         for land in island.lands:
             if land.is_coastal:
                 land.defend += 6
+                land.can_build_city = False
 
     def level3_effect(self, island):
-        """Placeholder for terror level 3 effect"""
+        """Overseas Trade terror level 3"""
         for land in island.lands:
             if land.is_coastal:
                 land.defend += 9
+                land.can_build = False
