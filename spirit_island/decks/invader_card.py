@@ -1,4 +1,5 @@
-from .card_base import Card
+from spirit_island.decks.card_base import Card
+from spirit_island.framework.land import Land
 
 
 class InvaderCard(Card):
@@ -9,6 +10,9 @@ class InvaderCard(Card):
 
         self.terrains = terrain_types
         self.stage = invader_stage
+
+    def matches_land(self, land: Land):
+        return land.terrain in self.terrains or land.is_coastal and "coast" in self.terrains
 
     def __eq__(self, other):
         """See if a card is equivalent for testing"""
