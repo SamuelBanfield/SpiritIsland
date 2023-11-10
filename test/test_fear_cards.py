@@ -60,11 +60,11 @@ class TestFearCardOverseasTrade(unittest.TestCase):
         }
         actual_defends = {land.number: land.defend for land in fear_phase.island.lands}
 
-        self.runner.explore.execute_phase()
-        self.runner.cards_advance.execute_phase()
+        self.runner.explore.begin_phase()
+        self.runner.cards_advance.begin_phase()
         fear_phase.island.lands[2].terrain = "sand"
         for i in range(3):
-            self.runner.build.execute_phase()
+            self.runner.build.begin_phase()
 
         expected_invaders_land2 = {"Cities": 1, "Towns": 2}
         actual_invaders_land2 = {
@@ -99,11 +99,11 @@ class TestFearCardOverseasTrade(unittest.TestCase):
         }
         actual_defends = {land.number: land.defend for land in fear_phase.island.lands}
 
-        self.runner.explore.execute_phase()
-        self.runner.cards_advance.execute_phase()
+        self.runner.explore.begin_phase()
+        self.runner.cards_advance.begin_phase()
         fear_phase.island.lands[2].terrain = "sand"
         for i in range(3):
-            self.runner.build.execute_phase()
+            self.runner.build.begin_phase()
 
         expected_invaders_land2 = {"Cities": 1, "Towns": 0}
         actual_invaders_land2 = {

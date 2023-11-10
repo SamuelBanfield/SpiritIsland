@@ -89,7 +89,7 @@ class Runner:
         """Loop through phases. Does not run through UI."""
         try:
             for phase in self.phase_objects:
-                phase.execute_phase()
+                phase.begin_phase()
         except EndGameException as ege:
             self.victory = ege.victory
             self.end_game_message = ege.message
@@ -98,7 +98,7 @@ class Runner:
 
     def perform_phase(self):
         try:
-            self.phase_objects[self.current_phase_index].execute_phase()
+            self.phase_objects[self.current_phase_index].begin_phase()
         except EndGameException as ege:
             self.victory = ege.victory
             self.end_game_message = ege.message

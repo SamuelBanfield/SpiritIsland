@@ -10,7 +10,7 @@ class Ravage(Phase):
     def __init__(self, controls: dict, island: Island):
         super().__init__(controls, island, name="Ravage")
 
-    def execute_phase(self):
+    def begin_phase(self):
         print(f"Ravage Phase: turn {self.island.turn_counter}")
         if not self.island.invader_track["ravage"]:
             return
@@ -34,7 +34,7 @@ class Build(Phase):
     def __init__(self, controls: dict, island: Island):
         super().__init__(controls, island, name="Build")
 
-    def execute_phase(self):
+    def begin_phase(self):
         print(f"Build Phase: turn {self.island.turn_counter}")
         if not self.island.invader_track["build"]:
             return
@@ -58,7 +58,7 @@ class Explore(Phase):
     def __init__(self, controls: dict, island: Island):
         super().__init__(controls, island, name="Explore")
 
-    def execute_phase(self):
+    def begin_phase(self):
         print(f"Explore Phase: turn {self.island.turn_counter}")
         try:
             new_card = self.island.invader_deck.pop(0)

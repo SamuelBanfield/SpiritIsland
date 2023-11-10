@@ -25,8 +25,8 @@ class TestTransitionPhase(unittest.TestCase):
             print("Checking invader track at round: ", round_number + 1)
             track_a = copy.deepcopy(self.runner.island.invader_track)
 
-            self.runner.explore.execute_phase()
-            self.runner.cards_advance.execute_phase()
+            self.runner.explore.begin_phase()
+            self.runner.cards_advance.begin_phase()
             track_b = copy.deepcopy(self.runner.island.invader_track)
 
             if len(track_b["discard"]) > 0:
@@ -51,7 +51,7 @@ class TestTransitionPhase(unittest.TestCase):
         lands[2].dahan[0].damage = 5
         lands[7].dahan[1].health = 4
 
-        time_passes_phase.execute_phase()
+        time_passes_phase.begin_phase()
 
         expected_city_health = 3
         expected_dahan_damage = 2
@@ -78,7 +78,7 @@ class TestTransitionPhase(unittest.TestCase):
         lands[3].can_build_city = False
         lands[8].fear_generated_in_land = 1
 
-        time_passes_phase.execute_phase()
+        time_passes_phase.begin_phase()
 
         expected_defend = 0
         expected_can_build = True

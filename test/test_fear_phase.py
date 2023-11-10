@@ -57,7 +57,7 @@ class TestFearPhase(unittest.TestCase):
             "OverseasTrade": OverseasTrade,
         }
 
-        fear_phase.execute_phase()
+        fear_phase.begin_phase()
 
         assert (
             fear_phase.island.lands[1].defend == 9

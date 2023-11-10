@@ -19,7 +19,7 @@ class TestInvaderPhase(unittest.TestCase):
     def test_explore(self):
         lands0 = copy.deepcopy(self.runner.island.lands)
 
-        self.runner.explore.execute_phase()
+        self.runner.explore.begin_phase()
 
         explore_card = self.runner.island.invader_track["explore"]
         terrains = explore_card.terrains
@@ -49,12 +49,12 @@ class TestInvaderPhase(unittest.TestCase):
                         ), "Explorer added in non-exploring terrain"
 
     def test_build(self):
-        self.runner.explore.execute_phase()
-        self.runner.cards_advance.execute_phase()
+        self.runner.explore.begin_phase()
+        self.runner.cards_advance.begin_phase()
 
         lands0 = copy.deepcopy(self.runner.island.lands)
 
-        self.runner.build.execute_phase()
+        self.runner.build.begin_phase()
 
         build_card = self.runner.island.invader_track["build"]
         terrains = build_card.terrains
@@ -93,16 +93,16 @@ class TestInvaderPhase(unittest.TestCase):
                         ), "Built in non-building terrain"
 
     def test_ravage(self):  # Ravage will not cascade blight yet
-        self.runner.explore.execute_phase()
-        self.runner.cards_advance.execute_phase()
+        self.runner.explore.begin_phase()
+        self.runner.cards_advance.begin_phase()
 
-        self.runner.build.execute_phase()
-        self.runner.explore.execute_phase()
-        self.runner.cards_advance.execute_phase()
+        self.runner.build.begin_phase()
+        self.runner.explore.begin_phase()
+        self.runner.cards_advance.begin_phase()
 
         lands0 = copy.deepcopy(self.runner.island.lands)
 
-        self.runner.ravage.execute_phase()
+        self.runner.ravage.begin_phase()
 
         ravage_card = self.runner.island.invader_track["ravage"]
         terrains = ravage_card.terrains
