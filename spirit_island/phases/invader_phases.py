@@ -21,8 +21,8 @@ class Ravage(Phase):
             ]
 
     def update(self):
-        for action in self.ravage_actions:
-            action.execute_action()
+        while self.ravage_actions:
+            self.ravage_actions.pop(0).execute_action()
         print("Ravage Phase Complete")
 
     def create_ravage_action(self, land) -> RavageAction:
@@ -46,8 +46,8 @@ class Build(Phase):
             ]
     
     def update(self):
-        for action in self.build_actions:
-            action.execute_action()
+        while self.build_actions:
+            self.build_actions.pop(0).execute_action()
 
         print("Build Phase Complete")
 
@@ -76,8 +76,8 @@ class Explore(Phase):
         ]
 
     def update(self):
-        for action in self.explore_actions:
-            action.execute_action()
+        while self.explore_actions:
+            self.explore_actions.pop(0).execute_action()
 
         print("Explore Phase Complete")
 

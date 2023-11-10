@@ -90,6 +90,7 @@ class Runner:
         try:
             for phase in self.phase_objects:
                 phase.begin_phase()
+                phase.update()
         except EndGameException as ege:
             self.victory = ege.victory
             self.end_game_message = ege.message
@@ -108,6 +109,12 @@ class Runner:
         self.current_phase_index = (self.current_phase_index + 1) % len(
             self.phase_objects
         )
+
+    def next_phase(self):
+        self.current_phase_index = (self.current_phase_index + 1) % len(
+            self.phase_objects
+        )
+        self.phase_objects[self.current_phase_index].begin_phase()
 
     def get_current_phase(self) -> Phase:
         return self.phase_objects[self.current_phase_index]
