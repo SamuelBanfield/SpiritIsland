@@ -5,7 +5,7 @@ import unittest
 from spirit_island import launcher
 from spirit_island.decks.fear_cards import *
 from spirit_island.phases.fear_card_phase import FearPhase
-
+from spirit_island.test_support import phase_util
 
 class TestFearCardOverseasTrade(unittest.TestCase):
     def setUp(self):
@@ -60,11 +60,11 @@ class TestFearCardOverseasTrade(unittest.TestCase):
         }
         actual_defends = {land.number: land.defend for land in fear_phase.island.lands}
 
-        self.runner.explore.begin_phase()
-        self.runner.cards_advance.begin_phase()
+        phase_util.run_phase(self.runner.explore)
+        phase_util.run_phase(self.runner.cards_advance)
         fear_phase.island.lands[2].terrain = "sand"
         for i in range(3):
-            self.runner.build.begin_phase()
+            phase_util.run_phase(self.runner.build)
 
         expected_invaders_land2 = {"Cities": 1, "Towns": 2}
         actual_invaders_land2 = {
@@ -99,11 +99,11 @@ class TestFearCardOverseasTrade(unittest.TestCase):
         }
         actual_defends = {land.number: land.defend for land in fear_phase.island.lands}
 
-        self.runner.explore.begin_phase()
-        self.runner.cards_advance.begin_phase()
+        phase_util.run_phase(self.runner.explore)
+        phase_util.run_phase(self.runner.cards_advance)
         fear_phase.island.lands[2].terrain = "sand"
         for i in range(3):
-            self.runner.build.begin_phase()
+            phase_util.run_phase(self.runner.build)
 
         expected_invaders_land2 = {"Cities": 1, "Towns": 0}
         actual_invaders_land2 = {

@@ -5,6 +5,7 @@ import unittest
 from spirit_island import launcher
 from spirit_island.actions.invader_actions import RavageAction
 from spirit_island.framework.island import Island
+from spirit_island.test_support import phase_util
 
 
 class TestInvaderPhase(unittest.TestCase):
@@ -19,7 +20,7 @@ class TestInvaderPhase(unittest.TestCase):
     def test_explore(self):
         lands0 = copy.deepcopy(self.runner.island.lands)
 
-        self.runner.explore.begin_phase()
+        phase_util.run_phase(self.runner.explore)
 
         explore_card = self.runner.island.invader_track["explore"]
         terrains = explore_card.terrains
@@ -49,12 +50,12 @@ class TestInvaderPhase(unittest.TestCase):
                         ), "Explorer added in non-exploring terrain"
 
     def test_build(self):
-        self.runner.explore.begin_phase()
-        self.runner.cards_advance.begin_phase()
+        phase_util.run_phase(self.runner.explore)
+        phase_util.run_phase(self.runner.cards_advance)
 
         lands0 = copy.deepcopy(self.runner.island.lands)
 
-        self.runner.build.begin_phase()
+        phase_util.run_phase(self.runner.build)
 
         build_card = self.runner.island.invader_track["build"]
         terrains = build_card.terrains
@@ -93,16 +94,16 @@ class TestInvaderPhase(unittest.TestCase):
                         ), "Built in non-building terrain"
 
     def test_ravage(self):  # Ravage will not cascade blight yet
-        self.runner.explore.begin_phase()
-        self.runner.cards_advance.begin_phase()
+        phase_util.run_phase(self.runner.explore)
+        phase_util.run_phase(self.runner.cards_advance)
 
-        self.runner.build.begin_phase()
-        self.runner.explore.begin_phase()
-        self.runner.cards_advance.begin_phase()
+        phase_util.run_phase(self.runner.build)
+        phase_util.run_phase(self.runner.explore)
+        phase_util.run_phase(self.runner.cards_advance)
 
         lands0 = copy.deepcopy(self.runner.island.lands)
 
-        self.runner.ravage.begin_phase()
+        phase_util.run_phase(self.runner.ravage)
 
         ravage_card = self.runner.island.invader_track["ravage"]
         terrains = ravage_card.terrains
