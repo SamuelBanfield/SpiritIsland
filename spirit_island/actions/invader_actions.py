@@ -6,22 +6,29 @@ from spirit_island.framework.island import Island
 from spirit_island.framework.land import Land
 
 
-class RavageAction(Action):
+class InvaderAction(Action):
+
+    def __init__(self, controls: dict, island: Island, land: Land):
+        super().__init__(controls, island)
+        self.land = land
+
+class RavageAction(InvaderAction):
     """Ravage action in a single land."""
 
-    def __init__(self, controls: dict, island: Island):
+    def __init__(self, controls: dict, island: Island, land: Land):
         """
         Initialise.
         :param controls: path to debug_controls file
         :param island: Island object
+        :param land: the target land of this action
         """
-        super().__init__(controls, island)
+        super().__init__(controls, island, land)
 
-    def execute_action(self, land: Land):
+    def execute_action(self):
         """Performs the ravage action in the land number specified."""
 
         # Skip if no invaders present
-        invader_all = land.cities + land.towns + land.explorers
+        invader_all = self.land.cities + self.land.towns + self.land.explorers
         if not len(invader_all):
             return
 
@@ -30,16 +37,16 @@ class RavageAction(Action):
 
         # Blight the land
         if damage_total >= 2:
-            self.island.add_piece("blight", land)
+            self.island.add_piece("blight", self.land)
 
         # Damage the dahan
-        if len(land.dahan) + damage_total:
-            if damage_total >= sum(dahan.health for dahan in land.dahan):
-                land.dahan.clear()
+        if len(self.land.dahan) + damage_total:
+            if damage_total >= sum(dahan.health for dahan in self.land.dahan):
+                self.land.dahan.clear()
             else:
                 remaining_damage = damage_total
                 # Damage dahan in the most lethal way by ordering them by health
-                dahan_health_dict = {dahan.id: dahan for dahan in land.dahan}
+                dahan_health_dict = {dahan.id: dahan for dahan in self.land.dahan}
                 sorted_dict = dict(
                     sorted(dahan_health_dict.items(), key=lambda item: item[1].health)
                 )
@@ -51,41 +58,41 @@ class RavageAction(Action):
                         dahan.health -= remaining_damage
                         remaining_damage = 0
                 # Replace dahan list with a new list of surviving dahan
-                surviving_dahan = [dahan for dahan in land.dahan if dahan.health > 0]
-                land.dahan = surviving_dahan
+                surviving_dahan = [dahan for dahan in self.land.dahan if dahan.health > 0]
+                self.land.dahan = surviving_dahan
 
         # Calculate the damage to the invaders from dahan counterattack
-        dahan_damage = sum(dahan.damage for dahan in land.dahan)
+        dahan_damage = sum(dahan.damage for dahan in self.land.dahan)
 
         # Damage the invaders
         if self._controls["auto_allocate_damage"]:
-            if dahan_damage > 3 * len(land.cities) + 2 * len(land.towns) + len(
-                land.explorers
+            if dahan_damage > 3 * len(self.land.cities) + 2 * len(self.land.towns) + len(
+                self.land.explorers
             ):
-                for city in land.cities:
+                for city in self.land.cities:
                     self.island.terror_handler.add_fear(city.base_fear)
-                land.cities.clear()
-                for town in land.towns:
+                self.land.cities.clear()
+                for town in self.land.towns:
                     self.island.terror_handler.add_fear(town.base_fear)
-                land.towns.clear()
-                for explorer in land.explorers:
+                self.land.towns.clear()
+                for explorer in self.land.explorers:
                     self.island.terror_handler.add_fear(explorer.base_fear)
-                land.explorers.clear()
+                self.land.explorers.clear()
             else:  # hard-coded method
                 dahan_damage_remaining = dahan_damage
 
                 while dahan_damage_remaining > 0:
-                    if dahan_damage_remaining >= 3 and len(land.cities):
-                        self.island.terror_handler.add_fear(land.cities[0].base_fear)
-                        land.cities.pop(0)
+                    if dahan_damage_remaining >= 3 and len(self.land.cities):
+                        self.island.terror_handler.add_fear(self.land.cities[0].base_fear)
+                        self.land.cities.pop(0)
                         dahan_damage_remaining -= 3
-                    elif dahan_damage_remaining >= 2 and len(land.towns):
-                        self.island.terror_handler.add_fear(land.towns[0].base_fear)
-                        land.towns.pop(0)
+                    elif dahan_damage_remaining >= 2 and len(self.land.towns):
+                        self.island.terror_handler.add_fear(self.land.towns[0].base_fear)
+                        self.land.towns.pop(0)
                         dahan_damage_remaining -= 2
-                    elif len(land.explorers):
-                        self.island.terror_handler.add_fear(land.explorers[0].base_fear)
-                        land.explorers.pop(0)
+                    elif len(self.land.explorers):
+                        self.island.terror_handler.add_fear(self.land.explorers[0].base_fear)
+                        self.land.explorers.pop(0)
                         dahan_damage_remaining -= 1
                     else:
                         print("dahan counterattack damage miscalculation!")
@@ -94,68 +101,70 @@ class RavageAction(Action):
             # Choose dahan damage in the UI
             pass
 
-        print(f"Ravage - Action Done in land {land.id}")
+        print(f"Ravage - Action Done in land {self.land.id}")
         self.check_end_game()
 
 
-class BuildAction(Action):
+class BuildAction(InvaderAction):
     """Build action in a single land."""
 
-    def __init__(self, controls: dict, island: Island):
+    def __init__(self, controls: dict, island: Island, land: Land):
         """
         Initialise.
         :param controls: path to debug_controls file
         :param island: Island object
+        :param land: the target land of this action
         """
-        super().__init__(controls, island)
+        super().__init__(controls, island, land)
 
-    def execute_action(self, land: Land):
+    def execute_action(self):
         """Performs the build action in the land number specified."""
 
         # Skip if the land is forbidden from building this turn
-        if not land.can_build:
-            print(f"Skipped build in {land.id}")
+        if not self.land.can_build:
+            print(f"Skipped build in {self.land.id}")
             return
 
         # Skip if no invaders present
-        invader_all = land.cities + land.towns + land.explorers
+        invader_all = self.land.cities + self.land.towns + self.land.explorers
         if not len(invader_all):
             return
 
-        if len(land.towns) > len(land.cities) and land.can_build_city:
-            self.island.add_piece("city", land)
-        elif len(land.towns) <= len(land.cities):
-            self.island.add_piece("town", land)
+        if len(self.land.towns) > len(self.land.cities) and self.land.can_build_city:
+            self.island.add_piece("city", self.land)
+        elif len(self.land.towns) <= len(self.land.cities):
+            self.island.add_piece("town", self.land)
 
-        print(f"Build - Action Done in land {land.id}")
+        print(f"Build - Action Done in land {self.land.id}")
         self.check_end_game()
 
 
-class ExploreAction(Action):
+class ExploreAction(InvaderAction):
     """Explore action in a single land."""
 
-    def __init__(self, controls: dict, island: Island):
+    def __init__(self, controls: dict, island: Island, land: Land):
         """
         Initialise.
         :param controls: path to debug_controls file
         :param island: Island object
+        :param land: the target land of this action
         """
-        super().__init__(controls, island)
+        super().__init__(controls, island, land)
 
-    def execute_action(self, land: Land):
+    def execute_action(self):
         """Performs the explore action in the land number specified."""
         lands_list = self.island.lands
         rel_path = os.path.relpath(__file__ + "/../../resources/board_adjacencies.json")
         with open(rel_path) as adj_file:
             adj_dict = json.load(adj_file)
-            lands_adj = adj_dict[str(land.number)]
+            lands_adj = adj_dict[str(self.land.number)]
 
         # Check if it has source of exploration
         source = False
 
-        if (len(land.cities) + len(land.towns)) > 0:
+        if (len(self.land.cities) + len(self.land.towns)) > 0:
             source = True
-        elif land.number in [1, 2, 3]:
+        elif self.land.number in [1, 2, 3]:
             source = True
         else:
             for adj_land_no in lands_adj:
@@ -165,7 +174,7 @@ class ExploreAction(Action):
                     break
 
         if source:
-            self.island.add_piece("explorer", land)
+            self.island.add_piece("explorer", self.land)
 
-        print(f"Explore - Action Done in land {land.id}")
+        print(f"Explore - Action Done in land {self.land.id}")
         self.check_end_game()

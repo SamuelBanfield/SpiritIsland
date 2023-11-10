@@ -52,7 +52,7 @@ class UI:
 
     def render(self, dest: pygame.Surface):
         dest.fill(SPIRIT_BOARD_BACKGROUND)
-        self._current_phase_image.set_text(self._runner.get_current_phase())
+        self._current_phase_image.set_text(self._runner.get_current_phase().get_name())
         for child in self._components:
             child.render(dest, child.is_location_on_component(pygame.mouse.get_pos()))
 
@@ -65,5 +65,6 @@ class UI:
             for event in pygame.event.get():
                 self.handle_event(event)
             self.render(display)
+            self._runner.get_current_phase().update()
             pygame.display.flip()
             clock.tick(self.options["FPS"])

@@ -109,8 +109,8 @@ class Runner:
             self.phase_objects
         )
 
-    def get_current_phase(self):
-        return self.phase_objects[self.current_phase_index].get_name()
+    def get_current_phase(self) -> Phase:
+        return self.phase_objects[self.current_phase_index]
 
     def perform_end_game(self):
         if self.victory:

@@ -165,11 +165,11 @@ class TestInvaderActions(unittest.TestCase):
             "auto_allocate_damage": True,
         }
         island = Island(test_controls)
-        ravage = RavageAction(test_controls, island)
         land = island.lands[0]
+        ravage = RavageAction(test_controls, island, land)
         land.dahan.pop(0)
 
-        ravage.execute_action(land)
+        ravage.execute_action()
 
         assert len(land.dahan) == 0, f"Unexpected number of dahan: {len(land.dahan)}"
         assert len(land.cities) == 1, f"Unexpected number of cities: {len(land.cities)}"
@@ -184,10 +184,10 @@ class TestInvaderActions(unittest.TestCase):
             "auto_allocate_damage": True,
         }
         island = Island(test_controls)
-        ravage = RavageAction(test_controls, island)
         land = island.lands[0]
+        ravage = RavageAction(test_controls, island, land)
 
-        ravage.execute_action(land)
+        ravage.execute_action()
 
         assert len(land.dahan) == 1, f"Unexpected number of dahan: {len(land.dahan)}"
         assert len(land.cities) == 1, f"Unexpected number of cities: {len(land.cities)}"
@@ -205,14 +205,14 @@ class TestInvaderActions(unittest.TestCase):
             "auto_allocate_damage": True,
         }
         island = Island(test_controls)
-        ravage = RavageAction(test_controls, island)
         land = island.lands[0]
+        ravage = RavageAction(test_controls, island, land)
         land.dahan[3].health = 1
         land.towns.pop(0)
         # Invaders do 5 damage but should still kill 3 dahan
         # The 1 surviving dahan should kill the 2 explorers
 
-        ravage.execute_action(land)
+        ravage.execute_action()
 
         assert len(land.dahan) == 1, f"Unexpected number of dahan: {len(land.dahan)}"
         assert len(land.cities) == 1, f"Unexpected number of cities: {len(land.cities)}"

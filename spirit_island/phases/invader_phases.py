@@ -13,19 +13,26 @@ class Ravage(Phase):
     def begin_phase(self):
         print(f"Ravage Phase: turn {self.island.turn_counter}")
         if not self.island.invader_track["ravage"]:
-            return
-        for land in self.island.lands:
-            if land.terrain in self.island.invader_track["ravage"].terrains:
-                self.do_ravage_action(land)
-            elif self.island.invader_track["ravage"].terrains == ["coast"]:
-                if land.number in ["1", "2", "3"]:
-                    self.do_ravage_action(land)
+            ravage_actions: List[RavageAction] = []
+        else:
+            ravage_actions = [
+                self.create_ravage_action(land) for land in self.island.lands 
+                    if self.island.invader_track["ravage"].matches_land(land)
+            ]
+        for action in ravage_actions:
+            action.execute_action()
 
         print("Ravage Phase Complete")
 
+    def update(self):
+        pass
+
     def do_ravage_action(self, ravaging_land):
-        ravage_action = RavageAction(controls=self._controls, island=self.island)
-        ravage_action.execute_action(ravaging_land)
+        ravage_action = RavageAction(controls=self._controls, island=self.island, land=ravaging_land)
+        ravage_action.execute_action()
+
+    def create_ravage_action(self, land) -> RavageAction:
+        return RavageAction(controls=self._controls, island=self.island, land=land)
 
 
 class Build(Phase):
@@ -48,8 +55,8 @@ class Build(Phase):
         print("Build Phase Complete")
 
     def do_build_action(self, building_land):
-        build_action = BuildAction(controls=self._controls, island=self.island)
-        build_action.execute_action(building_land)
+        build_action = BuildAction(controls=self._controls, island=self.island, land=building_land)
+        build_action.execute_action()
 
 
 class Explore(Phase):
@@ -77,8 +84,8 @@ class Explore(Phase):
         print("Explore Phase Complete")
 
     def do_explore_action(self, exploring_land):
-        explore_action = ExploreAction(controls=self._controls, island=self.island)
-        explore_action.execute_action(exploring_land)
+        explore_action = ExploreAction(controls=self._controls, island=self.island, land=exploring_land)
+        explore_action.execute_action()
 
 
 class Escalation(Phase):
