@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 from typing import List, Union
 
+from spirit_island.framework.input_request import InputRequest, InputHandler
 from spirit_island.framework.island import Island
 from spirit_island.framework.logger import logger
 from spirit_island.phases.fear_card_phase import FearPhase
@@ -41,6 +42,7 @@ class Runner:
         self.fear_card_phase = None
         self.time_passes_phase = None
         self.island = None
+        self.input_handler = InputHandler()
 
         logger.info("Runner initialised")
 
@@ -64,13 +66,13 @@ class Runner:
         self.fear_card_phase = FearPhase(controls=self.controls, island=self.island)
         self.phase_objects.append(self.fear_card_phase)
 
-        self.ravage = Ravage(controls=self.controls, island=self.island)
+        self.ravage = Ravage(controls=self.controls, island=self.island, input_handler=self.input_handler)
         self.phase_objects.append(self.ravage)
 
-        self.build = Build(controls=self.controls, island=self.island)
+        self.build = Build(controls=self.controls, island=self.island, input_handler=self.input_handler)
         self.phase_objects.append(self.build)
 
-        self.explore = Explore(controls=self.controls, island=self.island)
+        self.explore = Explore(controls=self.controls, island=self.island, input_handler=self.input_handler)
         self.phase_objects.append(self.explore)
 
         self.cards_advance = CardsAdvance(controls=self.controls, island=self.island)
@@ -125,6 +127,9 @@ class Runner:
         else:
             print("You lost")
             print(f"{self.end_game_message}")
+
+    def get_input_requests(self):
+        return self.input_handler.input_requests
 
 
 def main():

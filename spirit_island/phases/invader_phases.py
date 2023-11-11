@@ -7,8 +7,8 @@ from spirit_island.phases.phases_base import Phase
 class Ravage(Phase):
     """Invader ravage phase."""
 
-    def __init__(self, controls: dict, island: Island):
-        super().__init__(controls, island, name="Ravage")
+    def __init__(self, controls: dict, island: Island, input_handler: InputHandler):
+        super().__init__(controls, island, name="Ravage", input_handler=input_handler)
 
     def begin_phase(self):
         print(f"Ravage Phase: turn {self.island.turn_counter}")
@@ -27,14 +27,19 @@ class Ravage(Phase):
         pass
 
     def create_ravage_action(self, land) -> RavageAction:
-        return RavageAction(controls=self._controls, island=self.island, land=land)
+        return RavageAction(
+            controls=self._controls,
+            island=self.island,
+            land=land,
+            input_handler=self.input_handler
+        )
 
 
 class Build(Phase):
     """Invader build phase."""
 
-    def __init__(self, controls: dict, island: Island):
-        super().__init__(controls, island, name="Build")
+    def __init__(self, controls: dict, island: Island, input_handler: InputHandler):
+        super().__init__(controls, island, name="Build", input_handler=input_handler)
 
     def begin_phase(self):
         print(f"Build Phase: turn {self.island.turn_counter}")
@@ -54,14 +59,19 @@ class Build(Phase):
         pass
 
     def create_build_action(self, building_land):
-        return BuildAction(controls=self._controls, island=self.island, land=building_land)
+        return BuildAction(
+            controls=self._controls,
+            island=self.island,
+            land=building_land,
+            input_handler=self.input_handler
+        )
 
 
 class Explore(Phase):
     """Invader explore phase."""
 
-    def __init__(self, controls: dict, island: Island):
-        super().__init__(controls, island, name="Explore")
+    def __init__(self, controls: dict, island: Island, input_handler: InputHandler):
+        super().__init__(controls, island, name="Explore", input_handler=input_handler)
 
     def begin_phase(self):
         print(f"Explore Phase: turn {self.island.turn_counter}")
@@ -86,7 +96,12 @@ class Explore(Phase):
         pass
 
     def create_explore_action(self, exploring_land):
-        return ExploreAction(controls=self._controls, island=self.island, land=exploring_land)
+        return ExploreAction(
+            controls=self._controls,
+            island=self.island,
+            land=exploring_land,
+            input_handler=self.input_handler
+        )
 
 
 class Escalation(Phase):

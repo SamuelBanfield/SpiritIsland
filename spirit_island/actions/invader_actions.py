@@ -2,27 +2,29 @@ import json
 import os
 
 from spirit_island.actions.action_base import Action
+from spirit_island.framework.input_request import InputHandler, InputRequest
 from spirit_island.framework.island import Island
 from spirit_island.framework.land import Land
 
 
 class InvaderAction(Action):
 
-    def __init__(self, controls: dict, island: Island, land: Land):
+    def __init__(self, controls: dict, island: Island, land: Land, input_handler: InputHandler):
         super().__init__(controls, island)
         self.land = land
+        self._input_handler = input_handler
 
 class RavageAction(InvaderAction):
     """Ravage action in a single land."""
 
-    def __init__(self, controls: dict, island: Island, land: Land):
+    def __init__(self, controls: dict, island: Island, land: Land, input_handler: InputHandler):
         """
         Initialise.
         :param controls: path to debug_controls file
         :param island: Island object
         :param land: the target land of this action
         """
-        super().__init__(controls, island, land)
+        super().__init__(controls, island, land, input_handler)
 
     def execute_action(self):
         """Performs the ravage action in the land number specified."""
@@ -38,6 +40,8 @@ class RavageAction(InvaderAction):
         # Blight the land
         if damage_total >= 2:
             self.island.add_piece("blight", self.land)
+            if self.land.get_blight_count() > 1:
+                self._input_handler.make_input_request(InputRequest("Select land for blight cascade"))
 
         # Damage the dahan
         if len(self.land.dahan) + damage_total:
@@ -108,14 +112,14 @@ class RavageAction(InvaderAction):
 class BuildAction(InvaderAction):
     """Build action in a single land."""
 
-    def __init__(self, controls: dict, island: Island, land: Land):
+    def __init__(self, controls: dict, island: Island, land: Land, input_handler: InputHandler):
         """
         Initialise.
         :param controls: path to debug_controls file
         :param island: Island object
         :param land: the target land of this action
         """
-        super().__init__(controls, island, land)
+        super().__init__(controls, island, land, input_handler)
 
     def execute_action(self):
         """Performs the build action in the land number specified."""
@@ -142,14 +146,14 @@ class BuildAction(InvaderAction):
 class ExploreAction(InvaderAction):
     """Explore action in a single land."""
 
-    def __init__(self, controls: dict, island: Island, land: Land):
+    def __init__(self, controls: dict, island: Island, land: Land, input_handler: InputHandler):
         """
         Initialise.
         :param controls: path to debug_controls file
         :param island: Island object
         :param land: the target land of this action
         """
-        super().__init__(controls, island, land)
+        super().__init__(controls, island, land, input_handler)
 
     def execute_action(self):
         """Performs the explore action in the land number specified."""
