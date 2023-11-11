@@ -36,8 +36,14 @@ class UI:
             self.create_worker_thread_task(self._runner.next_phase),
             offset=[0, header_height + 40],
         )
-        self._current_phase_image = TextButton("", offset=[0, header_height])
-        self.input_required_button = TextButton("Input required", offset=[0, header_height + 80])
+        self._current_phase_image = TextButton(
+            lambda: self._runner.get_current_phase().get_name(),
+            offset=[0, header_height]
+        )
+        self.input_required_button = TextButton(
+            lambda: self._runner.get_input_requests()[0].message if self._runner.get_input_requests() else "Input required",
+            offset=[0, header_height + 80]
+        )
         self._components = [
             self._island_ui,
             next_phase_button,
@@ -59,7 +65,6 @@ class UI:
 
     def render(self, dest: pygame.Surface):
         dest.fill(SPIRIT_BOARD_BACKGROUND)
-        self._current_phase_image.set_text(self._runner.get_current_phase().get_name())
         for child in self._components:
             child.render(dest, child.is_location_on_component(pygame.mouse.get_pos()))
 
@@ -73,9 +78,6 @@ class UI:
                 self.handle_event(event)
             self.render(display)
             self._runner.get_current_phase().update()
-            input_requests = self._runner.get_input_requests()
-            if input_requests:
-                self.input_required_button.set_text(input_requests[0].message)
             pygame.display.flip()
             clock.tick(self.options["FPS"])
 

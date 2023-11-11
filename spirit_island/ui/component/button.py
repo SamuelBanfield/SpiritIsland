@@ -9,16 +9,27 @@ from spirit_island.ui.util import BLACK, FONT_SUPPLIER, GREY, WHITE
 
 class TextButton(UIComponent):
     def __init__(
-        self, text: str, callback: Callable = None, offset=[0, 0], font_size: int = 24
+        self, text_or_provider: str | Callable, callback: Callable = None, offset=[0, 0], font_size: int = 24
     ):
+        """
+        :param text_or_provider: either the text if this button always has
+        the same text, or a callback returning the button text
+        :param callback: the callback called when the button is pressed
+        :param offset: top left of the button on its parent surface
+        :param font_size: size of the font
+        """
         super().__init__()
         self._callback = callback
         self._font = FONT_SUPPLIER.get_font_size(font_size)
         self._offset = offset
-        self.set_text(text)
+        if isinstance(text_or_provider, str):
+            self.get_text = lambda: text_or_provider
+        else:
+            self.get_text = text_or_provider
+        self.update_text()
 
-    def set_text(self, text: str):
-        self._text = text
+    def update_text(self):
+        self._text = self.get_text()
         self._font_surface = self._font.render(self._text, True, BLACK, WHITE)
         self._font_surface_hover = self._font.render(self._text, True, BLACK, GREY)
         self._font_rect = self._font_surface.get_rect()
@@ -26,6 +37,7 @@ class TextButton(UIComponent):
 
     @override
     def render(self, dest: pygame.surface.Surface, hovered: bool):
+        self.update_text()
         dest.blit(
             self._font_surface_hover if hovered else self._font_surface, self._font_rect
         )
