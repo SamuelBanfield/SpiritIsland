@@ -2,6 +2,8 @@ import os
 
 import pygame
 
+from concurrent.futures import ThreadPoolExecutor
+
 from spirit_island.launcher import Runner
 from spirit_island.ui.component.button import TextButton
 from spirit_island.ui.component.header import Header
@@ -29,7 +31,7 @@ class UI:
         # Next phase button
         next_phase_button = TextButton(
             "Next phase",
-            self._runner.next_phase,
+            self.create_worker_thread_task(self._runner.next_phase),
             offset=[0, self.options["WIDTH"] // 4],
         )
         self._current_phase_image = TextButton("", offset=[0, header_height])
@@ -69,3 +71,31 @@ class UI:
             self._runner.get_current_phase().update()
             pygame.display.flip()
             clock.tick(self.options["FPS"])
+
+    def run_in_worker_thread(self, task, *args, **kwargs):
+        """
+        :param task: callback function to be run
+        :param args: arguments for the task
+        :param kwargs: key word arguments for the task
+
+        Submit a task to a worker thread
+
+        The idea is that this task may need input from the user,
+        so we run it on a worker thread so it can await user input
+        which will be supplied by the UI (main) thread.
+        """
+        with ThreadPoolExecutor(max_workers=1) as executor:
+            "Running task in worker thread"
+            result = executor.submit(task, *args, **kwargs)
+
+    def create_worker_thread_task(self, task, *args, **kwargs):
+        """
+        :param task: callback function to be run
+        :param args: arguments for the task
+        :param kwargs: key word arguments for the task
+
+        Create a callback that runs the given task in a worker
+        thread (wraps the task so that in runs in
+        a worker thread and doesn't block the UI).
+        """
+        return lambda: self.run_in_worker_thread(task, *args, *kwargs)

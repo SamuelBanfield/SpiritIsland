@@ -19,11 +19,12 @@ class Ravage(Phase):
                 self.create_ravage_action(land) for land in self.island.lands 
                     if self.island.invader_track["ravage"].matches_land(land)
             ]
-
-    def update(self):
         while self.ravage_actions:
             self.ravage_actions.pop(0).execute_action()
         print("Ravage Phase Complete")
+
+    def update(self):
+        pass
 
     def create_ravage_action(self, land) -> RavageAction:
         return RavageAction(controls=self._controls, island=self.island, land=land)
@@ -44,12 +45,13 @@ class Build(Phase):
                 self.create_build_action(land) for land in self.island.lands 
                     if self.island.invader_track["build"].matches_land(land)
             ]
-    
-    def update(self):
         while self.build_actions:
             self.build_actions.pop(0).execute_action()
 
         print("Build Phase Complete")
+    
+    def update(self):
+        pass
 
     def create_build_action(self, building_land):
         return BuildAction(controls=self._controls, island=self.island, land=building_land)
@@ -75,11 +77,13 @@ class Explore(Phase):
                 if self.island.invader_track["explore"].matches_land(land)
         ]
 
-    def update(self):
         while self.explore_actions:
             self.explore_actions.pop(0).execute_action()
 
         print("Explore Phase Complete")
+
+    def update(self):
+        pass
 
     def create_explore_action(self, exploring_land):
         return ExploreAction(controls=self._controls, island=self.island, land=exploring_land)
