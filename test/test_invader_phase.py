@@ -3,6 +3,7 @@ import os
 import unittest
 
 from spirit_island import launcher
+from spirit_island.framework.input_request import InputHandler
 from spirit_island.actions.invader_actions import RavageAction
 from spirit_island.framework.island import Island
 from spirit_island.test_support import phase_util
@@ -167,7 +168,7 @@ class TestInvaderActions(unittest.TestCase):
         }
         island = Island(test_controls)
         land = island.lands[0]
-        ravage = RavageAction(test_controls, island, land)
+        ravage = RavageAction(test_controls, island, land, InputHandler())
         land.dahan.pop(0)
 
         ravage.execute_action()
@@ -186,7 +187,7 @@ class TestInvaderActions(unittest.TestCase):
         }
         island = Island(test_controls)
         land = island.lands[0]
-        ravage = RavageAction(test_controls, island, land)
+        ravage = RavageAction(test_controls, island, land, InputHandler())
 
         ravage.execute_action()
 
@@ -207,7 +208,7 @@ class TestInvaderActions(unittest.TestCase):
         }
         island = Island(test_controls)
         land = island.lands[0]
-        ravage = RavageAction(test_controls, island, land)
+        ravage = RavageAction(test_controls, island, land, InputHandler())
         land.dahan[3].health = 1
         land.towns.pop(0)
         # Invaders do 5 damage but should still kill 3 dahan
