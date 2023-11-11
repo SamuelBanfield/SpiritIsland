@@ -29,6 +29,7 @@ class UI:
         header_height = self.options["HEIGHT"] // 5
         self._island_ui = BoardComponent(self._runner.island, (0, header_height))
         self.header = Header(self._runner.island, self.options["WIDTH"], header_height)
+        self.worker_thread_pool = ThreadPoolExecutor(max_workers=1)
 
         # Next phase button
         next_phase_button = TextButton(
@@ -102,10 +103,7 @@ class UI:
                 task(*args, **kwargs)
             except Exception as e:
                 logger.error(f"Caught exception in worker thread: {''.join(traceback.format_exception(e))}")
-
-        with ThreadPoolExecutor(max_workers=1) as executor:
-            "Running task in worker thread"
-            result = executor.submit(run_safely)
+        self.worker_thread_pool.submit(run_safely)
 
     def create_worker_thread_task(self, task, *args, **kwargs):
         """
