@@ -43,6 +43,9 @@ class Island:
         self.end = False
 
         self.get_lands()
+        rel_path = os.path.relpath(__file__ + "/../../resources/board_adjacencies.json")
+        with open(rel_path) as adj_file:
+            self.adjacency_dict = json.load(adj_file)
         self.get_invader_deck()
         self.create_terror_handler()
 
@@ -126,3 +129,6 @@ class Island:
         island_explorer_count = sum(len(land.explorers) for land in self.lands)
 
         return island_explorer_count
+
+    def are_lands_adjacent(self, land, other_land):
+        return other_land.id in self.adjacency_dict[land.id]
