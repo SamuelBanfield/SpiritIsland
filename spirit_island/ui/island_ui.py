@@ -89,7 +89,7 @@ class BoardComponent(UIComponent):
             return
         if self._input_handler.input_requests:
             logger.info(f"Selecting land '{selected_land.get_model_land().id}' in response to: {self._input_handler.input_requests[0].message}")
-            self._input_handler.input_requests[0].resolution = selected_land.get_model_land()
+            self._input_handler.input_requests[0].resolution["result"] = selected_land.get_model_land()
 
     def get_land_at_location(self, parent_coords):
         """Return the land that the point is inside, else None"""

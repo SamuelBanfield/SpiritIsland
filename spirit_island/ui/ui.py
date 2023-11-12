@@ -23,13 +23,13 @@ class UI:
         self.options = {"FPS": 60, "WIDTH": 1200, "HEIGHT": 800}
         for option in options:
             self.options[option] = options[option]
-        input_handler = InputHandler()
-        self._runner = Runner(controls_path, input_handler)
+        self._input_handler = InputHandler()
+        self._runner = Runner(controls_path, self._input_handler)
         self._runner.create_island()
         self._runner.create_phases()
         self._runner.get_current_phase().begin_phase()
         header_height = self.options["HEIGHT"] // 5
-        self._island_ui = BoardComponent(self._runner.island, (0, header_height), (self.options["WIDTH"], self.options["HEIGHT"]), input_handler)
+        self._island_ui = BoardComponent(self._runner.island, (0, header_height), (self.options["WIDTH"], self.options["HEIGHT"]), self._input_handler)
         self.header = Header(self._runner.island, self.options["WIDTH"], header_height)
         self.worker_thread_pool = ThreadPoolExecutor(max_workers=1)
 
@@ -60,7 +60,9 @@ class UI:
         Handle all pygame events, return whether a quit event was received.
         """
         if event.type == pygame.QUIT:
-            self.worker_thread_pool.shutdown(wait=False, cancel_futures=True)
+            for input_request in self._input_handler.input_requests:
+                input_request.resolution["errors"] = "Terminating worker thread for shutdown"
+            self.worker_thread_pool.shutdown(wait=True, cancel_futures=True)
             pygame.quit()
             return True
         if event.type == pygame.MOUSEMOTION:

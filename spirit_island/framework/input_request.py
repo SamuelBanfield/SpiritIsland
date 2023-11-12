@@ -5,14 +5,23 @@ class InputRequest:
 
     def __init__(self, message):
         """
-        :param message: message to be displayed in the UI explaining required input
+        :param message: message to be displayed in the UI explaining required input.
         """
         self.message = message
-        self.resolution = None
+        self.resolution = {
+            "result": None,
+            "errors": None
+        }
 
     def get_resolution(self):
-        """Returns the input provided by the user"""
-        return self.resolution
+        """
+        Returns the input provided by the user, throws
+        interrupted exception if necessary.
+        """
+        if self.resolution["errors"]:
+            raise InterruptedError(self.resolution["errors"])
+        return self.resolution["result"]
+
 
 class InputHandler:
 
