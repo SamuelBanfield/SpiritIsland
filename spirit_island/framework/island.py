@@ -43,9 +43,6 @@ class Island:
         self.end = False
 
         self.get_lands()
-        rel_path = os.path.relpath(__file__ + "/../../resources/board_adjacencies.json")
-        with open(rel_path) as adj_file:
-            self.adjacency_dict = json.load(adj_file)
         self.get_invader_deck()
         self.create_terror_handler()
 
@@ -80,10 +77,16 @@ class Island:
     def get_lands(self):
         """Fills in the lands with land objects."""
         board = self._controls["board"] if "board" in self._controls else "board_d.json"
-        rel_path = os.path.relpath(__file__ + f"/../../resources/{board}")
-        with open(rel_path) as board_file:
+        board_json_path = os.path.relpath(__file__ + f"/../../resources/{board}")
+        with open(board_json_path) as board_file:
             board_dict = json.load(board_file)
-
+        adjacency_file_path = os.path.relpath(__file__ + "/../../resources/board_adjacencies.json")
+        with open(adjacency_file_path) as adjacency_file:
+            self.adjacency_dict = {
+                "D" + land_number: [
+                    "D" + str(adajacent_land_number) for adajacent_land_number in adjacencies
+                ] for land_number, adjacencies in json.load(adjacency_file).items()
+            }
         for land_number in board_dict:
             new_land = Land()
             new_land.number = land_number

@@ -96,3 +96,20 @@ class TestTerror(unittest.TestCase):
         assert (
             actual_terror_level == expected_terror_level
         ), f"Expected Terror Level {expected_terror_level}, it is actually Terror Level {actual_terror_level}"
+
+    def test_adajacencies(self):
+        expected_adjacencies = {
+            "D0": ["D1", "D2", "D3"],
+            "D1": ["D2", "D5", "D7", "D8"],
+            "D2": ["D1", "D3", "D4", "D5"],
+            "D3": ["D2", "D4"],
+            "D4": ["D2", "D3", "D5", "D6"],
+            "D5": ["D1", "D2", "D4", "D6", "D7"],
+            "D6": ["D4", "D5", "D7"],
+            "D7": ["D1", "D5", "D6", "D8"],
+            "D8": ["D1", "D7"]
+        }
+
+        assert (
+            self.runner.island.adjacency_dict == expected_adjacencies
+        ), f"Unexpected adjacenceis {self.runner.island.adjacency_dict}, expected {expected_adjacencies}"
