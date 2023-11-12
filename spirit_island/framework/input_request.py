@@ -4,10 +4,14 @@ from typing import List
 class InputRequest:
 
     def __init__(self, message):
+        """
+        :param message: message to be displayed in the UI explaining required input
+        """
         self.message = message
         self.resolution = None
 
     def get_resolution(self):
+        """Returns the input provided by the user"""
         return self.resolution
 
 class InputHandler:

@@ -5,6 +5,7 @@ from spirit_island.actions.action_base import Action
 from spirit_island.framework.input_request import InputHandler, InputRequest
 from spirit_island.framework.island import Island
 from spirit_island.framework.land import Land
+from spirit_island.framework.logger import logger
 
 
 class InvaderAction(Action):
@@ -41,7 +42,13 @@ class RavageAction(InvaderAction):
         if damage_total >= 2:
             self.island.add_piece("blight", self.land)
             if self.land.get_blight_count() > 1:
-                self._input_handler.make_input_request(InputRequest("Select land for blight cascade"))
+                input_request = InputRequest("Select land for blight cascade")
+                self._input_handler.make_input_request(input_request)
+                while not input_request.get_resolution():
+                    # Sit here and wait for user input, since we're not blocking anything here
+                    pass
+                logger.info(f"Cascading blight into land '{input_request.get_resolution().id}'")
+                self.island.add_piece("blight", input_request.get_resolution())
 
         # Damage the dahan
         if len(self.land.dahan) + damage_total:

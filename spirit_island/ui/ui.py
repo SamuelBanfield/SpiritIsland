@@ -5,6 +5,7 @@ import pygame
 
 from concurrent.futures import ThreadPoolExecutor
 
+from spirit_island.framework.input_request import InputHandler
 from spirit_island.framework.logger import logger
 from spirit_island.launcher import Runner
 from spirit_island.ui.component.button import TextButton
@@ -22,12 +23,13 @@ class UI:
         self.options = {"FPS": 60, "WIDTH": 1200, "HEIGHT": 800}
         for option in options:
             self.options[option] = options[option]
-        self._runner = Runner(controls_path)
+        input_handler = InputHandler()
+        self._runner = Runner(controls_path, input_handler)
         self._runner.create_island()
         self._runner.create_phases()
         self._runner.get_current_phase().begin_phase()
         header_height = self.options["HEIGHT"] // 5
-        self._island_ui = BoardComponent(self._runner.island, (0, header_height))
+        self._island_ui = BoardComponent(self._runner.island, (0, header_height), (self.options["WIDTH"], self.options["HEIGHT"]), input_handler)
         self.header = Header(self._runner.island, self.options["WIDTH"], header_height)
         self.worker_thread_pool = ThreadPoolExecutor(max_workers=1)
 
@@ -53,9 +55,14 @@ class UI:
             self.header,
         ]
 
-    def handle_event(self, event: pygame.event.Event):
+    def handle_event(self, event: pygame.event.Event) -> bool:
+        """
+        Handle all pygame events, return whether a quit event was received.
+        """
         if event.type == pygame.QUIT:
+            self.worker_thread_pool.shutdown(wait=False, cancel_futures=True)
             pygame.quit()
+            return True
         if event.type == pygame.MOUSEMOTION:
             mouse_pos = pygame.mouse.get_pos()
         if event.type == pygame.MOUSEBUTTONUP:
@@ -63,6 +70,7 @@ class UI:
             for child in self._components:
                 if child.is_location_on_component(mouse_pos):
                     child.handle_click(mouse_pos)
+        return False
 
     def render(self, dest: pygame.Surface):
         dest.fill(SPIRIT_BOARD_BACKGROUND)
@@ -76,7 +84,8 @@ class UI:
         clock = pygame.time.Clock()
         while True:
             for event in pygame.event.get():
-                self.handle_event(event)
+                if self.handle_event(event):
+                    return True
             self.render(display)
             self._runner.get_current_phase().update()
             pygame.display.flip()

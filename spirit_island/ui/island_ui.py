@@ -7,6 +7,7 @@ import pygame
 from overrides import override
 
 from spirit_island.framework.exceptions import UIException
+from spirit_island.framework.input_request import InputHandler, InputRequest
 from spirit_island.framework.island import Island
 from spirit_island.framework.land import Land
 from spirit_island.framework.logger import logger
@@ -33,9 +34,10 @@ BOARD_IMAGE = pygame.image.load(rel_path)
 
 
 class BoardComponent(UIComponent):
-    def __init__(self, island: Island, offset):
+    def __init__(self, island: Island, offset, parent_component_size, input_handler: InputHandler):
         super().__init__()
         self._island = island
+        self._input_handler = input_handler
         self._offset = (
             offset  # Where on the destination rect the top left of the board should be
         )
@@ -56,35 +58,53 @@ class BoardComponent(UIComponent):
         self._board_surf = pygame.surface.Surface(
             (self._board_rect.width, self._board_rect.height)
         )
+        self._scale_factor = (
+            max(
+                parent_component_size[0] / self._board_rect.width,
+                parent_component_size[1] / self._board_rect.height,
+            )
+            / 1.5
+        )
 
     @override
     def render(self, dest: pygame.surface.Surface, hovered: bool):
         self._board_surf.fill(SPIRIT_BOARD_BACKGROUND)
         self._board_surf.blit(BOARD_IMAGE, self._board_rect)
-        scale_factor = (
-            max(
-                dest.get_width() / self._board_rect.width,
-                dest.get_height() / self._board_rect.height,
-            )
-            / 1.5
-        )
+        hovered_land = self.get_land_at_location(pygame.mouse.get_pos())
         for land in self._lands:
-            mouse_pos = pygame.mouse.get_pos()
-            hovered = land.is_location_on_component(
-                (
-                    (mouse_pos[0] - self._offset[0]) // scale_factor,
-                    (mouse_pos[1] - self._offset[1]) // scale_factor,
-                )
-            )
-            land.render(self._board_surf, hovered)
+            land.render(self._board_surf, land == hovered_land)
 
-        scaled_image = pygame.transform.scale_by(self._board_surf, scale_factor)
+        scaled_image = pygame.transform.scale_by(self._board_surf, self._scale_factor)
         dest.blit(
             scaled_image,
             pygame.rect.Rect(
                 self._offset, (scaled_image.get_width(), scaled_image.get_height())
             ),
         )
+
+    @override
+    def handle_click(self, click_location):
+        selected_land = self.get_land_at_location(click_location)
+        if not selected_land:
+            return
+        if self._input_handler.input_requests:
+            logger.info(f"Selecting land '{selected_land.get_model_land().id}' in response to: {self._input_handler.input_requests[0].message}")
+            self._input_handler.input_requests[0].resolution = selected_land.get_model_land()
+
+    def get_land_at_location(self, parent_coords):
+        """Return the land that the point is inside, else None"""
+        for land in self._lands:
+            if land.is_location_on_component(
+                (
+                    (parent_coords[0] - self._offset[0]) // self._scale_factor,
+                    (parent_coords[1] - self._offset[1]) // self._scale_factor,
+                )
+            ):
+                return land
+        return None
+
+    def is_location_on_component(self, click_location):
+        return self.get_land_at_location(click_location) is not None
 
 
 class LandUI:
@@ -173,6 +193,9 @@ class LandUI:
     @override
     def is_location_on_component(self, location) -> bool:
         return is_point_inside_polygon(self._polygon, location)
+
+    def get_model_land(self):
+        return self._land
 
 
 class PieceUI:

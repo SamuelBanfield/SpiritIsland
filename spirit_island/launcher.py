@@ -25,7 +25,7 @@ def read_json(filepath: Union[str, Path]) -> dict:
 class Runner:
     """Class for running the game"""
 
-    def __init__(self, controls_path: str):
+    def __init__(self, controls_path: str, input_handler):
         """
         Initialise.
         :param controls_path: path to debug_controls file
@@ -42,7 +42,7 @@ class Runner:
         self.fear_card_phase = None
         self.time_passes_phase = None
         self.island = None
-        self.input_handler = InputHandler()
+        self.input_handler = input_handler
 
         logger.info("Runner initialised")
 
