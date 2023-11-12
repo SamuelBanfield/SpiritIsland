@@ -3,6 +3,7 @@ import os
 import unittest
 
 from spirit_island import launcher
+from spirit_island.framework.input_request import InputHandler
 from spirit_island.framework.island import Island
 
 
@@ -10,7 +11,7 @@ class TestTerror(unittest.TestCase):
     def setUp(self):
         """Set up for TestTerror tests."""
         controls_path = os.path.relpath(__file__ + "/../../debug_controls.json")
-        self.runner = launcher.Runner(controls_path)
+        self.runner = launcher.Runner(controls_path, InputHandler()
 
         self.runner.create_island()
 

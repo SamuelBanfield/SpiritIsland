@@ -7,6 +7,7 @@ from typing import List
 from spirit_island import launcher
 from spirit_island.decks.fear_cards import *
 from spirit_island.decks.fear_deck_handler import FearDeckHandler
+from spirit_island.framework.input_request import InputHandler
 from spirit_island.framework.island import Island
 from spirit_island.framework.land import Land
 from spirit_island.phases.fear_card_phase import FearPhase
@@ -16,7 +17,7 @@ class TestFearPhase(unittest.TestCase):
     def setUp(self):
 
         controls_path = os.path.relpath(__file__ + "/../../debug_controls.json")
-        self.runner = launcher.Runner(controls_path)
+        self.runner = launcher.Runner(controls_path, InputHandler())
 
         self.runner.create_island()
         self.runner.create_phases()

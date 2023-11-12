@@ -13,7 +13,7 @@ class TestInvaderPhase(unittest.TestCase):
     def setUp(self):
 
         controls_path = os.path.relpath(__file__ + "/../../debug_controls.json")
-        self.runner = launcher.Runner(controls_path)
+        self.runner = launcher.Runner(controls_path, InputHandler())
 
         self.runner.create_island()
         self.runner.create_phases()
