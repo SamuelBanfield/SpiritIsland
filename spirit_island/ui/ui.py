@@ -23,7 +23,7 @@ class UI:
         self.options = {"FPS": 60, "WIDTH": 1200, "HEIGHT": 800}
         for option in options:
             self.options[option] = options[option]
-        self._input_handler = InputHandler()
+        self._input_handler = InputHandler(self.options["FPS"])
         self._runner = Runner(controls_path, self._input_handler)
         self._runner.create_island()
         self._runner.create_phases()
@@ -44,7 +44,7 @@ class UI:
             offset=[0, header_height]
         )
         self.input_required_button = TextButton(
-            lambda: self._runner.get_input_requests()[0].message if self._runner.get_input_requests() else "Input required",
+            lambda: self._runner.get_input_request().message if self._runner.get_input_request() else "Input required",
             offset=[0, header_height + 80]
         )
         self._components = [
@@ -60,8 +60,8 @@ class UI:
         Handle all pygame events, return whether a quit event was received.
         """
         if event.type == pygame.QUIT:
-            for input_request in self._input_handler.input_requests:
-                input_request.resolution["errors"] = "Terminating worker thread for shutdown"
+            if self._input_handler.input_request:
+                self._input_handler.input_request.resolution["errors"] = "Terminating worker thread for shutdown"
             self.worker_thread_pool.shutdown(wait=True, cancel_futures=True)
             pygame.quit()
             return True

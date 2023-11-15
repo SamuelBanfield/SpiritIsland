@@ -42,13 +42,13 @@ class RavageAction(InvaderAction):
         if damage_total >= 2:
             self.island.add_piece("blight", self.land)
             if self.land.get_blight_count() > 1:
-                input_request = InputRequest("Select land for blight cascade")
-                self._input_handler.make_input_request(input_request)
-                while not input_request.get_resolution():
-                    # Sit here and wait for user input, since we're not blocking anything here
-                    pass
-                logger.info(f"Cascading blight into land '{input_request.get_resolution().id}'")
-                self.island.add_piece("blight", input_request.get_resolution())
+                land_options = [land for land in self.island.lands if self.island.are_lands_adjacent(land, self.land)]
+                land = self._input_handler.request_land_input(
+                    "Select land for blight cascade",
+                    land_options
+                )
+                logger.info(f"Cascading blight into land '{land.id}'")
+                self.island.add_piece("blight", land)
 
         # Damage the dahan
         if len(self.land.dahan) + damage_total:

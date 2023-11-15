@@ -128,8 +128,8 @@ class Runner:
             print("You lost")
             print(f"{self.end_game_message}")
 
-    def get_input_requests(self):
-        return self.input_handler.input_requests
+    def get_input_request(self):
+        return self.input_handler.input_request
 
 
 def main():
