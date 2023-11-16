@@ -38,8 +38,11 @@ class InputHandler:
         self.clock = Clock()
         self.fps = fps
 
+    def check_busy(self):
+        return self.input_request is not None
+
     def request_land_input(self, reason: str, options: List[Land]) -> Land:
-        if self.input_request:
+        if self.check_busy():
             raise ValueError("Requested input while input already pending")
         self.input_request = InputRequest(
             reason,

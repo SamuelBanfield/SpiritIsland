@@ -85,7 +85,7 @@ class Runner:
         return
 
     def create_island(self):
-        self.island = Island(controls=self.controls)
+        self.island = Island(controls=self.controls, input_handler=self.input_handler)
 
     def perform_phases_no_ui(self):
         """Loop through phases. Does not run through UI."""
