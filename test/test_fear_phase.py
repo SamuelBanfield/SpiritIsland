@@ -23,7 +23,7 @@ class TestFearPhase(unittest.TestCase):
         self.runner.create_phases()
 
     def test_construct_fear_deck(self):
-        fear_phase: FearPhase = copy.deepcopy(self.runner.fear_card_phase)
+        fear_phase = self.runner.fear_card_phase
         # Expected fear deck is base fear deck from fear_deck_handler.py
         expected_fear_deck = {
             "OverseasTrade": OverseasTrade,
@@ -35,7 +35,7 @@ class TestFearPhase(unittest.TestCase):
         ), f"Fear deck {actual_fear_deck} does not match {expected_fear_deck}"
 
     def test_select_random_fear_card(self):
-        fear_phase: FearPhase = copy.deepcopy(self.runner.fear_card_phase)
+        fear_phase = self.runner.fear_card_phase
         fear_phase.fear_deck_handler.fear_deck = {
             "FearCard1": FearCardBase,
             "FearCard2": FearCardTest,
@@ -50,7 +50,7 @@ class TestFearPhase(unittest.TestCase):
         assert isinstance(card2, OverseasTrade), f"Unexpected fear card {type(card2)}"
 
     def test_execute_fear_phase(self):
-        fear_phase: FearPhase = copy.deepcopy(self.runner.fear_card_phase)
+        fear_phase = self.runner.fear_card_phase
 
         fear_phase.island.terror_handler.fear_cards_pending = 1
         fear_phase.island.terror_handler.terror_level = 3
@@ -65,7 +65,7 @@ class TestFearPhase(unittest.TestCase):
         ), f"Unexpected result from OverseasTrade level 3"
 
     def test_move_card_to_discard(self):
-        fear_phase: FearPhase = copy.deepcopy(self.runner.fear_card_phase)
+        fear_phase = self.runner.fear_card_phase
         card = fear_phase.fear_deck_handler.select_random_fear_card()
 
         fear_phase.move_fear_card_to_discard(card)

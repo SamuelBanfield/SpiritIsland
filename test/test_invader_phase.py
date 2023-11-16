@@ -166,7 +166,7 @@ class TestInvaderActions(unittest.TestCase):
             "board": "single_land_board.json",
             "auto_allocate_damage": True,
         }
-        island = Island(test_controls)
+        island = Island(test_controls, InputHandler(60))
         land = island.lands[0]
         ravage = RavageAction(test_controls, island, land, InputHandler(60))
         land.dahan.pop(0)
@@ -185,7 +185,7 @@ class TestInvaderActions(unittest.TestCase):
             "board": "single_land_board.json",
             "auto_allocate_damage": True,
         }
-        island = Island(test_controls)
+        island = Island(test_controls, InputHandler(60))
         land = island.lands[0]
         ravage = RavageAction(test_controls, island, land, InputHandler(60))
 
@@ -206,7 +206,7 @@ class TestInvaderActions(unittest.TestCase):
             "board": "single_land_board.json",
             "auto_allocate_damage": True,
         }
-        island = Island(test_controls)
+        island = Island(test_controls, InputHandler(60))
         land = island.lands[0]
         ravage = RavageAction(test_controls, island, land, InputHandler(60))
         land.dahan[3].health = 1

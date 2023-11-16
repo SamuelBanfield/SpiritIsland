@@ -46,7 +46,7 @@ class TestTransitionPhase(unittest.TestCase):
         assert deck_check, "Not all cards moved to Discard"
 
     def test_time_passes_on_pieces(self):
-        time_passes_phase = copy.deepcopy(self.runner.time_passes_phase)
+        time_passes_phase = self.runner.time_passes_phase
         lands: List[Land] = time_passes_phase.island.lands
         lands[2].cities[0].health = 1
         lands[2].dahan[0].damage = 5
@@ -72,7 +72,7 @@ class TestTransitionPhase(unittest.TestCase):
         ), f"Expected {expected_dahan_health} city health, it actually has {actual_dahan_health}"
 
     def test_time_passes_on_land(self):
-        time_passes_phase = copy.deepcopy(self.runner.time_passes_phase)
+        time_passes_phase = self.runner.time_passes_phase
         lands: List[Land] = time_passes_phase.island.lands
         lands[1].defend = 7
         lands[1].can_build = False

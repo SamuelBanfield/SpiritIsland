@@ -5,6 +5,7 @@ import unittest
 from spirit_island import launcher
 from spirit_island.framework.input_request import InputHandler
 from spirit_island.framework.island import Island
+from spirit_island.actions.invader_actions import RavageAction
 
 
 class TestTerror(unittest.TestCase):
@@ -17,7 +18,7 @@ class TestTerror(unittest.TestCase):
 
     def test_fear_generation_no_card(self):
         """Test the island's generate_fear method."""
-        test_island = copy.deepcopy(self.runner.island)
+        test_island = self.runner.island
         test_island.terror_handler.fear_capacity = 4
         test_island.terror_handler.fear_earned = 1
 
@@ -39,7 +40,7 @@ class TestTerror(unittest.TestCase):
 
     def test_fear_generation_earn_card(self):
         """Test the island's generate_fear method with a fear card."""
-        test_island = copy.deepcopy(self.runner.island)
+        test_island = self.runner.island
         test_island.terror_handler.terror_level = 1
         test_island.terror_handler.fear_cards_to_next_level = 3
         test_island.terror_handler.fear_capacity = 4
@@ -69,7 +70,7 @@ class TestTerror(unittest.TestCase):
 
     def test_fear_generation_next_terror_level(self):
         """Test the island's generate_fear method with a fear card + terror level increase."""
-        test_island = copy.deepcopy(self.runner.island)
+        test_island = self.runner.island
         test_island.terror_handler.terror_level = 1
         test_island.terror_handler.fear_cards_to_next_level = 1
         test_island.terror_handler.fear_capacity = 4
@@ -97,6 +98,14 @@ class TestTerror(unittest.TestCase):
             actual_terror_level == expected_terror_level
         ), f"Expected Terror Level {expected_terror_level}, it is actually Terror Level {actual_terror_level}"
 
+class TestAdjacencies(unittest.TestCase):
+    def setUp(self):
+        """Set up for TestTerror tests."""
+        controls_path = os.path.relpath(__file__ + "/../../debug_controls.json")
+        self.runner = launcher.Runner(controls_path, InputHandler(60))
+
+        self.runner.create_island()
+
     def test_adajacencies(self):
         expected_adjacencies = {
             "D0": ["D1", "D2", "D3"],
@@ -113,3 +122,37 @@ class TestTerror(unittest.TestCase):
         assert (
             self.runner.island.adjacency_dict == expected_adjacencies
         ), f"Unexpected adjacenceis {self.runner.island.adjacency_dict}, expected {expected_adjacencies}"
+
+class TestBlightCascade(unittest.TestCase):
+
+    def setUp(self):
+        """Set up for blight cascade tests."""
+        controls_path = os.path.relpath(__file__ + "/../../debug_controls.json")
+        self.runner = launcher.Runner(controls_path, InputHandler(60))
+
+        self.runner.create_island()
+
+    def assert_blight(self, expected_blight, actual_blight):
+        """
+        :param expected_blight: the expected number of blight
+        :param actual_blight: that actual number of blight
+        """
+        assert (
+            expected_blight == actual_blight
+        ), f"Unexpected blight count: {actual_blight}, expected {expected_blight}"
+
+
+    def test_single_cascade(self):
+        test_controls = {
+            "board": "board_d.json",
+            "auto_allocate_damage": True,
+        }
+        island = self.runner.island
+        land = island.lands[1]
+        self.assert_blight(0, len(land.blight))
+        island.add_blight(land)
+        ravage = RavageAction(test_controls, island, land, InputHandler(60))
+
+        ravage.execute_action()
+
+        self.assert_blight(1, len(land.blight))
