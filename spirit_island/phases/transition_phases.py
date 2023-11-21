@@ -20,6 +20,7 @@ class CardsAdvance(Phase):
         track["explore"] = None
 
         print("Invader cards advanced")
+        self.is_complete = True
 
 
 class TimePassesPhase(Phase):
@@ -41,3 +42,4 @@ class TimePassesPhase(Phase):
 
         # Advance turn counter
         self.island.turn_counter += 1
+        self.is_complete = True

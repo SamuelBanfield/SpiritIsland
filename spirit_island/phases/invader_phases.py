@@ -13,15 +13,17 @@ class Ravage(Phase):
     def execute_phase(self):
         print(f"Ravage Phase: turn {self.island.turn_counter}")
         if not self.island.invader_track["ravage"]:
-            self.ravage_actions: List[RavageAction] = []
+            ravage_actions: List[RavageAction] = []
         else:
-            self.ravage_actions = [
+            ravage_actions = [
                 self.create_ravage_action(land) for land in self.island.lands 
                     if self.island.invader_track["ravage"].matches_land(land)
             ]
-        while self.ravage_actions:
-            self.ravage_actions.pop(0).execute_action()
+        for action in ravage_actions:
+            action.execute_action()
+
         print("Ravage Phase Complete")
+        self.is_complete = True
 
     def create_ravage_action(self, land) -> RavageAction:
         return RavageAction(
@@ -51,6 +53,7 @@ class Build(Phase):
             self.build_actions.pop(0).execute_action()
 
         print("Build Phase Complete")
+        self.is_complete = True
 
     def create_build_action(self, building_land):
         return BuildAction(
@@ -85,6 +88,8 @@ class Explore(Phase):
             self.explore_actions.pop(0).execute_action()
 
         print("Explore Phase Complete")
+        self.is_complete = True
+
 
     def create_explore_action(self, exploring_land):
         return ExploreAction(

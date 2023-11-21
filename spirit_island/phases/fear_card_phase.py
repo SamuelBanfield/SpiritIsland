@@ -26,6 +26,7 @@ class FearPhase(Phase):
             self.move_fear_card_to_discard(current_fear_card)
 
         print("Fear Card Phase Complete")
+        self.is_complete = True
 
     @staticmethod
     def perform_fear_card(fear_card: FearCardBase, island: Island):

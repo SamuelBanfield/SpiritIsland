@@ -50,4 +50,6 @@ class InputHandler:
         )
         while not self.input_request.get_resolution():
             self.clock.tick(self.fps)
-        return self.input_request.get_resolution()
+        input_request = self.input_request.get_resolution()
+        self.input_request = None
+        return input_request

@@ -9,7 +9,7 @@ class Phase:
         self._controls = controls
         self.island = island
         self._name = name
-        self.is_complete = True
+        self.is_complete = False
         self.input_handler = input_handler
 
     def get_name(self):
