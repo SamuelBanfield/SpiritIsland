@@ -115,6 +115,7 @@ class Runner:
         self.current_phase_index = (self.current_phase_index + 1) % len(
             self.phase_objects
         )
+        self.phase_objects[self.current_phase_index].is_complete = False
         self.phase_objects[self.current_phase_index].execute_phase()
 
     def get_current_phase(self) -> Phase:

@@ -36,16 +36,19 @@ class UI:
         # Next phase button
         next_phase_button = TextButton(
             "Next phase",
-            self.create_worker_thread_task(self._runner.next_phase),
+            callback=self.create_worker_thread_task(self._runner.next_phase),
             offset=[0, header_height + 40],
+            enablement=lambda: self._runner.get_current_phase().is_complete,
         )
         self._current_phase_image = TextButton(
             lambda: self._runner.get_current_phase().get_name(),
-            offset=[0, header_height]
+            offset=[0, header_height],
+            enablement=lambda: False
         )
         self.input_required_button = TextButton(
             lambda: self._runner.get_input_request().message if self._runner.get_input_request() else "Input required",
-            offset=[0, header_height + 80]
+            offset=[0, header_height + 80],
+            enablement=lambda: False
         )
         self._components = [
             self._island_ui,
