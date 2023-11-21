@@ -27,7 +27,7 @@ class UI:
         self._runner = Runner(controls_path, self._input_handler)
         self._runner.create_island()
         self._runner.create_phases()
-        self._runner.get_current_phase().begin_phase()
+        self._runner.get_current_phase().execute_phase()
         header_height = self.options["HEIGHT"] // 5
         self._island_ui = BoardComponent(self._runner.island, (0, header_height), (self.options["WIDTH"], self.options["HEIGHT"]), self._input_handler)
         self.header = Header(self._runner.island, self.options["WIDTH"], header_height)
@@ -89,7 +89,6 @@ class UI:
                 if self.handle_event(event):
                     return True
             self.render(display)
-            self._runner.get_current_phase().update()
             pygame.display.flip()
             clock.tick(self.options["FPS"])
 

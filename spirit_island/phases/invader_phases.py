@@ -23,9 +23,6 @@ class Ravage(Phase):
             self.ravage_actions.pop(0).execute_action()
         print("Ravage Phase Complete")
 
-    def update(self):
-        pass
-
     def create_ravage_action(self, land) -> RavageAction:
         return RavageAction(
             controls=self._controls,
@@ -54,9 +51,6 @@ class Build(Phase):
             self.build_actions.pop(0).execute_action()
 
         print("Build Phase Complete")
-    
-    def update(self):
-        pass
 
     def create_build_action(self, building_land):
         return BuildAction(
@@ -91,9 +85,6 @@ class Explore(Phase):
             self.explore_actions.pop(0).execute_action()
 
         print("Explore Phase Complete")
-
-    def update(self):
-        pass
 
     def create_explore_action(self, exploring_land):
         return ExploreAction(
