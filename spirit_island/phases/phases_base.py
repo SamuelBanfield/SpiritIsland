@@ -15,14 +15,5 @@ class Phase:
     def get_name(self):
         return self._name
 
-    def begin_phase(self):
-        """Called at the beginning of the phase to initialise"""
-        pass
-
-    def update(self):
-        """
-        Called every frame until
-
-        It's probably worth thinking about calling this less often
-        """
+    def execute_phase(self):
         pass

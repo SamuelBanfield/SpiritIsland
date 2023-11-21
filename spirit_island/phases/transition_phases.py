@@ -9,7 +9,7 @@ class CardsAdvance(Phase):
     def __init__(self, controls: dict, island: Island):
         super().__init__(controls, island, name="Cards Advance")
 
-    def begin_phase(self):
+    def execute_phase(self):
         track = self.island.invader_track
         if track["ravage"]:
             track["discard"].append(track["ravage"])
@@ -28,7 +28,7 @@ class TimePassesPhase(Phase):
     def __init__(self, controls: dict, island: Island):
         super().__init__(controls, island, name="Time Passes")
 
-    def begin_phase(self):
+    def execute_phase(self):
         for land in self.island.lands:
             # Reset land properties
             land.reset_properties()
