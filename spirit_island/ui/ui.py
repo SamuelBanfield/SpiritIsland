@@ -23,29 +23,32 @@ class UI:
         self.options = {"FPS": 60, "WIDTH": 1200, "HEIGHT": 800}
         for option in options:
             self.options[option] = options[option]
-        input_handler = InputHandler()
-        self._runner = Runner(controls_path, input_handler)
+        self._input_handler = InputHandler(self.options["FPS"])
+        self._runner = Runner(controls_path, self._input_handler)
         self._runner.create_island()
         self._runner.create_phases()
-        self._runner.get_current_phase().begin_phase()
+        self._runner.get_current_phase().execute_phase()
         header_height = self.options["HEIGHT"] // 5
-        self._island_ui = BoardComponent(self._runner.island, (0, header_height), (self.options["WIDTH"], self.options["HEIGHT"]), input_handler)
+        self._island_ui = BoardComponent(self._runner.island, (0, header_height), (self.options["WIDTH"], self.options["HEIGHT"]), self._input_handler)
         self.header = Header(self._runner.island, self.options["WIDTH"], header_height)
         self.worker_thread_pool = ThreadPoolExecutor(max_workers=1)
 
         # Next phase button
         next_phase_button = TextButton(
             "Next phase",
-            self.create_worker_thread_task(self._runner.next_phase),
+            callback=self.create_worker_thread_task(self._runner.next_phase),
             offset=[0, header_height + 40],
+            enablement=lambda: self._runner.get_current_phase().is_complete,
         )
         self._current_phase_image = TextButton(
             lambda: self._runner.get_current_phase().get_name(),
-            offset=[0, header_height]
+            offset=[0, header_height],
+            enablement=lambda: False
         )
         self.input_required_button = TextButton(
-            lambda: self._runner.get_input_requests()[0].message if self._runner.get_input_requests() else "Input required",
-            offset=[0, header_height + 80]
+            lambda: self._runner.get_input_request().message if self._runner.get_input_request() else "Input required",
+            offset=[0, header_height + 80],
+            enablement=lambda: False
         )
         self._components = [
             self._island_ui,
@@ -60,7 +63,9 @@ class UI:
         Handle all pygame events, return whether a quit event was received.
         """
         if event.type == pygame.QUIT:
-            self.worker_thread_pool.shutdown(wait=False, cancel_futures=True)
+            if self._input_handler.input_request:
+                self._input_handler.input_request.resolution["errors"] = "Terminating worker thread for shutdown"
+            self.worker_thread_pool.shutdown(wait=True, cancel_futures=True)
             pygame.quit()
             return True
         if event.type == pygame.MOUSEMOTION:
@@ -87,7 +92,6 @@ class UI:
                 if self.handle_event(event):
                     return True
             self.render(display)
-            self._runner.get_current_phase().update()
             pygame.display.flip()
             clock.tick(self.options["FPS"])
 

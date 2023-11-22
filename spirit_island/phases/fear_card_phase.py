@@ -12,7 +12,7 @@ class FearPhase(Phase):
         # Create a fear deck handler
         self.fear_deck_handler = FearDeckHandler()
 
-    def begin_phase(self):
+    def execute_phase(self):
         print(f"Fear Card Phase: turn {self.island.turn_counter}")
         # Check if any fear cards are pending
         while self.island.terror_handler.fear_cards_pending > 0:
@@ -26,6 +26,7 @@ class FearPhase(Phase):
             self.move_fear_card_to_discard(current_fear_card)
 
         print("Fear Card Phase Complete")
+        self.is_complete = True
 
     @staticmethod
     def perform_fear_card(fear_card: FearCardBase, island: Island):

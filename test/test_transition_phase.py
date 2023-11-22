@@ -4,7 +4,7 @@ import unittest
 from typing import List
 
 from spirit_island import launcher
-from spirit_island.framework.input_request import InputHandler
+from spirit_island.test_support.input_handler import TestInputHandler
 from spirit_island.framework.island import Island
 from spirit_island.framework.land import Land
 from spirit_island.phases.transition_phases import *
@@ -14,7 +14,7 @@ class TestTransitionPhase(unittest.TestCase):
     def setUp(self):
 
         controls_path = os.path.relpath(__file__ + "/../../debug_controls.json")
-        self.runner = launcher.Runner(controls_path, InputHandler())
+        self.runner = launcher.Runner(controls_path, TestInputHandler())
 
         self.runner.create_island()
         self.runner.create_phases()
@@ -26,8 +26,8 @@ class TestTransitionPhase(unittest.TestCase):
             print("Checking invader track at round: ", round_number + 1)
             track_a = copy.deepcopy(self.runner.island.invader_track)
 
-            self.runner.explore.begin_phase()
-            self.runner.cards_advance.begin_phase()
+            self.runner.explore.execute_phase()
+            self.runner.cards_advance.execute_phase()
             track_b = copy.deepcopy(self.runner.island.invader_track)
 
             if len(track_b["discard"]) > 0:
@@ -46,13 +46,13 @@ class TestTransitionPhase(unittest.TestCase):
         assert deck_check, "Not all cards moved to Discard"
 
     def test_time_passes_on_pieces(self):
-        time_passes_phase = copy.deepcopy(self.runner.time_passes_phase)
+        time_passes_phase = self.runner.time_passes_phase
         lands: List[Land] = time_passes_phase.island.lands
         lands[2].cities[0].health = 1
         lands[2].dahan[0].damage = 5
         lands[7].dahan[1].health = 4
 
-        time_passes_phase.begin_phase()
+        time_passes_phase.execute_phase()
 
         expected_city_health = 3
         expected_dahan_damage = 2
@@ -72,14 +72,14 @@ class TestTransitionPhase(unittest.TestCase):
         ), f"Expected {expected_dahan_health} city health, it actually has {actual_dahan_health}"
 
     def test_time_passes_on_land(self):
-        time_passes_phase = copy.deepcopy(self.runner.time_passes_phase)
+        time_passes_phase = self.runner.time_passes_phase
         lands: List[Land] = time_passes_phase.island.lands
         lands[1].defend = 7
         lands[1].can_build = False
         lands[3].can_build_city = False
         lands[8].fear_generated_in_land = 1
 
-        time_passes_phase.begin_phase()
+        time_passes_phase.execute_phase()
 
         expected_defend = 0
         expected_can_build = True

@@ -87,9 +87,12 @@ class BoardComponent(UIComponent):
         selected_land = self.get_land_at_location(click_location)
         if not selected_land:
             return
-        if self._input_handler.input_requests:
-            logger.info(f"Selecting land '{selected_land.get_model_land().id}' in response to: {self._input_handler.input_requests[0].message}")
-            self._input_handler.input_requests[0].resolution = selected_land.get_model_land()
+        if self._input_handler.input_request:
+            input_request = self._input_handler.input_request
+            model_land = selected_land.get_model_land()
+            if model_land in input_request.options:
+                logger.info(f"Selecting land '{model_land.id}' in response to: {input_request.message}")
+                self._input_handler.input_request.resolution["result"] = model_land
 
     def get_land_at_location(self, parent_coords):
         """Return the land that the point is inside, else None"""

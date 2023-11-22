@@ -6,13 +6,13 @@ from spirit_island import launcher
 from spirit_island.decks.fear_cards import *
 from spirit_island.phases.fear_card_phase import FearPhase
 from spirit_island.test_support import phase_util
-from spirit_island.framework.input_request import InputHandler
+from spirit_island.test_support.input_handler import TestInputHandler
 
 class TestFearCardOverseasTrade(unittest.TestCase):
     def setUp(self):
 
         controls_path = os.path.relpath(__file__ + "/../../debug_controls.json")
-        self.runner = launcher.Runner(controls_path, InputHandler())
+        self.runner = launcher.Runner(controls_path, TestInputHandler())
 
         self.runner.create_island()
         self.runner.create_phases()

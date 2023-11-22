@@ -85,14 +85,13 @@ class Runner:
         return
 
     def create_island(self):
-        self.island = Island(controls=self.controls)
+        self.island = Island(controls=self.controls, input_handler=self.input_handler)
 
     def perform_phases_no_ui(self):
         """Loop through phases. Does not run through UI."""
         try:
             for phase in self.phase_objects:
-                phase.begin_phase()
-                phase.update()
+                phase.execute_phase()
         except EndGameException as ege:
             self.victory = ege.victory
             self.end_game_message = ege.message
@@ -101,7 +100,7 @@ class Runner:
 
     def perform_phase(self):
         try:
-            self.phase_objects[self.current_phase_index].begin_phase()
+            self.phase_objects[self.current_phase_index].execute_phase()
         except EndGameException as ege:
             self.victory = ege.victory
             self.end_game_message = ege.message
@@ -116,7 +115,8 @@ class Runner:
         self.current_phase_index = (self.current_phase_index + 1) % len(
             self.phase_objects
         )
-        self.phase_objects[self.current_phase_index].begin_phase()
+        self.phase_objects[self.current_phase_index].is_complete = False
+        self.phase_objects[self.current_phase_index].execute_phase()
 
     def get_current_phase(self) -> Phase:
         return self.phase_objects[self.current_phase_index]
@@ -128,8 +128,8 @@ class Runner:
             print("You lost")
             print(f"{self.end_game_message}")
 
-    def get_input_requests(self):
-        return self.input_handler.input_requests
+    def get_input_request(self):
+        return self.input_handler.input_request
 
 
 def main():
