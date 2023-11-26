@@ -1,0 +1,25 @@
+Things to scan:
+
+* Back of invader cards
+* Back of major/minor powers?
+
+Power cards:
+
+* UI
+
+    - Component displaying static images of power cards from a set, with selection ability
+    - UI to select an invader
+    - Component moves on toggle
+    - Cards shunt left and right in response to cursor movement
+
+* Backend
+
+    - Add actions
+        - Push
+        - Gather
+        - Defend
+        - Damage
+    - Create power cards, restricting up to and must actions and target land
+    - Link up clicking power card to performing action
+    - Add a "hand", as a set of power cards from which hands are discarded, reclaimed...
+
