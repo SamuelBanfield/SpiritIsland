@@ -10,6 +10,7 @@ from spirit_island.framework.logger import logger
 from spirit_island.launcher import Runner
 from spirit_island.ui.component.button import TextButton
 from spirit_island.ui.component.header import Header
+from spirit_island.ui.component.hand_component import HandComponent
 from spirit_island.ui.island_ui import BoardComponent
 from spirit_island.ui.util import SPIRIT_BOARD_BACKGROUND
 
@@ -30,7 +31,9 @@ class UI:
         self._runner.get_current_phase().execute_phase()
         header_height = self.options["HEIGHT"] // 5
         self._island_ui = BoardComponent(self._runner.island, (0, header_height), (self.options["WIDTH"], self.options["HEIGHT"]), self._input_handler)
+        self._hand_component = HandComponent(self.options["WIDTH"] // 2, self.options["HEIGHT"] // 5, (self.options["WIDTH"] // 4, 4 * self.options["HEIGHT"] // 5))
         self.header = Header(self._runner.island, self.options["WIDTH"], header_height)
+
         self.worker_thread_pool = ThreadPoolExecutor(max_workers=1)
 
         # Next phase button
@@ -46,7 +49,7 @@ class UI:
             enablement=lambda: False
         )
         self.input_required_button = TextButton(
-            lambda: self._runner.get_input_request().message if self._runner.get_input_request() else "Input required",
+            lambda: self._runner.get_input_request().message if self._runner.get_input_request() else "No input required",
             offset=[0, header_height + 80],
             enablement=lambda: False
         )
@@ -55,6 +58,7 @@ class UI:
             next_phase_button,
             self._current_phase_image,
             self.input_required_button,
+            self._hand_component,
             self.header,
         ]
 
