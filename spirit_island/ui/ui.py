@@ -31,7 +31,7 @@ class UI:
         self._runner.get_current_phase().execute_phase()
         header_height = self.options["HEIGHT"] // 5
         self._island_ui = BoardComponent(self._runner.island, (0, header_height), (self.options["WIDTH"], self.options["HEIGHT"]), self._input_handler)
-        self._hand_component = HandComponent(self.options["WIDTH"] // 2, self.options["HEIGHT"] // 5, (self.options["WIDTH"] // 4, 4 * self.options["HEIGHT"] // 5))
+        self._hand_component = HandComponent(self.options["WIDTH"] // 2, self.options["HEIGHT"] // 4, (self.options["WIDTH"] // 4, 3 * self.options["HEIGHT"] // 4), self._runner.island, self.run_safely_in_worker_thread)
         self.header = Header(self._runner.island, self.options["WIDTH"], header_height)
 
         self.worker_thread_pool = ThreadPoolExecutor(max_workers=1)
