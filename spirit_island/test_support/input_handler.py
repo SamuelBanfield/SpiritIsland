@@ -37,7 +37,14 @@ class TestInputHandler(InputHandler):
         return False
 
     @override
+    def request_land_content_input(self, reason: str, options: List[object]) -> object:
+        return self._request_input(reason, options)
+
+    @override
     def request_land_input(self, reason: str, options: List[Land]) -> Land:
+        return self._request_input(reason, options)
+
+    def _request_input(self, reason: str, options: List[object]) -> object:
         if not self._expected_requests:
             raise AssertionError(f"Unexpected request for input with reason: {reason}")
         next_expected_request = self._expected_requests.pop(0)
