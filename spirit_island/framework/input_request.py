@@ -42,8 +42,37 @@ class InputHandler:
         return self.input_request is not None
 
     def request_land_input(self, reason: str, options: List[Land]) -> Land:
+        """
+        :param reason: explanation to user of what they should be selecting
+        :param options: the set of options from which the user must choose
+
+        Returns a land selected by the user, should never be called from the
+        UI thread.
+        """
         if self.check_busy():
             raise ValueError("Requested input while input already pending")
+        self.input_request = InputRequest(
+            reason,
+            options
+        )
+        while not self.input_request.get_resolution():
+            self.clock.tick(self.fps)
+        input_request = self.input_request.get_resolution()
+        self.input_request = None
+        return input_request
+
+    def request_land_content_input(self, reason: str, options: List[object]) -> object:
+        """
+        :param reason: explanation to user of what they should be selecting
+        :param options: the set of options from which the user must choose
+
+        Returns a thing from a land (invader, dahan, token, presence etc) selected
+        by the user, should never be called from the UI thread.
+        """
+        if self.check_busy():
+            raise ValueError("Requested input while input already pending")
+        if len(options) == 1:
+            return options[0]
         self.input_request = InputRequest(
             reason,
             options
