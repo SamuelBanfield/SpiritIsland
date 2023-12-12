@@ -3,7 +3,7 @@ import unittest
 from spirit_island.framework.elements import *
 
 
-class TestFearCardOverseasTrade(unittest.TestCase):
+class TestElements(unittest.TestCase):
 
     def test_element_equality(self):
         one_air = ElementalThreshold({air: 1})
