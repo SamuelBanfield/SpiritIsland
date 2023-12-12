@@ -1,3 +1,4 @@
+import math
 from typing import Dict
 
 from spirit_island.framework.power_cards.power_card_base import SpiritPower
@@ -7,7 +8,11 @@ from spirit_island.framework.land import Land
 
 
 def _concealing_shadows(available_elements: Dict[Element, int], island: Island):
-    pass
+    target_land = island._input_handler.request_land_input(
+        "Select target land for concealing shadows",
+        island.lands,
+    )
+    target_land.dahan_defend = math.inf
 
 def _crops_wither_and_fade(available_elements: Dict[Element, int], island: Island):
     target_land = island._input_handler.request_land_input(
@@ -37,36 +42,34 @@ def _favors_called_due(available_elements: Dict[Element, int], island: Island):
 def _mantle_of_dread(available_elements: Dict[Element, int], island: Island):
     pass
 
-# concealing_shadows = SpiritPower(
-#     name="concealing_shadows",
-#     energy=0,
-#     elements=[moon, air],
-#     action=_concealing_shadows,
-#     speed="fast"
-# )
-
-crops_wither_and_fade = SpiritPower(
-    name="crops_wither_and_fade",
+concealing_shadows = SpiritPower(
+    name="concealing_shadows",
     energy=0,
     elements=[moon, air],
-    action=_crops_wither_and_fade,
+    action=_concealing_shadows,
     speed="fast"
 )
 
-# favors_called_due = SpiritPower(
-#     name,
-#     energy,
-#     [],
-#     actions,
-#     target_provider,
-#     speed
-# )
+crops_wither_and_fade = SpiritPower(
+    name="crops_wither_and_fade",
+    energy=1,
+    elements=[moon, fire, plant],
+    action=_crops_wither_and_fade,
+    speed="slow"
+)
 
-# mantle_of_dread = SpiritPower(
-#     name,
-#     energy,
-#     [],
-#     actions,
-#     target_provider,
-#     speed
-# )
+favors_called_due = SpiritPower(
+    name="favors_called_due",
+    energy=1,
+    elements=[moon, air, animal],
+    action=_favors_called_due,
+    speed="slow"
+)
+
+mantle_of_dread = SpiritPower(
+    name="mantle_of_dread",
+    energy=1,
+    elements=[moon, fire, air],
+    action=_mantle_of_dread,
+    speed="slow"
+)
