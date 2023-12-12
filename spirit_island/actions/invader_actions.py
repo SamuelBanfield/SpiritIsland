@@ -36,18 +36,21 @@ class RavageAction(InvaderAction):
             return
 
         # Calculate the damage to the land and the dahan health
-        damage_total = sum(invader.damage for invader in invader_all)
+        damage_total = max(
+            sum(invader.damage for invader in invader_all) - self.land.defend, 0
+        )
 
         # Blight the land
         if damage_total >= 2:
             self.island.add_blight(self.land)
 
         # Damage the dahan
-        if len(self.land.dahan) + damage_total:
-            if damage_total >= sum(dahan.health for dahan in self.land.dahan):
+        damage_to_dahan = max(damage_total - self.land.dahan_defend, 0)
+        if self.land.dahan and damage_to_dahan:
+            if damage_to_dahan >= sum(dahan.health for dahan in self.land.dahan):
                 self.land.dahan.clear()
             else:
-                remaining_damage = damage_total
+                remaining_damage = damage_to_dahan
                 # Damage dahan in the most lethal way by ordering them by health
                 dahan_health_dict = {dahan.id: dahan for dahan in self.land.dahan}
                 sorted_dict = dict(

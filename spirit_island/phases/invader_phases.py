@@ -3,6 +3,7 @@ from spirit_island.framework.exceptions import EndGameException
 from spirit_island.framework.island import Island
 from spirit_island.phases.phases_base import Phase
 
+from typing import List
 
 class Ravage(Phase):
     """Invader ravage phase."""

@@ -22,6 +22,7 @@ class Land:
 
         self.fear_generated_in_land = 0
         self.defend = 0
+        self.dahan_defend = 0
 
         self.is_coastal = False
         self.can_build = True
@@ -51,6 +52,7 @@ class Land:
     def reset_properties(self):
         # Temporary way of resetting properties in time passes phase
         self.defend = 0
+        self.dahan_defend = 0 # Defence that only protects dahan, not the land
         self.can_build = True
         self.can_build_city = True
         self.fear_generated_in_land = 0

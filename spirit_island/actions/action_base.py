@@ -16,6 +16,8 @@ class Action:
         self.island = island
 
     def check_end_game(self):
+        if "suppress_end_of_game" in self._controls and self._controls["suppress_end_of_game"]:
+            return
         if self.island.terror_level == 4:
             self.island.end = True
         elif self.island.terror_level == 3:

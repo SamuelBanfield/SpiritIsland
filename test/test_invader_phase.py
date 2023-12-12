@@ -225,3 +225,26 @@ class TestInvaderActions(unittest.TestCase):
         assert (
             land.dahan[0].health == 2
         ), f"Unexpected health of surviving dahan: {land.dahan[0].health}"
+
+class TestDefence(unittest.TestCase):
+
+    def test_defend_with_dahan(self):
+        test_controls = {
+            "board": "single_land_board.json",
+            "auto_allocate_damage": True,
+            "suppress_end_of_game": True,
+        }
+        island = Island(test_controls, TestInputHandler())
+        land = island.lands[0]
+        land.defend = 6
+        ravage = RavageAction(test_controls, island, land, TestInputHandler())
+        ravage.execute_action()
+
+        assert len(land.dahan) == 4, f"Unexpected number of dahan: {len(land.dahan)}"
+        assert len(land.cities) == 0, f"Unexpected number of cities: {len(land.cities)}"
+        assert len(land.towns) == 0, f"Unexpected number of towns: {len(land.towns)}"
+        assert (
+            len(land.explorers) == 0
+        ), f"Unexpected number of explorers: {len(land.explorers)}"
+        
+
