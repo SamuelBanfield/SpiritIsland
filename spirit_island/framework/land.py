@@ -29,7 +29,7 @@ class Land:
         self.can_build_city = True
 
     def __eq__(self, other):
-        return self.board == other.board and self.number == other.number
+        return isinstance(other, Land) and self.board == other.board and self.number == other.number
 
     def get_invader_count(self) -> int:
         return len(self.cities) + len(self.towns) + len(self.explorers)

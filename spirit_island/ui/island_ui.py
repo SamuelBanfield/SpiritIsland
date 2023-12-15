@@ -48,6 +48,7 @@ class BoardComponent(UIComponent):
         board_info = read_json(board_info_path)
         self._lands = [
             LandUI(
+                self._input_handler,
                 land,
                 board_info[land.number]["polygon"],
                 board_info[land.number]["locations"],
@@ -84,24 +85,20 @@ class BoardComponent(UIComponent):
 
     @override
     def handle_click(self, click_location):
-        selected_land = self.get_land_at_location(click_location)
-        if not selected_land:
-            return
-        if self._input_handler.input_request:
-            input_request = self._input_handler.input_request
-            model_land = selected_land.get_model_land()
-            if model_land in input_request.options:
-                logger.info(f"Selecting land '{model_land.id}' in response to: {input_request.message}")
-                self._input_handler.input_request.resolution["result"] = model_land
+        if selected_land := self.get_land_at_location(click_location):
+            selected_land.handle_click(self.scale_location(click_location))
+
+    def scale_location(self, location):
+        return (
+            (location[0] - self._offset[0]) // self._scale_factor,
+            (location[1] - self._offset[1]) // self._scale_factor,
+        )
 
     def get_land_at_location(self, parent_coords):
         """Return the land that the point is inside, else None"""
         for land in self._lands:
             if land.is_location_on_component(
-                (
-                    (parent_coords[0] - self._offset[0]) // self._scale_factor,
-                    (parent_coords[1] - self._offset[1]) // self._scale_factor,
-                )
+                self.scale_location(parent_coords)
             ):
                 return land
         return None
@@ -112,15 +109,16 @@ class BoardComponent(UIComponent):
 
 class LandUI:
     def __init__(
-        self, land: Land, polygon: List[List[int]], locations: List[List[int]]
+        self, input_handler: InputHandler, land: Land, polygon: List[List[int]], locations: List[List[int]]
     ):
+        self._input_handler = input_handler
         self._land = land
         self._polygon = polygon
         self._locations = locations
 
         self.available_locations = copy.copy(self._locations)
         self.piece_ids = []
-        self.piece_uis = []
+        self.piece_uis: List[PieceUI] = []
         self.ui_waiting_list = []
 
     def create_piece_uis(self):
@@ -144,7 +142,7 @@ class LandUI:
                     self.ui_waiting_list.append(next_piece)
                 else:
                     self.piece_uis.append(
-                        PieceUI(next_piece, self.available_locations.pop(-1))
+                        PieceUI(self._input_handler, next_piece, self.available_locations.pop(-1))
                     )
                     self.piece_ids.append(next_piece.id)
             else:
@@ -153,7 +151,7 @@ class LandUI:
                     and len(self.available_locations) > 0
                 ):
                     self.piece_uis.append(
-                        PieceUI(next_piece, self.available_locations.pop(-1))
+                        PieceUI(self._input_handler, next_piece, self.available_locations.pop(-1))
                     )
 
     def remove_piece_uis(self):
@@ -191,20 +189,32 @@ class LandUI:
 
     @override
     def handle_click(self, click_location):
-        pass
+        if input_request := self._input_handler.input_request:
+            if self._land in input_request.options:
+                """First check whether the selection was for the land itself"""
+                logger.info(f"Selecting land '{self._land.id}' in response to: {input_request.message}")
+                self._input_handler.input_request.resolution["result"] = self._land
+            else:
+                for piece_ui in self.piece_uis:
+                    """If not, check whether the click was on a piece"""
+                    if piece_ui.is_location_on_component(click_location):
+                        piece_ui.handle_click(click_location)
+                        return
 
     @override
     def is_location_on_component(self, location) -> bool:
         return is_point_inside_polygon(self._polygon, location)
 
-    def get_model_land(self):
-        return self._land
-
 
 class PieceUI:
-    def __init__(self, piece: Piece, location: list[int]):
+    def __init__(self, input_handler: InputHandler, piece: Piece, location: list[int]):
+        self._input_handler = input_handler
         self._piece = piece
         self.piece_location = location
+        self.image_width = 50
+        self.rect = pygame.rect.Rect(
+            self.piece_location[0], self.piece_location[1], self.image_width, self.image_width
+        )
 
         self.image = []
         self.get_image()
@@ -231,12 +241,15 @@ class PieceUI:
 
     def render(self, dest: pygame.surface.Surface, hovered: bool):
         dest.blit(
-            pygame.transform.scale(self.image, (50, 50)),
-            (self.piece_location[0], self.piece_location[1], 50, 50),
+            pygame.transform.scale(self.image, (self.image_width, self.image_width)),
+            self.rect,
         )
 
     def handle_click(self, click_location):
-        pass
+        if input_request := self._input_handler.input_request:
+            if self._piece in input_request.options:
+                logger.info(f"Selecting piece '{self._piece.id}' in response to: {input_request.message}")
+                input_request.resolution["result"] = self._piece
 
     def is_location_on_component(self, location) -> bool:
-        pass
+        return self.rect.collidepoint(location)
