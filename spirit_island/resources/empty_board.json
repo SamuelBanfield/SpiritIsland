@@ -1,0 +1,29 @@
+{
+    "0": {
+        "terrain": "ocean"
+    },
+    "1": {
+        "terrain": "wetland"
+    },
+    "2": {
+        "terrain": "jungle"
+    },
+    "3": {
+        "terrain": "wetland"
+    },
+    "4": {
+        "terrain": "sand"
+    },
+    "5": {
+        "terrain": "mountain"
+    },
+    "6": {
+        "terrain": "jungle"
+    },
+    "7": {
+        "terrain": "sand"
+    },
+    "8": {
+        "terrain": "mountain"
+    }
+}

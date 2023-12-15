@@ -37,10 +37,63 @@ def _crops_wither_and_fade(available_elements: Dict[Element, int], island: Islan
     island.terror_handler.add_fear(2)
 
 def _favors_called_due(available_elements: Dict[Element, int], island: Island):
-    pass
+    target_land = island._input_handler.request_land_input(
+        "Select target land for favors called due",
+        island.lands,
+    )
+    def get_gatherable_dahan():
+        gatherable_dahan = []
+        for land in island.lands:
+            if island.are_lands_adjacent(target_land, land):
+                gatherable_dahan += land.dahan
+        return gatherable_dahan
+    for _ in range(4):
+        options = get_gatherable_dahan()
+        print(options)
+        if not options:
+            break
+        dahan_to_gather = island._input_handler.request_land_content_input(
+            "Select dahan to gather",
+            options,
+        )
+        island.gather_to_land(dahan_to_gather, target_land)
+    invaders = target_land.explorers + target_land.towns + target_land.cities
+    if target_land.dahan and invaders and len(target_land.dahan) > len(invaders):
+        island.terror_handler.add_fear(3)
 
 def _mantle_of_dread(available_elements: Dict[Element, int], island: Island):
-    pass
+    island.terror_handler.add_fear(2)
+    target_land = island._input_handler.request_land_input(
+        "Select target land for mantle of dread",
+        island.lands,
+    )
+    if explorers := target_land.explorers:
+        if len(explorers) > 1:
+            explorer = island._input_handler.request_land_content_input(
+                "Select explorer to push",
+                explorers
+            )
+        else:
+            explorer = explorers[0]
+        land_pushed_to = island._input_handler.request_land_input(
+            "Select land to push explorer to",
+            island.get_lands_adjacent_to_land(target_land),
+        )
+        island.gather_to_land(explorer, land_pushed_to)
+    if towns := target_land.towns:
+        if len(towns) > 1:
+            town = island._input_handler.request_land_content_input(
+                "Select town to push",
+                towns
+            )
+        else:
+            town = towns[0]
+        land_pushed_to = island._input_handler.request_land_input(
+            "Select land to push town to",
+            island.get_lands_adjacent_to_land(target_land),
+        )
+        island.gather_to_land(town, land_pushed_to)
+
 
 concealing_shadows = SpiritPower(
     name="concealing_shadows",
