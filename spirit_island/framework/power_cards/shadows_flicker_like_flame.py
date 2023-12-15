@@ -126,3 +126,5 @@ mantle_of_dread = SpiritPower(
     action=_mantle_of_dread,
     speed="slow"
 )
+
+POWERS = [concealing_shadows, crops_wither_and_fade, favors_called_due, mantle_of_dread]

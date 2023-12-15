@@ -9,12 +9,12 @@ from spirit_island.ui.component.component import UIComponent
 
 from spirit_island.framework.power_cards.shadows_flicker_like_flame import crops_wither_and_fade
 
-from typing import Tuple
+from typing import List, Tuple
 
 
 class HandComponent(UIComponent):
     def __init__(
-        self, width: int, height: int, topleft: Tuple[int, int], island: Island, worker_thread_executor
+        self, powers: List[SpiritPower], width: int, height: int, topleft: Tuple[int, int], island: Island, worker_thread_executor
     ):
         super().__init__()
         self._surface: pygame.surface.Surface = pygame.surface.Surface((width, height))
@@ -23,18 +23,21 @@ class HandComponent(UIComponent):
         self._island = island
         self._cards = [
             PowerCardUI(
-                crops_wither_and_fade,
+                power,
                 self._height,
                 island,
                 worker_thread_executor
-            )
+            ) for power in powers
         ]
 
     def render(self, dest: pygame.surface.Surface, hovered: bool):
         self._surface.fill(SPIRIT_BOARD_BACKGROUND)
         self._surface.fill((255, 0, 0))
+        x = 0
         for card in self._cards:
+            card._rect.topleft = (x, 0)
             card.render(self._surface, False)
+            x += card._rect.width
         dest.blit(self._surface, self._rect)
 
     def handle_click(self, click_location):
@@ -59,7 +62,7 @@ class PowerCardUI(UIComponent):
         """
         self._card = power_card
         self._island = island
-        image_path = os.path.relpath(__file__ + "/../../../resources/images/power_cards/uniques/crops_wither_and_fade.png")
+        image_path = os.path.relpath(f"{__file__}/../../../resources/images/power_cards/uniques/{power_card.name}.png")
         original_image = pygame.image.load(image_path)
         self._surface = pygame.transform.scale_by(
             original_image,
