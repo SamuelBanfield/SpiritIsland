@@ -43,7 +43,7 @@ class UI:
             self._runner.island,
             self.run_safely_in_worker_thread
         )
-        self.header = Header(self._runner.island, self.options["WIDTH"], header_height)
+        self.header = Header(self._runner.island, self.options["WIDTH"], header_height, self._runner)
 
         self.worker_thread_pool = ThreadPoolExecutor(max_workers=1)
 
@@ -59,11 +59,6 @@ class UI:
             offset=[0, header_height],
             enablement=lambda: False
         )
-        self.input_required_button = TextButton(
-            lambda: self._runner.get_input_request().message if self._runner.get_input_request() else "No input required",
-            offset=[0, header_height + 80],
-            enablement=lambda: False
-        )
         def _mark_done():
             if self._runner.get_input_request():
                 self._runner.get_input_request().resolution["complete"] = True
@@ -76,7 +71,6 @@ class UI:
         self.buttons = ButtonArray(
             [
                 next_phase_button,
-                self.input_required_button, 
                 self._current_phase_image,
                 self.done_button
             ],
