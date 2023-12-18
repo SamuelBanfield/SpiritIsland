@@ -1,5 +1,6 @@
 import os
 import traceback
+from typing import List
 
 import pygame
 
@@ -9,6 +10,8 @@ from spirit_island.framework.input_request import InputHandler
 from spirit_island.framework.logger import logger
 from spirit_island.launcher import Runner
 from spirit_island.ui.component.button import TextButton
+from spirit_island.ui.component.button_array import ButtonArray
+from spirit_island.ui.component.component import UIComponent
 from spirit_island.ui.component.header import Header
 from spirit_island.ui.component.hand_component import HandComponent
 from spirit_island.ui.island_ui import BoardComponent
@@ -70,12 +73,23 @@ class UI:
             offset=[0, header_height + 120],
             enablement=lambda: self._runner.get_input_request() and self._runner.get_input_request().user_finishable
         )
-        self._components = [
+        self.buttons = ButtonArray(
+            [
+                next_phase_button,
+                self.input_required_button, 
+                self._current_phase_image,
+                self.done_button
+            ],
+            (
+                self.options["WIDTH"] - 200,
+                header_height
+            ),
+            200,
+            self.options["HEIGHT"] // 2
+        )
+        self._components: List[UIComponent] = [
+            self.buttons,
             self._island_ui,
-            next_phase_button,
-            self._current_phase_image,
-            self.input_required_button,
-            self.done_button,
             self._hand_component,
             self.header,
         ]
