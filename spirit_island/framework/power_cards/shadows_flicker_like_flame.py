@@ -51,7 +51,6 @@ def _favors_called_due(available_elements: Dict[Element, int], island: Island):
     try: 
         for _ in range(4):
             options = get_gatherable_dahan()
-            print(options)
             if not options:
                 break
             dahan_to_gather = island._input_handler.request_land_content_input(

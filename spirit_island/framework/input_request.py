@@ -71,7 +71,7 @@ class InputHandler:
         self.input_request = None
         return input_request
 
-    def request_land_content_input(self, reason: str, options: List[object], user_finishable) -> object:
+    def request_land_content_input(self, reason: str, options: List[object], user_finishable = False) -> object:
         """
         :param reason: explanation to user of what they should be selecting
         :param options: the set of options from which the user must choose
@@ -83,7 +83,8 @@ class InputHandler:
         """
         if self.check_busy():
             raise ValueError("Requested input while input already pending")
-        if len(options) == 1:
+        if len(options) == 1 and not user_finishable:
+            # Don't bother asking the user if there's only one option and they have to pick it
             return options[0]
         self.input_request = InputRequest(
             reason,
