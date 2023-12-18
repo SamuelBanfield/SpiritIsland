@@ -28,12 +28,6 @@ class Island:
 
         self.id_count = 1
 
-        self.fear_cards_pending = 0
-        self.fear_cards_to_next_level = 3
-        self.fear_earned = 0
-        self.fear_capacity = self.n_players * 4
-        self.terror_level = 1
-
         self.invader_track = {
             "explore": None,
             "build": None,
@@ -41,7 +35,7 @@ class Island:
             "discard": [],
         }
         self.invader_deck = []
-        self.terror_handler = None
+        self.terror_handler = self.create_terror_handler()
 
         self.end = False
 
@@ -132,7 +126,7 @@ class Island:
     def create_terror_handler(self):
         """Create an instance of the TerrorHandler."""
         terror_handler_args = {"n_players": self.n_players}
-        self.terror_handler = TerrorHandler(terror_handler_args)
+        return TerrorHandler(terror_handler_args)
 
     def get_city_count_island(self) -> int:
         """Return the total city count on the island."""
@@ -154,3 +148,51 @@ class Island:
 
     def are_lands_adjacent(self, land, other_land):
         return other_land.id in self.adjacency_dict[land.id]
+    
+    def get_lands_adjacent_to_land(self, land):
+        return [other for other in self.lands if self.are_lands_adjacent(land, other)]
+    
+    def gather_to_land(self, thing_to_gather, land: Land):
+        """        
+        :param thing_to_gather: the piece to gather
+        :param land: the land to gather to
+
+        Beware, this does no validation that the piece can be gathered.
+        """
+        self.remove(thing_to_gather)
+        if isinstance(thing_to_gather, Dahan):
+            land.dahan.append(thing_to_gather)
+        elif isinstance(thing_to_gather, Blight):
+            land.blight.append(thing_to_gather)
+        elif isinstance(thing_to_gather, Explorer):
+            land.explorers.append(thing_to_gather)
+        elif isinstance(thing_to_gather, Town):
+            land.towns.append(thing_to_gather)
+        elif isinstance(thing_to_gather, City):
+            land.cities.append(thing_to_gather)
+        else:
+            raise ValueError(f"Unexpected thing to gather: {thing_to_gather}")
+            
+    def remove(self, thing) -> Land:
+        """
+        :param thing: the piece to remove
+        Remove a piece (dahan, explorer, town, city) from the island
+        without having to know what land it's in. Returns the land it was removed from.
+        """
+        for land in self.lands:
+            if thing in land.dahan:
+                land.dahan.remove(thing)
+                return land
+            elif thing in land.blight:
+                land.blight.remove(thing)
+                return land
+            elif thing in land.explorers:
+                land.explorers.remove(thing)
+                return land
+            elif thing in land.towns:
+                land.towns.remove(thing)
+                return land
+            elif thing in land.cities:
+                land.cities.remove(thing)
+                return land
+        raise ValueError(f"Could not find thing to remove: {thing}")

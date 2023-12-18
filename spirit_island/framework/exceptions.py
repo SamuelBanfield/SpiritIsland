@@ -7,3 +7,7 @@ class EndGameException(Exception):
 class UIException(Exception):
     def __init__(self, message: str):
         self.message = message
+
+
+class UserInterruptedException(Exception):
+    pass

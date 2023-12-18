@@ -16,13 +16,15 @@ class Action:
         self.island = island
 
     def check_end_game(self):
-        if self.island.terror_level == 4:
-            self.island.end = True
-        elif self.island.terror_level == 3:
+        if "suppress_end_of_game" in self._controls and self._controls["suppress_end_of_game"]:
+            return
+        if self.island.terror_handler.terror_level == 4:
+            self.island.terror_handler.end = True
+        elif self.island.terror_handler.terror_level == 3:
             # Check for any cities in the island object
             if not self.island.get_city_count_island():
                 self.island.end = True
-        elif self.island.terror_level == 2:
+        elif self.island.terror_handler.terror_level == 2:
             # Check for any towns/cities in the island object
             if (
                 not self.island.get_city_count_island()
@@ -41,7 +43,7 @@ class Action:
         if self.island.end:
             raise EndGameException(
                 victory=True,
-                message=f"Fear Victory at Terror level {self.island.terror_level}",
+                message=f"Fear Victory at Terror level {self.island.terror_handler.terror_level}",
             )
 
     def test_action(self):

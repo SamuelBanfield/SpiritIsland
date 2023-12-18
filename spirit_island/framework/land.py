@@ -22,13 +22,14 @@ class Land:
 
         self.fear_generated_in_land = 0
         self.defend = 0
+        self.dahan_defend = 0
 
         self.is_coastal = False
         self.can_build = True
         self.can_build_city = True
 
     def __eq__(self, other):
-        return self.board == other.board and self.number == other.number
+        return isinstance(other, Land) and self.board == other.board and self.number == other.number
 
     def get_invader_count(self) -> int:
         return len(self.cities) + len(self.towns) + len(self.explorers)
@@ -51,6 +52,7 @@ class Land:
     def reset_properties(self):
         # Temporary way of resetting properties in time passes phase
         self.defend = 0
+        self.dahan_defend = 0 # Defence that only protects dahan, not the land
         self.can_build = True
         self.can_build_city = True
         self.fear_generated_in_land = 0

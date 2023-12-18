@@ -10,8 +10,10 @@ from spirit_island.framework.logger import logger
 from spirit_island.launcher import Runner
 from spirit_island.ui.component.button import TextButton
 from spirit_island.ui.component.header import Header
+from spirit_island.ui.component.hand_component import HandComponent
 from spirit_island.ui.island_ui import BoardComponent
 from spirit_island.ui.util import SPIRIT_BOARD_BACKGROUND
+from spirit_island.framework.power_cards import shadows_flicker_like_flame
 
 pygame.init()
 
@@ -30,7 +32,16 @@ class UI:
         self._runner.get_current_phase().execute_phase()
         header_height = self.options["HEIGHT"] // 5
         self._island_ui = BoardComponent(self._runner.island, (0, header_height), (self.options["WIDTH"], self.options["HEIGHT"]), self._input_handler)
+        self._hand_component = HandComponent(
+            shadows_flicker_like_flame.POWERS,
+            self.options["WIDTH"] // 2,
+            self.options["HEIGHT"] // 4,
+            (self.options["WIDTH"] // 4, 3 * self.options["HEIGHT"] // 4),
+            self._runner.island,
+            self.run_safely_in_worker_thread
+        )
         self.header = Header(self._runner.island, self.options["WIDTH"], header_height)
+
         self.worker_thread_pool = ThreadPoolExecutor(max_workers=1)
 
         # Next phase button
@@ -46,15 +57,26 @@ class UI:
             enablement=lambda: False
         )
         self.input_required_button = TextButton(
-            lambda: self._runner.get_input_request().message if self._runner.get_input_request() else "Input required",
+            lambda: self._runner.get_input_request().message if self._runner.get_input_request() else "No input required",
             offset=[0, header_height + 80],
             enablement=lambda: False
+        )
+        def _mark_done():
+            if self._runner.get_input_request():
+                self._runner.get_input_request().resolution["complete"] = True
+        self.done_button = TextButton(
+            "Done",
+            callback=_mark_done,
+            offset=[0, header_height + 120],
+            enablement=lambda: self._runner.get_input_request() and self._runner.get_input_request().user_finishable
         )
         self._components = [
             self._island_ui,
             next_phase_button,
             self._current_phase_image,
             self.input_required_button,
+            self.done_button,
+            self._hand_component,
             self.header,
         ]
 
