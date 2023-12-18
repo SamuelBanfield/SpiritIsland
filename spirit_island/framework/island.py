@@ -28,12 +28,6 @@ class Island:
 
         self.id_count = 1
 
-        self.fear_cards_pending = 0
-        self.fear_cards_to_next_level = 3
-        self.fear_earned = 0
-        self.fear_capacity = self.n_players * 4
-        self.terror_level = 1
-
         self.invader_track = {
             "explore": None,
             "build": None,
@@ -41,7 +35,7 @@ class Island:
             "discard": [],
         }
         self.invader_deck = []
-        self.terror_handler = None
+        self.terror_handler = self.create_terror_handler()
 
         self.end = False
 
@@ -132,7 +126,7 @@ class Island:
     def create_terror_handler(self):
         """Create an instance of the TerrorHandler."""
         terror_handler_args = {"n_players": self.n_players}
-        self.terror_handler = TerrorHandler(terror_handler_args)
+        return TerrorHandler(terror_handler_args)
 
     def get_city_count_island(self) -> int:
         """Return the total city count on the island."""

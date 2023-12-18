@@ -1,5 +1,6 @@
 import math
 from typing import Dict
+from spirit_island.framework.exceptions import UserInterruptedException
 
 from spirit_island.framework.power_cards.power_card_base import SpiritPower
 from spirit_island.framework.elements import Element, no_elemental_requirement, sun, moon, fire, air, water, earth, plant, animal
@@ -47,16 +48,21 @@ def _favors_called_due(available_elements: Dict[Element, int], island: Island):
             if island.are_lands_adjacent(target_land, land):
                 gatherable_dahan += land.dahan
         return gatherable_dahan
-    for _ in range(4):
-        options = get_gatherable_dahan()
-        print(options)
-        if not options:
-            break
-        dahan_to_gather = island._input_handler.request_land_content_input(
-            "Select dahan to gather",
-            options,
-        )
-        island.gather_to_land(dahan_to_gather, target_land)
+    try: 
+        for _ in range(4):
+            options = get_gatherable_dahan()
+            print(options)
+            if not options:
+                break
+            dahan_to_gather = island._input_handler.request_land_content_input(
+                "Select dahan to gather",
+                options,
+                user_finishable=True,
+            )
+            island.gather_to_land(dahan_to_gather, target_land)
+    except UserInterruptedException:
+        # No need to do anything, the user just wants to stop gathering
+        pass
     invaders = target_land.explorers + target_land.towns + target_land.cities
     if target_land.dahan and invaders and len(target_land.dahan) > len(invaders):
         island.terror_handler.add_fear(3)

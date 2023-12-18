@@ -37,7 +37,7 @@ class TestInputHandler(InputHandler):
         return False
 
     @override
-    def request_land_content_input(self, reason: str, options: List[object]) -> object:
+    def request_land_content_input(self, reason: str, options: List[object], user_finishable = False) -> object:
         return self._request_input(reason, options)
 
     @override

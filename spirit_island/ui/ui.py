@@ -61,11 +61,21 @@ class UI:
             offset=[0, header_height + 80],
             enablement=lambda: False
         )
+        def _mark_done():
+            if self._runner.get_input_request():
+                self._runner.get_input_request().resolution["complete"] = True
+        self.done_button = TextButton(
+            "Done",
+            callback=_mark_done,
+            offset=[0, header_height + 120],
+            enablement=lambda: self._runner.get_input_request() and self._runner.get_input_request().user_finishable
+        )
         self._components = [
             self._island_ui,
             next_phase_button,
             self._current_phase_image,
             self.input_required_button,
+            self.done_button,
             self._hand_component,
             self.header,
         ]
