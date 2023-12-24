@@ -34,7 +34,7 @@ class UI:
         self._runner.create_phases()
         self._runner.get_current_phase().execute_phase()
         header_height = self.options["HEIGHT"] // 5
-        self._island_ui = BoardComponent(self._runner.island, (0, header_height), (self.options["WIDTH"], self.options["HEIGHT"]), self._input_handler)
+        self._island_ui = BoardComponent(self._runner.island, [0, header_height], (self.options["WIDTH"], self.options["HEIGHT"]), self._input_handler)
         self._hand_component = HandComponent(
             shadows_flicker_like_flame.POWERS,
             self.options["WIDTH"] // 2,
@@ -82,8 +82,8 @@ class UI:
             self.options["HEIGHT"] // 2
         )
         self._components: List[UIComponent] = [
-            self.buttons,
             self._island_ui,
+            self.buttons,
             self._hand_component,
             self.header,
         ]
@@ -118,11 +118,14 @@ class UI:
         )
         clock = pygame.time.Clock()
         while True:
+            for component in self._components:
+                component.update()
             for event in pygame.event.get():
                 if self.handle_event(event):
                     return True
             self.render(display)
             pygame.display.flip()
+            # print(clock.get_fps()) # Uncomment to print FPS
             clock.tick(self.options["FPS"])
 
     def run_safely_in_worker_thread(self, task, *args, **kwargs):

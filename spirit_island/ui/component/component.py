@@ -15,3 +15,6 @@ class UIComponent:
 
     def is_location_on_component(self, location) -> bool:
         pass
+
+    def update(self):
+        pass

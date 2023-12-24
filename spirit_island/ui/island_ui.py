@@ -38,9 +38,7 @@ class BoardComponent(UIComponent):
         super().__init__()
         self._island = island
         self._input_handler = input_handler
-        self._offset = (
-            offset  # Where on the destination rect the top left of the board should be
-        )
+        self._offset = offset  # Where on the destination rect the top left of the board should be
         board_info_path = os.path.relpath(
             __file__ + "/../../resources/board_d_coords.json"
         )
@@ -66,6 +64,7 @@ class BoardComponent(UIComponent):
             )
             / 1.5
         )
+        self.board_topleft = [0, 0]
 
     @override
     def render(self, dest: pygame.surface.Surface, hovered: bool):
@@ -82,6 +81,18 @@ class BoardComponent(UIComponent):
                 self._offset, (scaled_image.get_width(), scaled_image.get_height())
             ),
         )
+
+    @override
+    def update(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+            self._offset[0] += 10
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+            self._offset[0] -= 10
+        if keys[pygame.K_UP] or keys[pygame.K_w]:
+            self._offset[1] += 10
+        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+            self._offset[1] -= 10
 
     @override
     def handle_click(self, click_location):
