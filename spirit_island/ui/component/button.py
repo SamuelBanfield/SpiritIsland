@@ -25,10 +25,10 @@ class TextButton(UIComponent):
         self._font = FONT_SUPPLIER.get_font_size(font_size)
         self._offset = offset
         self._is_enabled = enablement
-        if isinstance(text_or_provider, str):
-            self.get_text = lambda: text_or_provider
-        else:
+        if callable(text_or_provider):
             self.get_text = text_or_provider
+        else:
+            self.get_text = lambda: text_or_provider
         self.update_text()
 
     def update_text(self):

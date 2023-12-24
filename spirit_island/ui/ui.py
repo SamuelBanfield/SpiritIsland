@@ -1,5 +1,6 @@
 import os
 import traceback
+from typing import List
 
 import pygame
 
@@ -9,6 +10,8 @@ from spirit_island.framework.input_request import InputHandler
 from spirit_island.framework.logger import logger
 from spirit_island.launcher import Runner
 from spirit_island.ui.component.button import TextButton
+from spirit_island.ui.component.button_array import ButtonArray
+from spirit_island.ui.component.component import UIComponent
 from spirit_island.ui.component.header import Header
 from spirit_island.ui.component.hand_component import HandComponent
 from spirit_island.ui.island_ui import BoardComponent
@@ -31,7 +34,7 @@ class UI:
         self._runner.create_phases()
         self._runner.get_current_phase().execute_phase()
         header_height = self.options["HEIGHT"] // 5
-        self._island_ui = BoardComponent(self._runner.island, (0, header_height), (self.options["WIDTH"], self.options["HEIGHT"]), self._input_handler)
+        self._island_ui = BoardComponent(self._runner.island, [0, header_height], (self.options["WIDTH"], self.options["HEIGHT"]), self._input_handler)
         self._hand_component = HandComponent(
             shadows_flicker_like_flame.POWERS,
             self.options["WIDTH"] // 2,
@@ -40,7 +43,7 @@ class UI:
             self._runner.island,
             self.run_safely_in_worker_thread
         )
-        self.header = Header(self._runner.island, self.options["WIDTH"], header_height)
+        self.header = Header(self._runner.island, self.options["WIDTH"], header_height, self._runner)
 
         self.worker_thread_pool = ThreadPoolExecutor(max_workers=1)
 
@@ -56,11 +59,6 @@ class UI:
             offset=[0, header_height],
             enablement=lambda: False
         )
-        self.input_required_button = TextButton(
-            lambda: self._runner.get_input_request().message if self._runner.get_input_request() else "No input required",
-            offset=[0, header_height + 80],
-            enablement=lambda: False
-        )
         def _mark_done():
             if self._runner.get_input_request():
                 self._runner.get_input_request().resolution["complete"] = True
@@ -70,12 +68,22 @@ class UI:
             offset=[0, header_height + 120],
             enablement=lambda: self._runner.get_input_request() and self._runner.get_input_request().user_finishable
         )
-        self._components = [
+        self.buttons = ButtonArray(
+            [
+                next_phase_button,
+                self._current_phase_image,
+                self.done_button
+            ],
+            (
+                self.options["WIDTH"] - 200,
+                header_height
+            ),
+            200,
+            self.options["HEIGHT"] // 2
+        )
+        self._components: List[UIComponent] = [
             self._island_ui,
-            next_phase_button,
-            self._current_phase_image,
-            self.input_required_button,
-            self.done_button,
+            self.buttons,
             self._hand_component,
             self.header,
         ]
@@ -110,11 +118,14 @@ class UI:
         )
         clock = pygame.time.Clock()
         while True:
+            for component in self._components:
+                component.update()
             for event in pygame.event.get():
                 if self.handle_event(event):
                     return True
             self.render(display)
             pygame.display.flip()
+            # print(clock.get_fps()) # Uncomment to print FPS
             clock.tick(self.options["FPS"])
 
     def run_safely_in_worker_thread(self, task, *args, **kwargs):
